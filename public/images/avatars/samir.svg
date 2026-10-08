@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Background with warm brick texture -->
+  <rect width="100" height="100" fill="#B38A6D" rx="8" />
+  <line x1="0" y1="25" x2="100" y2="25" stroke="#9E7658" stroke-width="1.5" />
+  <line x1="0" y1="50" x2="100" y2="50" stroke="#9E7658" stroke-width="1.5" />
+  <line x1="0" y1="75" x2="100" y2="75" stroke="#9E7658" stroke-width="1.5" />
+  <!-- Hair back -->
+  <path d="M30 40 C30 18 70 18 70 40 Z" fill="#2C221E" />
+  <!-- Ears -->
+  <circle cx="31" cy="46" r="4.5" fill="#E2A783" />
+  <circle cx="69" cy="46" r="4.5" fill="#E2A783" />
+  <!-- Neck -->
+  <rect x="42" y="58" width="16" height="18" fill="#D39572" />
+  <!-- Face -->
+  <path d="M33 38 C33 28 67 28 67 38 L67 50 C67 60 59 66 50 66 C41 66 33 60 33 50 Z" fill="#F0B892" />
+  <!-- Curly textured hair -->
+  <path d="M30 36 C32 20 68 20 70 36 C64 30 50 32 30 36 Z" fill="#2C221E" />
+  <!-- Eyebrows -->
+  <path d="M37 40 Q42 38 46 40" stroke="#2C221E" stroke-width="2" fill="none" stroke-linecap="round" />
+  <path d="M54 40 Q58 38 63 40" stroke="#2C221E" stroke-width="2" fill="none" stroke-linecap="round" />
+  <!-- Eyes with happy curve -->
+  <circle cx="42" cy="45" r="2.5" fill="#2C221E" />
+  <circle cx="58" cy="45" r="2.5" fill="#2C221E" />
+  <!-- Nose -->
+  <path d="M50 46 L50 51 L52 51" stroke="#C88863" stroke-width="1.8" fill="none" stroke-linecap="round" />
+  <!-- Big smiling mouth -->
+  <path d="M42 56 Q50 65 58 56 Z" fill="#FFFFFF" stroke="#874B2A" stroke-width="1.2" />
+  <!-- White T-shirt with necklace/strap -->
+  <path d="M20 82 C24 70 38 68 44 72 L50 78 L56 72 C62 68 76 70 80 82 L80 100 L20 100 Z" fill="#F8F9FA" />
+  <path d="M40 76 Q50 82 60 76" stroke="#2C221E" stroke-width="2" fill="none" />
+</svg>
