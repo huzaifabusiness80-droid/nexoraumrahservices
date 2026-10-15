@@ -35,7 +35,7 @@ export default function HeroCarousel() {
   const active = t.heroSlides[currentSlide] || t.heroSlides[0];
 
   return (
-    <section className="relative w-full h-[420px] sm:h-[460px] lg:h-[780px] overflow-hidden bg-black">
+    <section className="relative w-full min-h-[480px] sm:min-h-[540px] md:min-h-[620px] lg:h-[720px] xl:h-[780px] flex items-center overflow-hidden bg-black py-16 sm:py-20 lg:py-0">
       {/* 4-Image Background Carousel */}
       <div className="absolute inset-0 w-full h-full">
         {slideImages.map((imgSrc, index) => {
@@ -43,53 +43,58 @@ export default function HeroCarousel() {
           return (
             <div
               key={index}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-                }`}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+              }`}
             >
               <Image
                 src={imgSrc}
                 alt={`${active.titleLine1} ${active.titleLine2}`}
                 fill
                 priority={index === 0}
-                className={`object-cover object-center ${isActive ? "ken-burns-active" : ""
-                  }`}
+                className={`object-cover object-center ${isActive ? "ken-burns-active" : ""}`}
                 sizes="100vw"
               />
 
-              {/* Dark gradient overlay matching reading direction for crisp white typography */}
+              {/* Enhanced Dark Gradient for Crisp White Typography on all screens */}
               <div
-                className={`absolute inset-0 w-full md:w-[70%] ${isRtl
-                    ? "bg-gradient-to-l from-black/95 via-black/75 to-transparent end-0"
-                    : "bg-gradient-to-r from-black/95 via-black/75 to-transparent start-0"
-                  }`}
+                className={`absolute inset-0 w-full lg:w-[75%] ${
+                  isRtl
+                    ? "bg-gradient-to-l from-black/95 via-black/85 to-black/30 end-0"
+                    : "bg-gradient-to-r from-black/95 via-black/85 to-black/30 start-0"
+                }`}
               />
-              <div className="absolute inset-0 bg-black/15" />
+              <div className="absolute inset-0 bg-black/30 sm:bg-black/15" />
             </div>
           );
         })}
       </div>
 
-      {/* Hero Content */}
-      <div className="relative z-20 max-w-7xl mx-auto h-full px-6 sm:px-8 flex flex-col justify-center">
-        <div className="max-w-full animate-hero-text">
-          {/* Top Tag Kicker Badge with golden background and white text */}
-          <div className="inline-block bg-[#c5a059] text-white px-4 py-1.5 mb-5 sm:mb-10">
-            <span className="text-[11px] sm:text-xs font-bold tracking-[0.24em] uppercase">
+      {/* Hero Content — Fully Responsive Padding & Typography */}
+      <div className="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 flex flex-col justify-center">
+        <div className="max-w-3xl animate-hero-text">
+          {/* Top Tag Kicker Badge */}
+          <div className="inline-block bg-[#c5a059] text-white px-3 sm:px-4 py-1 sm:py-1.5 mb-3 sm:mb-6 rounded-xs shadow-sm">
+            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.24em] uppercase">
               {active.tag}
             </span>
           </div>
 
-          {/* Main Heading — semibold weight, wide max-width, generous line-height for vertical gaps */}
-          <h1 className="text-4xl sm:text-5xl lg:text-[60px] font-semibold text-white tracking-tight leading-[1.35] sm:leading-[1.35] lg:leading-[1.3] mb-8 sm:mb-10">
+          {/* Main Heading — responsive font clamp */}
+          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-white tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 sm:mb-6">
             <span className="block">{active.titleLine1}</span>
-            <span className="block">{active.titleLine2}</span>
+            <span className="block text-zinc-100 mt-1">{active.titleLine2}</span>
           </h1>
 
-          {/* 2 Hero Buttons with generous spacing */}
-          <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-6">
+          <p className="text-xs sm:text-sm md:text-base text-zinc-300 max-w-xl leading-relaxed mb-6 sm:mb-8 font-normal">
+            Private licensed airport transfers, verified seasonal hotel tariffs, and holy sanctuary tours across Makkah, Madinah, and the UAE.
+          </p>
+
+          {/* 2 Hero Buttons with mobile stack / tablet row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 pt-1">
             <Link
-              href="#fleet"
-              className="inline-block px-7 py-3.5 sm:py-4 text-xs font-bold tracking-[0.2em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center"
+              href="#services"
+              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center rounded shadow-sm"
             >
               Explore Services
             </Link>
@@ -98,7 +103,7 @@ export default function HeroCarousel() {
               href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block px-7 py-3.5 sm:py-4 text-xs font-bold tracking-[0.2em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center"
+              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center rounded shadow-sm"
             >
               Book Your Journey
             </a>
@@ -107,7 +112,11 @@ export default function HeroCarousel() {
       </div>
 
       {/* Carousel Navigation Arrows & Indicators */}
-      <div className={`absolute bottom-6 sm:bottom-8 z-30 flex items-center gap-3 sm:gap-4 ${isRtl ? "left-4 sm:left-12" : "right-4 sm:right-12"}`}>
+      <div
+        className={`absolute bottom-4 sm:bottom-8 z-30 flex items-center gap-2.5 sm:gap-4 ${
+          isRtl ? "left-4 sm:left-12" : "right-4 sm:right-12"
+        }`}
+      >
         {/* Slide Dots / Indicators */}
         <div className="flex items-center gap-1.5 sm:gap-2 mx-1 sm:mx-2">
           {slideImages.map((_, idx) => (
@@ -115,10 +124,11 @@ export default function HeroCarousel() {
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1 transition-all ${idx === currentSlide
-                  ? "w-6 sm:w-8 bg-[#d4af37]"
-                  : "w-2.5 sm:w-3 bg-white/40 hover:bg-white"
-                }`}
+              className={`h-1.5 transition-all rounded-full cursor-pointer ${
+                idx === currentSlide
+                  ? "w-6 sm:w-8 bg-[#c5a059]"
+                  : "w-2 sm:w-2.5 bg-white/40 hover:bg-white"
+              }`}
             />
           ))}
         </div>
@@ -126,20 +136,30 @@ export default function HeroCarousel() {
         {/* Prev / Next buttons */}
         <button
           onClick={isRtl ? nextSlide : prevSlide}
-          aria-label="Previous"
-          className="w-8 h-8 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#d4af37] hover:text-[#d4af37] flex items-center justify-center transition-colors bg-black/40"
+          aria-label="Previous Slide"
+          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 rounded cursor-pointer"
         >
-          <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
 
         <button
           onClick={isRtl ? prevSlide : nextSlide}
-          aria-label="Next"
-          className="w-8 h-8 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#d4af37] hover:text-[#d4af37] flex items-center justify-center transition-colors bg-black/40"
+          aria-label="Next Slide"
+          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 rounded cursor-pointer"
         >
-          <svg className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>

@@ -34,7 +34,7 @@ export default function Header() {
             Home
           </Link>
           <Link
-            href="/#about"
+            href="/about"
             className="text-[11px] xl:text-[12px] font-bold tracking-wider text-zinc-800 hover:text-[#c5a059] uppercase transition-colors whitespace-nowrap"
           >
             About Us
@@ -76,7 +76,7 @@ export default function Header() {
             UAE Car Rental
           </Link>
           <Link
-            href="#contact"
+            href="/contact"
             className="text-[11px] xl:text-[12px] font-bold tracking-wider text-zinc-800 hover:text-[#c5a059] uppercase transition-colors whitespace-nowrap"
           >
             Contact
@@ -125,7 +125,7 @@ export default function Header() {
               Home
             </Link>
             <Link
-              href="/#about"
+              href="/about"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
@@ -174,7 +174,7 @@ export default function Header() {
               UAE Car Rental
             </Link>
             <Link
-              href="#contact"
+              href="/contact"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
