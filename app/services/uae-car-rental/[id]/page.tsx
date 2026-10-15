@@ -1,1 +1,1 @@
-export { default, generateMetadata, generateStaticParams } from "@/app/car-rental/[id]/page";
+export { default, generateMetadata } from "@/app/car-rental/[id]/page";
