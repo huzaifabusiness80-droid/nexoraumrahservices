@@ -21,6 +21,32 @@ export default function Footer() {
     <>
       <footer className="w-full bg-[#0d1017] text-white pt-16 sm:pt-20 pb-12 font-sans border-t border-zinc-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Branch Logos Strip */}
+          <div className="pb-12 mb-12 ">
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 lg:gap-16">
+              {[
+                { src: "/images/logos/Nexora Umrah Transport Emblem.png", alt: "Nexora Umrah Transport", href: "/services/umrah-transport" },
+                { src: "/images/logos/Nexora Umrah Hotels Logo.png", alt: "Nexora Umrah Hotels", href: "/services/umrah-hotels" },
+                { src: "/images/logos/Nexora Umrah Ziarat Logo.png", alt: "Nexora Umrah Ziyarat", href: "/services/umrah-ziyarat" },
+                { src: "/images/logos/Nexora Luxury Travel Emblem.png", alt: "Nexora Travel & Tourism", href: "/services/uae-city-tours" },
+                { src: "/images/logos/Nexora Premium Car Rental Emblem.png", alt: "Nexora Rental Cars", href: "/services/uae-car-rental" },
+              ].map((branch) => (
+                <Link key={branch.alt} href={branch.href} className="group flex flex-col items-center gap-2.5">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 lg:w-33 lg:h-33  overflow-hidden relative group-hover:scale-110 transition-transform duration-300">
+                    <Image
+                      src={branch.src}
+                      alt={branch.alt}
+                      fill
+                      className="object-contain p-1"
+                      sizes="144px"
+                    />
+                  </div>
+                
+                </Link>
+              ))}
+            </div>
+          </div>
           
           {/* Main 4-Column Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-zinc-800/80">

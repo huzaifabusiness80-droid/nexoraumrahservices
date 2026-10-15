@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 
@@ -11,57 +10,57 @@ export default function OurServicesSection() {
       id: "umrah-transport",
       slug: "umrah-transport",
       title: "NEXORA UMRAH TRANSPORT",
-      logo: "/images/logos/Nexora Umrah Transport Emblem.png",
+      image: "/images/services/umrahtransport.png",
       description:
-        "Private VIP airport transfers, intercity express shuttles, and luxury chauffeur services across Jeddah, Makkah, and Madinah with guaranteed punctuality.",
+        "Private VIP airport transfers, intercity express shuttles, and luxury chauffeur services across Jeddah, Makkah, and Madinah.",
     },
     {
       id: "umrah-hotels",
       slug: "umrah-hotels",
       title: "NEXORA UMRAH HOTELS",
-      logo: "/images/logos/Nexora Umrah Hotels Logo.png",
+      image: "/images/services/umrah-hotels.png",
       description:
-        "Verified seasonal hotel accommodations in Makkah & Madinah. Official transparent tariffs from budget sharing beds to luxury 100M Haram view properties.",
+        "Verified seasonal hotel accommodations in Makkah & Madinah with official transparent tariffs.",
     },
     {
       id: "umrah-ziyarat",
       slug: "umrah-ziyarat",
       title: "NEXORA UMRAH ZIYARAT",
-      logo: "/images/logos/Nexora Umrah Ziarat Logo.png",
+      image: "/images/services/umrahziarat.png",
       description:
-        "Sacred historical excursions to Cave Hira, Mount Uhud, Masjid Quba, and the battlefield of Badar with private multilingual chauffeurs.",
+        "Sacred historical excursions to Cave Hira, Mount Uhud, Masjid Quba with private multilingual chauffeurs.",
     },
     {
       id: "uae-city-tours",
       slug: "uae-city-tours",
       title: "NEXORA TRAVEL & TOURISM",
-      logo: "/images/logos/Nexora Luxury Travel Emblem.png",
+      image: "/images/services/Uaetravels&toursim.png",
       description:
-        "Guided private sightseeing excursions across modern Dubai Marina, Downtown Burj Khalifa, Al Fahidi heritage quarters, and Abu Dhabi Grand Mosque.",
+        "Guided private sightseeing excursions across Dubai Marina, Burj Khalifa, and Abu Dhabi Grand Mosque.",
     },
     {
       id: "uae-desert-safari",
       slug: "uae-desert-safari",
       title: "NEXORA DESERT SAFARI",
-      logo: "/images/logos/Nexora Luxury Travel Emblem.png",
+      image: "/images/services/desertsafari.png",
       description:
-        "Exhilarating red dune bashing in 4x4 Land Cruisers, sunset camel treks, quad biking, sandboarding, and 5-star Bedouin BBQ buffet dinners with live shows.",
+        "Red dune bashing, sunset camel treks, quad biking, sandboarding, and 5-star Bedouin BBQ dinners.",
     },
     {
       id: "uae-car-rental",
       slug: "uae-car-rental",
       title: "NEXORA RENTAL CARS",
-      logo: "/images/logos/Nexora Premium Car Rental Emblem.png",
+      image: "/images/services/rentacars.png",
       description:
-        "Affordable self-drive and VIP executive chauffeur car rentals in Dubai, Abu Dhabi, and Sharjah with comprehensive insurance and free airport delivery.",
+        "Self-drive and VIP chauffeur car rentals in Dubai, Abu Dhabi, and Sharjah with free airport delivery.",
     },
   ];
 
   return (
-    <section className="w-full bg-white text-zinc-900 py-16 sm:py-20 lg:py-24 border-b border-zinc-200 font-sans">
+    <section className="w-full bg-white text-zinc-900 py-16 sm:py-20 lg:py-24 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Section Heading — Standard Site Format */}
+        {/* Section Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -77,51 +76,48 @@ export default function OurServicesSection() {
           </p>
         </motion.div>
 
-        {/* 6 Sharp Cards Grid with Official Branded Logos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        {/* 3x2 Grid — exactly 2 rows */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {services.map((service, idx) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 25 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.07 }}
-              className="bg-white border border-zinc-200 hover:border-[#c5a059] p-7 sm:p-8 flex flex-col justify-between transition-colors duration-200 rounded-none shadow-none group"
+              transition={{ duration: 0.45, delay: idx * 0.08 }}
+              className="relative overflow-hidden  group cursor-pointer min-h-[280px] sm:min-h-[310px]"
             >
-              <div>
-                {/* Official Round Branded Logo Emblem */}
-                <div className="w-20 h-20 sm:w-26 sm:h-26 rounded-full overflow-hidden  flex items-center justify-center mb-6 shadow-xs group-hover:scale-105 transition-transform relative p-1">
-                  <Image
-                    src={service.logo}
-                    alt={service.title}
-                    fill
-                    className="object-contain p-1"
-                    sizes="96px"
-                  />
-                </div>
+              {/* Background Image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-110"
+                style={{ backgroundImage: `url(${service.image})` }}
+              />
 
-                {/* Service Title */}
-                <Link href={`/services/${service.slug}`}>
-                  <h3 className="text-base sm:text-lg font-extrabold text-zinc-900 uppercase tracking-wider mb-3 group-hover:text-[#c5a059] transition-colors">
-                    {service.title}
-                  </h3>
-                </Link>
+              {/* Dark Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:from-black/95 group-hover:via-black/60 transition-all duration-500" />
 
-                {/* Service Description */}
-                <p className="text-xs sm:text-[13px] text-zinc-600 leading-relaxed mb-6 font-normal">
+              {/* Subtle golden border glow on hover */}
+              <div className="absolute inset-0 rounded-xl border border-white/[0.06] group-hover:border-[#c5a059]/40 transition-colors duration-500" />
+
+              {/* Content — anchored to bottom */}
+              <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-7">
+                <h3 className="text-base sm:text-lg lg:text-xl font-bold text-white uppercase tracking-wider mb-2 group-hover:text-[#c5a059] transition-colors duration-300">
+                  {service.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-zinc-100 leading-relaxed mb-5 max-w-sm opacity-90 group-hover:opacity-100 transition-opacity duration-300">
                   {service.description}
                 </p>
-              </div>
 
-              {/* Action Button — Sharp Square Golden Button */}
-              <div>
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="px-6 py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-[11px] font-bold uppercase tracking-widest transition-colors inline-flex items-center gap-2 rounded-none shadow-none cursor-pointer"
-                >
-                  <span>VIEW DETAILS</span>
-                  <FaArrowRight className="text-[10px]" />
-                </Link>
+                <div>
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-[10px] sm:text-[11px] font-bold uppercase tracking-widest transition-colors duration-200 "
+                  >
+                    <span>VIEW DETAILS</span>
+                    <FaArrowRight className="text-[9px] sm:text-[10px]" />
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
