@@ -86,7 +86,7 @@ export default function Header() {
         {/* Right Action: Request a Ride button */}
         <div className="hidden lg:flex items-center shrink-0">
           <a
-            href="https://wa.me/923158494785?text=Salam%20Nexora%20Umrah%20Services,%20I%20would%20like%20to%20request%20a%20ride."
+            href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20make%20a%20booking."
             target="_blank"
             rel="noopener noreferrer"
             className="px-5 xl:px-6 py-2.5 text-xs xl:text-sm font-semibold tracking-[0.14em] uppercase bg-black text-white border border-black hover:bg-zinc-800 transition-colors whitespace-nowrap"
@@ -183,7 +183,7 @@ export default function Header() {
           </nav>
 
           <a
-            href="https://wa.me/923158494785?text=Salam%20Nexora%20Umrah%20Services,%20I%20would%20like%20to%20request%20a%20ride."
+            href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20make%20a%20booking."
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full text-center py-3 text-sm font-bold tracking-widest uppercase border border-[#c5a059] text-white bg-black hover:bg-zinc-800 transition-all"

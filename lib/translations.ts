@@ -108,7 +108,7 @@ export const translations: Record<Language, TranslationSchema> = {
     navFleet: "Rental Cars",
     navAbout: "About",
     navContact: "Contact",
-    requestRide: "Request A Ride",
+    requestRide: "Book Now",
     langSwitchLabel: "العربية",
     langFlag: "🇸🇦",
 
@@ -295,7 +295,7 @@ export const translations: Record<Language, TranslationSchema> = {
     navFleet: "تأجير السيارات",
     navAbout: "من نحن",
     navContact: "اتصل بنا",
-    requestRide: "طلب توصيلة",
+    requestRide: "احجز الآن",
     langSwitchLabel: "English",
     langFlag: "🇬🇧",
 
