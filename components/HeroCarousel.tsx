@@ -71,7 +71,7 @@ export default function HeroCarousel() {
       </div>
 
       {/* Hero Content — Fully Responsive Padding & Typography */}
-      <div className="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 lg:px-12 flex flex-col justify-center">
+      <div className="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 flex flex-col justify-center">
         <div className="max-w-3xl animate-hero-text">
           {/* Top Tag Kicker Badge */}
           <div className="inline-block bg-[#c5a059] text-white px-3 sm:px-4 py-1 sm:py-1.5 mb-3 sm:mb-6 rounded-xs shadow-sm">
@@ -86,7 +86,7 @@ export default function HeroCarousel() {
             <span className="block text-zinc-100 mt-1">{active.titleLine2}</span>
           </h1>
 
-          <p className="text-xs sm:text-sm md:text-base text-zinc-300 max-w-xl leading-relaxed mb-6 sm:mb-8 font-normal">
+          <p className="text-xs sm:text-sm md:text-xl text-zinc-300 max-w-xl leading-relaxed mb-6 sm:mb-8 font-normal">
             Private licensed airport transfers, verified seasonal hotel tariffs, and holy sanctuary tours across Makkah, Madinah, and the UAE.
           </p>
 
@@ -94,7 +94,7 @@ export default function HeroCarousel() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 pt-1">
             <Link
               href="#services"
-              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center rounded shadow-sm"
+              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center "
             >
               Explore Services
             </Link>
@@ -103,7 +103,7 @@ export default function HeroCarousel() {
               href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center rounded shadow-sm"
+              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center "
             >
               Book Your Journey
             </a>
