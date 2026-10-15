@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Header() {
@@ -83,15 +84,16 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Right Action: Request a Ride button */}
+        {/* Right Action: Book Now button */}
         <div className="hidden lg:flex items-center shrink-0">
           <a
             href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20make%20a%20booking."
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 xl:px-6 py-2.5 text-xs xl:text-sm font-semibold tracking-[0.14em] uppercase bg-black text-white border border-black hover:bg-zinc-800 transition-colors whitespace-nowrap"
+            className="group px-5 xl:px-6 py-2.5 text-xs xl:text-sm font-semibold tracking-[0.14em] uppercase bg-black text-white border border-black hover:bg-zinc-800 transition-colors whitespace-nowrap inline-flex items-center gap-2.5"
           >
-            {t.requestRide}
+            <span>{t.requestRide}</span>
+            <FaArrowRight className="text-[11px] transition-transform duration-200 group-hover:translate-x-1" />
           </a>
         </div>
 

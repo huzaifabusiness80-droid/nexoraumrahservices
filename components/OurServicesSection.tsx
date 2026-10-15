@@ -119,7 +119,7 @@ export default function OurServicesSection() {
                   href={`/services/${service.slug}`}
                   className="px-6 py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-[11px] font-bold uppercase tracking-widest transition-colors inline-flex items-center gap-2 rounded-none shadow-none cursor-pointer"
                 >
-                  <span>MORE</span>
+                  <span>VIEW DETAILS</span>
                   <FaArrowRight className="text-[10px]" />
                 </Link>
               </div>

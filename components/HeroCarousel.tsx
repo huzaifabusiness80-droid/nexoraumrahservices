@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "@/context/LanguageContext";
 
 const slideImages = [
@@ -91,21 +92,22 @@ export default function HeroCarousel() {
           </p>
 
           {/* 2 Hero Buttons with mobile stack / tablet row */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-5 pt-1">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-1">
             <Link
               href="#services"
-              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center "
+              className="group px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-[15px] font-semibold text-white bg-[#cfa258] hover:bg-[#be9146] rounded-md shadow-sm transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer"
             >
-              Explore Services
+              <span>Explore Services</span>
+              <FaArrowRight className="text-xs transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
 
             <a
               href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 sm:px-8 py-3.5 text-xs font-bold tracking-[0.16em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center "
+              className="px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-[15px] font-semibold text-white bg-black/35 hover:bg-black/55 border border-white/40 hover:border-white/80 rounded-md backdrop-blur-xs transition-all duration-200 inline-flex items-center justify-center cursor-pointer text-center"
             >
-              Book Your Journey
+              Book Your Ride
             </a>
           </div>
         </div>
