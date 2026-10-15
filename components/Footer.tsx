@@ -2,133 +2,165 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
-import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaSnapchatGhost, FaEnvelope } from "react-icons/fa";
+import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaSnapchatGhost, FaClock, FaShieldAlt } from "react-icons/fa";
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail("");
-    }
-  };
-
   return (
     <>
-      <footer className="w-full bg-[#0d1017] text-white pt-16 sm:pt-20 pb-12 font-sans border-t border-zinc-800/80">
+      {/* 1. Official Brand Divisions Strip (Clean Luxury White Bar) */}
+      <section className="w-full bg-white border-t border-b border-zinc-200 py-10 sm:py-12 font-sans">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Branch Logos Strip */}
-          <div className="pb-12 mb-12 ">
-            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 lg:gap-16">
-              {[
-                { src: "/images/logos/Nexora Umrah Transport Emblem.png", alt: "Nexora Umrah Transport", href: "/services/umrah-transport" },
-                { src: "/images/logos/Nexora Umrah Hotels Logo.png", alt: "Nexora Umrah Hotels", href: "/services/umrah-hotels" },
-                { src: "/images/logos/Nexora Umrah Ziarat Logo.png", alt: "Nexora Umrah Ziyarat", href: "/services/umrah-ziyarat" },
-                { src: "/images/logos/Nexora Luxury Travel Emblem.png", alt: "Nexora Travel & Tourism", href: "/services/uae-city-tours" },
-                { src: "/images/logos/Nexora Premium Car Rental Emblem.png", alt: "Nexora Rental Cars", href: "/services/uae-car-rental" },
-              ].map((branch) => (
-                <Link key={branch.alt} href={branch.href} className="group flex flex-col items-center gap-2.5">
-                  <div className="w-28 h-28 sm:w-32 sm:h-32 lg:w-33 lg:h-33  overflow-hidden relative group-hover:scale-110 transition-transform duration-300">
-                    <Image
-                      src={branch.src}
-                      alt={branch.alt}
-                      fill
-                      className="object-contain p-1"
-                      sizes="144px"
-                    />
-                  </div>
-                
-                </Link>
-              ))}
-            </div>
+          
+          {/* Subtle Section Title */}
+          <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-r from-transparent to-[#c5a059]" />
+            <span className="text-[11px] sm:text-xs font-bold text-zinc-500 tracking-[0.25em] uppercase text-center">
+              Our Official Divisions &amp; Group Network
+            </span>
+            <div className="h-[1px] w-12 sm:w-20 bg-gradient-to-l from-transparent to-[#c5a059]" />
           </div>
+
+          {/* 5 Seamless Brand Logos — Natural white background, crystal clear */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 items-center justify-items-center">
+            {[
+              {
+                src: "/images/logos/Nexora Umrah Transport Emblem.png",
+                alt: "Nexora Umrah Transport",
+                href: "/services/umrah-transport",
+              },
+              {
+                src: "/images/logos/Nexora Umrah Hotels Logo.png",
+                alt: "Nexora Umrah Hotels",
+                href: "/services/umrah-hotels",
+              },
+              {
+                src: "/images/logos/Nexora Umrah Ziarat Logo.png",
+                alt: "Nexora Umrah Ziyarat",
+                href: "/services/umrah-ziyarat",
+              },
+              {
+                src: "/images/logos/Nexora Luxury Travel Emblem.png",
+                alt: "Nexora Travel & Tourism",
+                href: "/services/uae-city-tours",
+              },
+              {
+                src: "/images/logos/Nexora Premium Car Rental Emblem.png",
+                alt: "Nexora Rental Cars",
+                href: "/services/uae-car-rental",
+              },
+            ].map((branch) => (
+              <Link
+                key={branch.alt}
+                href={branch.href}
+                className="group w-full flex items-center justify-center p-3 rounded-xl hover:bg-zinc-50 border border-transparent hover:border-zinc-200 transition-all duration-300"
+              >
+                <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 relative group-hover:scale-105 transition-transform duration-300">
+                  <Image
+                    src={branch.src}
+                    alt={branch.alt}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 640px) 128px, (max-width: 1024px) 144px, 160px"
+                  />
+                </div>
+              </Link>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 2. Main Executive Dark Footer */}
+      <footer className="w-full bg-[#0d1017] text-white pt-16 sm:pt-20 pb-12 font-sans">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Main 4-Column Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-zinc-800/80">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-zinc-800">
             
             {/* Col 1: Brand & Bio (4 cols) */}
-            <div className="lg:col-span-4 space-y-5">
+            <div className="lg:col-span-4 space-y-6">
               <Link href="/" className="inline-block transition-transform hover:scale-105">
                 <Image
                   src="/images/nexora-journeys-logo-cropped.png"
                   alt="Nexora Journeys"
-                  width={220}
-                  height={80}
-                  className="h-14 sm:h-16 w-auto object-contain brightness-105"
+                  width={240}
+                  height={85}
+                  className="h-16 sm:h-20 w-auto object-contain brightness-105"
                 />
               </Link>
 
-              <p className="text-zinc-400 text-xs leading-relaxed max-w-sm">
+              <p className="text-zinc-300 text-sm sm:text-base leading-relaxed max-w-sm">
                 Nexora Journeys is a licensed Umrah ground operator and executive travel concierge providing private chauffeur transfers, verified seasonal hotel tariffs, and guided holy excursions across Saudi Arabia and the UAE.
               </p>
 
+              {/* Trust Badge */}
+              <div className="flex items-center gap-2.5 text-xs text-[#c5a059] font-semibold tracking-wider uppercase">
+                <FaShieldAlt className="text-sm shrink-0" />
+                <span>Licensed Pilgrimage Ground Operator</span>
+              </div>
+
               {/* Social Channels */}
-              <div className="flex items-center gap-3 pt-1">
+              <div className="flex items-center gap-3 pt-2">
                 <a
                   href="https://wa.me/923158494785"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded bg-white/[0.06] hover:bg-[#25D366] hover:text-white text-zinc-400 flex items-center justify-center transition-all duration-200"
+                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#25D366] hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
                   aria-label="WhatsApp"
                 >
-                  <FaWhatsapp className="w-4 h-4" />
+                  <FaWhatsapp className="w-5 h-5" />
                 </a>
 
                 <a
                   href="https://facebook.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded bg-white/[0.06] hover:bg-[#1877F2] hover:text-white text-zinc-400 flex items-center justify-center transition-all duration-200"
+                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#1877F2] hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
                   aria-label="Facebook"
                 >
-                  <FaFacebookF className="w-3.5 h-3.5" />
+                  <FaFacebookF className="w-4 h-4" />
                 </a>
 
                 <a
                   href="https://snapchat.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-9 h-9 rounded bg-white/[0.06] hover:bg-[#FFFC00] hover:text-black text-zinc-400 flex items-center justify-center transition-all duration-200"
+                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#FFFC00] hover:text-black text-zinc-300 flex items-center justify-center transition-all duration-200"
                   aria-label="Snapchat"
                 >
-                  <FaSnapchatGhost className="w-4 h-4" />
+                  <FaSnapchatGhost className="w-5 h-5" />
                 </a>
               </div>
             </div>
 
             {/* Col 2: Umrah Pilgrimage Services (3 cols) */}
-            <div className="lg:col-span-3 space-y-4">
-              <h4 className="text-xs sm:text-sm font-bold text-white tracking-widest uppercase">
+            <div className="lg:col-span-3 space-y-5">
+              <h4 className="text-sm sm:text-base font-extrabold text-white tracking-widest uppercase border-l-2 border-[#c5a059] pl-3">
                 Umrah Services
               </h4>
-              <ul className="space-y-2.5 text-xs text-zinc-400">
+              <ul className="space-y-3.5 text-sm sm:text-[15px] text-zinc-300 font-medium">
                 <li>
-                  <Link href="/services/umrah-transport" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/umrah-transport" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     Umrah Transport Fleet
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/umrah-hotels" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/umrah-hotels" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     Makkah &amp; Madinah Hotels
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/umrah-ziyarat" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/umrah-ziyarat" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     Umrah Ziyarat Tours
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/about" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     About Nexora Journeys
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/contact" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     24/7 Dispatch Desk
                   </Link>
                 </li>
@@ -136,82 +168,102 @@ export default function Footer() {
             </div>
 
             {/* Col 3: UAE Tourism Services (2 cols) */}
-            <div className="lg:col-span-2 space-y-4">
-              <h4 className="text-xs sm:text-sm font-bold text-white tracking-widest uppercase">
+            <div className="lg:col-span-2 space-y-5">
+              <h4 className="text-sm sm:text-base font-extrabold text-white tracking-widest uppercase border-l-2 border-[#c5a059] pl-3">
                 UAE Tourism
               </h4>
-              <ul className="space-y-2.5 text-xs text-zinc-400">
+              <ul className="space-y-3.5 text-sm sm:text-[15px] text-zinc-300 font-medium">
                 <li>
-                  <Link href="/services/uae-city-tours" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/uae-city-tours" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     UAE City Tours
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/uae-desert-safari" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/uae-desert-safari" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     Desert Safari
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services/uae-car-rental" className="hover:text-[#c5a059] transition-colors">
+                  <Link href="/services/uae-car-rental" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     UAE Car Rental
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="hover:text-[#c5a059] transition-colors">
-                    Terms &amp; Policies
+                  <Link href="/terms" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
+                    Terms &amp; Conditions
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy-policy" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
+                    Privacy Policy
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Col 4: 24/7 Operations & Newsletter (3 cols) */}
-            <div className="lg:col-span-3 space-y-4">
-              <h4 className="text-xs sm:text-sm font-bold text-white tracking-widest uppercase">
-                24/7 Ground Desks
+            {/* Col 4: 24/7 Operations & Direct Support Desk (3 cols) */}
+            <div className="lg:col-span-3 space-y-5">
+              <h4 className="text-sm sm:text-base font-extrabold text-white tracking-widest uppercase border-l-2 border-[#c5a059] pl-3">
+                24/7 Ground Desk
               </h4>
-              <div className="space-y-2 text-xs text-zinc-400">
-                <p>
-                  <strong className="text-zinc-200">Saudi Arabia:</strong>{" "}
-                  <a href="tel:+966536376568" className="hover:text-[#c5a059] transition-colors">
+
+              <div className="space-y-3 text-sm sm:text-[15px]">
+                <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
+                  <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
+                    Saudi Arabia Hotline
+                  </span>
+                  <a
+                    href="tel:+966536376568"
+                    className="text-base sm:text-lg font-bold text-white hover:text-[#c5a059] transition-colors flex items-center gap-2"
+                  >
+                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
                     +966 53 637 6568
                   </a>
-                </p>
-                <p>
-                  <strong className="text-zinc-200">International:</strong>{" "}
-                  <a href="tel:+923158494785" className="hover:text-[#c5a059] transition-colors">
+                </div>
+
+                <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
+                  <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
+                    International &amp; WhatsApp
+                  </span>
+                  <a
+                    href="https://wa.me/923158494785"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-base sm:text-lg font-bold text-white hover:text-[#25D366] transition-colors flex items-center gap-2"
+                  >
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
                     +92 315 8494785
                   </a>
-                </p>
+                </div>
               </div>
 
-              {/* Newsletter Form */}
-              <form onSubmit={handleSubscribe} className="space-y-2.5 pt-1">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter email for tariff updates..."
-                  required
-                  className="w-full px-3.5 py-2.5 bg-[#161b24] border border-zinc-700/80 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-[#c5a059] rounded transition-colors"
-                />
+              {/* Working Hours & Instant Inquiry Notice */}
+              <div className="pt-1">
+                <div className="flex items-center gap-2 text-xs text-zinc-400 mb-3">
+                  <FaClock className="text-[#c5a059]" />
+                  <span>Available 24/7, 365 days for airport &amp; intercity transfers</span>
+                </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-2.5 border border-[#c5a059] text-[#c5a059] hover:bg-[#c5a059] hover:text-black text-[10px] font-bold tracking-[0.16em] uppercase transition-all duration-300 rounded cursor-pointer"
+                <a
+                  href="https://wa.me/923158494785?text=Salam%20Nexora,%20I%20would%20like%20to%20book%20a%20service."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-xs sm:text-sm font-bold tracking-[0.14em] uppercase transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm"
                 >
-                  {subscribed ? "Subscribed Successfully!" : "Subscribe For Tariff Updates"}
-                </button>
-              </form>
+                  <FaWhatsapp className="text-base" />
+                  <span>Instant Booking Chat</span>
+                </a>
+              </div>
             </div>
 
           </div>
 
           {/* Bottom Copyright & Legal Links */}
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 gap-4">
-            <p>
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-sm text-zinc-400 gap-4">
+            <p className="text-center sm:text-left">
               &copy; 2025 Nexora Journeys. All Rights Reserved. Serving the Guests of Ar-Rahman.
             </p>
-            <div className="flex items-center gap-4 text-zinc-400 text-xs">
+            <div className="flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-400">
               <Link href="/about" className="hover:text-[#c5a059] transition-colors">
                 About Us
               </Link>
