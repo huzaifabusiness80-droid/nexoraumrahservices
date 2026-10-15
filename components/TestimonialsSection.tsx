@@ -18,20 +18,14 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-14 sm:mb-20 lg:mb-28">
           {/* Left Column: Heading and Rating */}
           <div className="lg:col-span-4 flex flex-col justify-center">
-            <p className="text-[11px] sm:text-xs font-bold tracking-[0.2em] text-[#c5a059] uppercase mb-3 sm:mb-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-zinc-900 tracking-wider uppercase mb-4">
               {t.testimonialsTag}
-            </p>
-            <h2 className="text-2xl sm:text-3xl lg:text-[42px] font-bold text-zinc-900 tracking-tight leading-[1.2] mb-5 sm:mb-6">
-              {t.testimonialsHeadingLine1} <br className="hidden sm:inline" />
-              {t.testimonialsHeadingLine2} <br className="hidden sm:inline" />
-              {t.testimonialsHeadingLine3} <br className="hidden sm:inline" />
-              {t.testimonialsHeadingLine4}
             </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 tracking-widest uppercase">
+              {t.testimonialsHeadingLine1} {t.testimonialsHeadingLine2} {t.testimonialsHeadingLine3} {t.testimonialsHeadingLine4}
+            </p>
 
-            {/* Gold separator bar */}
-            <div className="w-14 h-1 bg-[#ecc298] mb-5 sm:mb-6 rounded-full" />
-
-            <div className="space-y-1">
+            <div className="mt-5 space-y-1">
               <p className="text-sm font-bold text-zinc-800 tracking-wide" dir="ltr">
                 {t.testimonialsAvgRating}
               </p>
@@ -74,12 +68,12 @@ export default function TestimonialsSection() {
 
         {/* Bottom Part: Statement Banner */}
         <div className="text-center pt-8 border-t border-zinc-100">
-          <p className="text-[11px] sm:text-xs font-bold tracking-[0.2em] text-[#c5a059] uppercase mb-4">
+          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-zinc-900 tracking-wider uppercase leading-snug max-w-4xl mx-auto">
             {t.bannerStatementTag}
-          </p>
-          <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-zinc-900 tracking-tight leading-snug max-w-4xl mx-auto">
-            {t.bannerStatementText}
           </h3>
+          <p className="mt-3 text-xs sm:text-sm text-zinc-500 tracking-widest uppercase">
+            {t.bannerStatementText}
+          </p>
         </div>
       </div>
     </section>

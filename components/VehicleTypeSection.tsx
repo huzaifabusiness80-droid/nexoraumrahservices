@@ -25,13 +25,13 @@ export default function VehicleTypeSection() {
     <section className="w-full bg-[#f4f5f7] py-14 sm:py-20 lg:py-24 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-10 sm:mb-16">
-          <p className="text-[11px] sm:text-xs font-bold tracking-[0.2em] text-[#c5a059] uppercase mb-3">
+        <div className="text-center mb-10 sm:mb-14">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-zinc-900 tracking-wider uppercase">
             {t.vehicleTypeTag}
-          </p>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-zinc-900 tracking-tight px-2">
-            {t.vehicleTypeHeading}
           </h2>
+          <p className="mt-3 text-xs sm:text-sm text-zinc-500 tracking-widest uppercase">
+            {t.vehicleTypeHeading}
+          </p>
         </div>
 
         {/* Vehicle Type Cards Grid - Fully responsive */}

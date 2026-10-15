@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import HeroCarousel from "@/components/HeroCarousel";
+import WhatWeOfferSection from "@/components/WhatWeOfferSection";
 import FleetSection from "@/components/FleetSection";
 import VehicleTypeSection from "@/components/VehicleTypeSection";
 import BookTripSection from "@/components/BookTripSection";
@@ -15,6 +16,9 @@ export default function Home() {
 
       <main className="flex-1 w-full flex flex-col">
         <HeroCarousel />
+        <div id="services">
+          <WhatWeOfferSection />
+        </div>
         <FleetSection />
         <VehicleTypeSection />
         <BookTripSection />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
 const slideImages = [
@@ -42,28 +43,25 @@ export default function HeroCarousel() {
           return (
             <div
               key={index}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-              }`}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                }`}
             >
               <Image
                 src={imgSrc}
                 alt={`${active.titleLine1} ${active.titleLine2}`}
                 fill
                 priority={index === 0}
-                className={`object-cover object-center ${
-                  isActive ? "ken-burns-active" : ""
-                }`}
+                className={`object-cover object-center ${isActive ? "ken-burns-active" : ""
+                  }`}
                 sizes="100vw"
               />
 
               {/* Dark gradient overlay matching reading direction for crisp white typography */}
               <div
-                className={`absolute inset-0 w-full md:w-[70%] ${
-                  isRtl
+                className={`absolute inset-0 w-full md:w-[70%] ${isRtl
                     ? "bg-gradient-to-l from-black/95 via-black/75 to-transparent end-0"
                     : "bg-gradient-to-r from-black/95 via-black/75 to-transparent start-0"
-                }`}
+                  }`}
               />
               <div className="absolute inset-0 bg-black/15" />
             </div>
@@ -74,26 +72,37 @@ export default function HeroCarousel() {
       {/* Hero Content */}
       <div className="relative z-20 max-w-7xl mx-auto h-full px-6 sm:px-8 flex flex-col justify-center">
         <div className="max-w-full animate-hero-text">
-          {/* Top Tag Kicker */}
-          <p className="text-[11px] sm:text-xs font-semibold tracking-[0.22em] text-white uppercase mb-3 sm:mb-6">
-            {active.tag}
-          </p>
+          {/* Top Tag Kicker Badge with golden background and white text */}
+          <div className="inline-block bg-[#c5a059] text-white px-4 py-1.5 mb-5 sm:mb-10">
+            <span className="text-[11px] sm:text-xs font-bold tracking-[0.24em] uppercase">
+              {active.tag}
+            </span>
+          </div>
 
           {/* Main Heading — semibold weight, wide max-width, generous line-height for vertical gaps */}
-          <h1 className="text-4xl sm:text-5xl lg:text-[60px] font-semibold text-white tracking-tight leading-[1.35] sm:leading-[1.35] lg:leading-[1.3] mb-12">
+          <h1 className="text-4xl sm:text-5xl lg:text-[60px] font-semibold text-white tracking-tight leading-[1.35] sm:leading-[1.35] lg:leading-[1.3] mb-8 sm:mb-10">
             <span className="block">{active.titleLine1}</span>
             <span className="block">{active.titleLine2}</span>
           </h1>
 
-          {/* Sharp Outline Button */}
-          <a
-            href="https://wa.me/923158494785?text=Salam%20Nexora%20Umrah%20Services,%20I%20would%20like%20to%20explore%20your%20transportation%20services."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-6 py-3.5 sm:px-7 sm:py-4 text-xs font-medium tracking-[0.2em] uppercase text-[#d4af37] border border-[#d4af37] bg-transparent hover:bg-[#d4af37] hover:text-black transition-all duration-300"
-          >
-            {active.buttonText}
-          </a>
+          {/* 2 Hero Buttons with generous spacing */}
+          <div className="flex flex-wrap items-center gap-6 sm:gap-8 pt-6">
+            <Link
+              href="#fleet"
+              className="inline-block px-7 py-3.5 sm:py-4 text-xs font-bold tracking-[0.2em] uppercase bg-white text-black hover:bg-zinc-200 transition-all text-center"
+            >
+              Explore Services
+            </Link>
+
+            <a
+              href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-7 py-3.5 sm:py-4 text-xs font-bold tracking-[0.2em] uppercase bg-[#c5a059] text-white hover:bg-[#b08d46] transition-all text-center"
+            >
+              Book Your Journey
+            </a>
+          </div>
         </div>
       </div>
 
@@ -106,11 +115,10 @@ export default function HeroCarousel() {
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className={`h-1 transition-all ${
-                idx === currentSlide
+              className={`h-1 transition-all ${idx === currentSlide
                   ? "w-6 sm:w-8 bg-[#d4af37]"
                   : "w-2.5 sm:w-3 bg-white/40 hover:bg-white"
-              }`}
+                }`}
             />
           ))}
         </div>

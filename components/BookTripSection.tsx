@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 
 export default function BookTripSection() {
   const { t } = useLanguage();
@@ -38,24 +39,26 @@ export default function BookTripSection() {
             </p>
 
             {/* Buttons / CTA Row */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
               {/* Request A Ride Button */}
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto text-center px-8 py-3.5 border border-[#c5a059]/70 hover:border-[#c5a059] bg-[#1a1e27] hover:bg-[#c5a059] text-white hover:text-black text-xs font-bold tracking-[0.18em] uppercase transition-all duration-300 shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white text-xs sm:text-sm font-bold tracking-[0.14em] uppercase transition-all duration-300 shadow-md"
               >
-                {t.bookTripBtn}
+                <FaWhatsapp className="text-xl shrink-0" />
+                <span>{t.bookTripBtn}</span>
               </a>
 
               {/* Phone Number */}
               <a
                 href={`tel:${phoneNumber}`}
-                className="text-base sm:text-lg font-semibold text-[#c5a059] hover:text-[#dfb96f] transition-colors tracking-wide flex items-center gap-2 justify-center sm:justify-start"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-[#c5a059] bg-[#c5a059]/10 hover:bg-[#c5a059] text-white hover:text-black text-sm font-semibold tracking-wide transition-all duration-300"
                 dir="ltr"
               >
-                {phoneNumber}
+                <FaPhoneAlt className="text-xs shrink-0" />
+                <span>{phoneNumber}</span>
               </a>
             </div>
           </div>
