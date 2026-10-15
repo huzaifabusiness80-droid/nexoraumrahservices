@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, hotels });
   } catch (error: any) {
+    if (error?.digest === "NEXT_PRERENDER_INTERRUPTED") throw error;
     console.error("Public hotels API error:", error);
     return NextResponse.json({ error: error?.message }, { status: 500 });
   }

@@ -35,6 +35,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ success: true, tours });
   } catch (error: any) {
+    if (error?.digest === "NEXT_PRERENDER_INTERRUPTED") throw error;
     console.error("Public city tours API error:", error);
     return NextResponse.json({ error: error?.message }, { status: 500 });
   }
