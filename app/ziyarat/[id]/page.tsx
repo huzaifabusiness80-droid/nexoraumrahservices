@@ -4,22 +4,76 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import prisma from "@/lib/prisma";
 import { ziyaratTours, ZiyaratTourItem } from "@/lib/data/ziyaratData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+
+
+export const instant = false;
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return ziyaratTours.map((t) => ({
-    id: t.id,
-  }));
+async function getZiyaratData(id: string) {
+  try {
+    const tour = await prisma.ziyaratTour.findFirst({
+      where: {
+        OR: [
+          { slug: id },
+          { id: id },
+          { title: { equals: id.replace(/-/g, " "), mode: "insensitive" } },
+        ],
+        isActive: true,
+      },
+    });
+
+    if (tour) {
+      return {
+        id: tour.slug || tour.id,
+        title: tour.title,
+        badge: `${tour.city || "Sacred"} Ziyarat`,
+        duration: tour.duration || "3 - 4 Hours",
+        startingPriceSar: tour.priceSedan || 200,
+        image: tour.image || "/images/hero/slide-2.jpg",
+        overview: tour.description || `Experience the profound history of Islam through the guided ${tour.title}.`,
+        stops: Array.isArray(tour.placesCovered) && tour.placesCovered.length > 0
+          ? tour.placesCovered.map((place) => ({
+              name: place,
+              description: `Sacred pilgrimage landmark visited with dedicated chauffeur time for contemplation and prayers.`,
+            }))
+          : [
+              { name: "Sacred Landmark Stops", description: "All prominent historic and religious places in this holy city." },
+            ],
+        inclusions: Array.isArray(tour.includes) && tour.includes.length > 0
+          ? tour.includes
+          : [
+              "Private air-conditioned vehicle",
+              "Multilingual driver (Urdu / Arabic / English)",
+              "Direct hotel pickup & return transfer",
+              "Sufficient time allowed for du'a and ziyarat at each site",
+            ],
+        vehiclePrices: [
+          { vehicle: "Executive Sedan (Camry)", capacity: "4 Passengers", luggage: "2 Bags", priceSar: Math.round(tour.priceSedan || 250) },
+          ...(tour.priceVan ? [{ vehicle: "Spacious Family Van (HiAce)", capacity: "10-12 Passengers", luggage: "8-10 Bags", priceSar: Math.round(tour.priceVan) }] : []),
+          ...(tour.priceSuv ? [{ vehicle: "VIP Luxury SUV (GMC Yukon)", capacity: "7 Passengers", luggage: "6 Bags", priceSar: Math.round(tour.priceSuv) }] : []),
+        ],
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching ziyarat from DB:", error);
+  }
+
+  // Fallback to static dummy list
+  const staticTour = ziyaratTours.find(
+    (t) => t.id === id || t.title.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
+  );
+  return staticTour || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const tour = ziyaratTours.find((t) => t.id === id);
+  const tour = await getZiyaratData(id);
 
   if (!tour) {
     return {
@@ -35,7 +89,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ZiyaratDetailPage({ params }: Props) {
   const { id } = await params;
-  const tour = ziyaratTours.find((t) => t.id === id);
+  const tour = await getZiyaratData(id);
 
   if (!tour) {
     notFound();

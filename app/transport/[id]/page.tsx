@@ -4,22 +4,76 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import prisma from "@/lib/prisma";
 import { transportVehicles } from "@/lib/data/transportData";
 import { FaWhatsapp, FaSuitcase, FaUserFriends, FaCheck, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
+
+
+export const instant = false;
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return transportVehicles.map((car) => ({
-    id: car.id,
-  }));
+async function getVehicleData(id: string) {
+  try {
+    const vehicle = await prisma.transportVehicle.findFirst({
+      where: {
+        OR: [
+          { slug: id },
+          { id: id },
+          { name: { equals: id.replace(/-/g, " "), mode: "insensitive" } },
+        ],
+        isActive: true,
+      },
+      include: {
+        routes: { orderBy: { priceSar: "asc" } },
+      },
+    });
+
+    if (vehicle) {
+      return {
+        id: vehicle.slug || vehicle.id,
+        name: vehicle.name,
+        category: vehicle.category || "Executive Fleet",
+        seats: vehicle.seats || "4-7 Seater",
+        luggage: vehicle.luggage || "Luggage Space Available",
+        image: vehicle.image || "/images/fleet/toyota-camry.jpg",
+        posterImage: vehicle.posterImage || undefined,
+        startingPriceSar: vehicle.startingPriceSar || (vehicle.routes?.[0]?.priceSar ?? 150),
+        description: vehicle.description || `Luxury private chauffeur service for ${vehicle.name} across Makkah, Madinah, and Jeddah.`,
+        features: Array.isArray(vehicle.features) && vehicle.features.length > 0 ? vehicle.features : [
+          "Chilled Dual-Zone Climate Control",
+          "Complimentary Chilled Bottled Water",
+          "Professional English/Urdu/Arabic Speaking Chauffeur",
+          "Door-to-door hotel terminal luggage assistance",
+          "Real-time flight tracking & zero delay guarantee",
+        ],
+        rateList: vehicle.routes && vehicle.routes.length > 0 ? vehicle.routes.map((r) => ({
+          route: r.route,
+          priceSar: r.priceSar,
+        })) : [
+          { route: "Jeddah Airport → Makkah Hotel (Drop Off)", priceSar: vehicle.startingPriceSar || 250 },
+          { route: "Makkah → Madina Hotel (Drop Off)", priceSar: Math.round((vehicle.startingPriceSar || 250) * 1.8) },
+          { route: "Makkah Ziyarat Tour", priceSar: vehicle.startingPriceSar || 250 },
+          { route: "Madina Ziyarat Tour", priceSar: Math.round((vehicle.startingPriceSar || 250) * 0.9) },
+        ],
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching vehicle from DB:", error);
+  }
+
+  // Fallback to static dummy list
+  const staticCar = transportVehicles.find(
+    (c) => c.id === id || c.name.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
+  );
+  return staticCar || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const car = transportVehicles.find((c) => c.id === id);
+  const car = await getVehicleData(id);
 
   if (!car) {
     return {
@@ -35,14 +89,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       `${car.name} Makkah to Madinah`,
       `${car.name} Jeddah Airport Price`,
       "Saudi Arabia Chauffeur Service",
-      "Nexora Journeys Fleet"
+      "Nexora Journeys Fleet",
     ],
   };
 }
 
 export default async function TransportDetailPage({ params }: Props) {
   const { id } = await params;
-  const car = transportVehicles.find((c) => c.id === id);
+  const car = await getVehicleData(id);
 
   if (!car) {
     notFound();

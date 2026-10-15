@@ -4,22 +4,68 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import prisma from "@/lib/prisma";
 import { allHotels, HotelItem } from "@/lib/data/hotelData";
 import { FaWhatsapp, FaMapMarkerAlt, FaWalking, FaBusAlt, FaCheck, FaPhoneAlt, FaBed } from "react-icons/fa";
+
+
+export const instant = false;
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return allHotels.map((h) => ({
-    id: h.id,
-  }));
+async function getHotelData(id: string) {
+  try {
+    const hotel = await prisma.hotel.findFirst({
+      where: {
+        OR: [
+          { slug: id },
+          { id: id },
+          { name: { equals: id.replace(/-/g, " "), mode: "insensitive" } },
+        ],
+        isActive: true,
+      },
+      include: {
+        rooms: { orderBy: { pricePerNight: "asc" } },
+      },
+    });
+
+    if (hotel) {
+      const sharingRoom = hotel.rooms.find((r) => r.roomType.toLowerCase().includes("sharing"));
+      const standardRoom = hotel.rooms.find((r) =>
+        r.roomType.toLowerCase().includes("quad") ||
+        r.roomType.toLowerCase().includes("double") ||
+        r.roomType.toLowerCase().includes("standard")
+      );
+      const quintRoom = hotel.rooms.find((r) => r.roomType.toLowerCase().includes("quint"));
+
+      return {
+        id: hotel.slug || hotel.id,
+        name: hotel.name,
+        city: (hotel.city?.toLowerCase() === "madinah" ? "madinah" : "makkah") as "makkah" | "madinah",
+        location: hotel.address || (hotel.city?.toLowerCase() === "makkah" ? "Ibrahim Khalil Road" : "Markazia Central Area"),
+        distance: hotel.distance || "Walking Distance",
+        sharingBed: sharingRoom ? Math.round(sharingRoom.pricePerNight) : undefined,
+        quadBed: standardRoom ? Math.round(standardRoom.pricePerNight) : Math.round(hotel.startingPrice || 350),
+        quintBed: quintRoom ? Math.round(quintRoom.pricePerNight) : undefined,
+        validity: "Current Umrah Season",
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching hotel from DB:", error);
+  }
+
+  // Fallback to static dummy list
+  const staticHotel = allHotels.find(
+    (h) => h.id === id || h.name.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
+  );
+  return staticHotel || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const hotel = allHotels.find((h) => h.id === id);
+  const hotel = await getHotelData(id);
 
   if (!hotel) {
     return {
@@ -31,20 +77,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${hotel.name} Rates & Booking | Hotels in ${cityName} | Nexora Journeys`,
-    description: `Official rates for ${hotel.name} in ${cityName} (${hotel.location}, ${hotel.distance}). Sharing beds from ${hotel.sharingBed || hotel.quadBed} SAR. Valid till 30th Nov.`,
+    description: `Official rates for ${hotel.name} in ${cityName} (${hotel.location}, ${hotel.distance}). Sharing beds from ${hotel.sharingBed || hotel.quadBed} SAR.`,
     keywords: [
       `${hotel.name} rates`,
       `${hotel.name} ${hotel.city}`,
       `Hotels in ${hotel.location}`,
       "Umrah hotel booking SAR",
-      "Nexora Journeys Hotels"
+      "Nexora Journeys Hotels",
     ],
   };
 }
 
 export default async function HotelDetailPage({ params }: Props) {
   const { id } = await params;
-  const hotel = allHotels.find((h) => h.id === id);
+  const hotel = await getHotelData(id);
 
   if (!hotel) {
     notFound();

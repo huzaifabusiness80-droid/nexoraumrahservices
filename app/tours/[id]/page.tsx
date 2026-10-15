@@ -4,22 +4,102 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import prisma from "@/lib/prisma";
 import { uaeTours, UaeTourItem } from "@/lib/data/tourData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+
+
+export const instant = false;
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export async function generateStaticParams() {
-  return uaeTours.map((t) => ({
-    id: t.id,
-  }));
+async function getTourData(id: string) {
+  try {
+    const cityTour = await prisma.uaeCityTour.findFirst({
+      where: {
+        OR: [
+          { slug: id },
+          { id: id },
+          { title: { equals: id.replace(/-/g, " "), mode: "insensitive" } },
+        ],
+        isActive: true,
+      },
+    });
+
+    if (cityTour) {
+      return {
+        id: cityTour.slug || cityTour.id,
+        title: cityTour.title,
+        category: "city-tour" as const,
+        badge: `${cityTour.city || "Dubai"} Tour`,
+        duration: cityTour.duration || "4 - 8 Hours",
+        priceAed: Math.round(cityTour.priceAed),
+        image: cityTour.image || "/images/hero/slide-1.jpg",
+        overview: cityTour.description,
+        highlights: Array.isArray(cityTour.highlights) && cityTour.highlights.length > 0
+          ? cityTour.highlights
+          : ["Iconic City Landmarks", "Photo Stops", "Comfortable Transport"],
+        inclusions: Array.isArray(cityTour.inclusions) && cityTour.inclusions.length > 0
+          ? cityTour.inclusions
+          : [
+              "Private air-conditioned vehicle pickup & drop-off",
+              "Experienced English / Urdu speaking driver-guide",
+              "Bottled mineral water",
+              "Salik road tolls & parking covered",
+            ],
+      };
+    }
+
+    const safari = await prisma.desertSafariPackage.findFirst({
+      where: {
+        OR: [
+          { slug: id },
+          { id: id },
+          { title: { equals: id.replace(/-/g, " "), mode: "insensitive" } },
+        ],
+        isActive: true,
+      },
+    });
+
+    if (safari) {
+      return {
+        id: safari.slug || safari.id,
+        title: safari.title,
+        category: "desert-safari" as const,
+        badge: safari.packageType || "Desert Safari",
+        duration: safari.timing || "3:00 PM - 9:30 PM",
+        priceAed: Math.round(safari.priceAed),
+        image: safari.image || "/images/hero/slide-3.jpg",
+        overview: safari.description,
+        highlights: Array.isArray(safari.activities) && safari.activities.length > 0
+          ? safari.activities
+          : ["4x4 Dune Bashing", "Camel Ride", "BBQ Dinner", "Live Shows"],
+        inclusions: Array.isArray(safari.includes) && safari.includes.length > 0
+          ? safari.includes
+          : [
+              "4x4 Land Cruiser desert dune drive",
+              "Camp entertainment & buffet dinner",
+              "Unlimited refreshments",
+              "Hotel pickup and drop-off",
+            ],
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching tour from DB:", error);
+  }
+
+  // Fallback to static dummy list
+  const staticTour = uaeTours.find(
+    (t) => t.id === id || t.title.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
+  );
+  return staticTour || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const tour = uaeTours.find((t) => t.id === id);
+  const tour = await getTourData(id);
 
   if (!tour) {
     return {
@@ -35,7 +115,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function TourDetailPage({ params }: Props) {
   const { id } = await params;
-  const tour = uaeTours.find((t) => t.id === id);
+  const tour = await getTourData(id);
 
   if (!tour) {
     notFound();

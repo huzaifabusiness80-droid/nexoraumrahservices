@@ -1,19 +1,56 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { carRentalVehicles } from "@/lib/data/carRentalData";
-import { FaUserFriends, FaSuitcase, FaKey, FaGasPump, FaArrowRight } from "react-icons/fa";
+import { FaUserFriends, FaKey, FaGasPump, FaArrowRight, FaShieldAlt } from "react-icons/fa";
+
+interface RentalCarItem {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  brand: string;
+  seats: number;
+  transmission: string;
+  fuelType: string;
+  image: string;
+  dailyPriceAed: number;
+  weeklyPriceAed: number | null;
+  freeMileagePerDay: number;
+  features: string[];
+}
 
 export default function HomeCarRentalSection() {
-  const featured = carRentalVehicles.slice(0, 3);
+  const [cars, setCars] = useState<RentalCarItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchCars() {
+      try {
+        const res = await fetch("/api/services/car-rental");
+        const data = await res.json();
+        if (data.success && Array.isArray(data.cars)) {
+          setCars(data.cars.slice(0, 3));
+        }
+      } catch (err) {
+        console.error("Failed to load featured rental cars:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCars();
+  }, []);
+
+  if (!loading && cars.length === 0) {
+    return null;
+  }
 
   return (
     <section className="w-full bg-[#f8f9fa] py-16 sm:py-20 lg:py-24 border-b border-zinc-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Section Heading - Exact What We Offer Style */}
+        {/* Section Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -31,8 +68,11 @@ export default function HomeCarRentalSection() {
 
         {/* 3 Featured Rental Car Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-10">
-          {featured.map((car, idx) => {
-            const detailUrl = `/car-rental/${car.id}`;
+          {cars.map((car, idx) => {
+            const detailUrl = `/car-rental/${car.slug || car.id}`;
+            const isContactPrice =
+              car.dailyPriceAed <= 0 ||
+              (Array.isArray(car.features) && car.features.includes("contact_for_price"));
 
             return (
               <motion.div
@@ -47,7 +87,7 @@ export default function HomeCarRentalSection() {
                   {/* Top Image with Category & Price Badge */}
                   <Link href={detailUrl} className="block relative w-full h-48 sm:h-52 bg-zinc-950 overflow-hidden">
                     <Image
-                      src={car.image}
+                      src={car.image || "/images/fleet/toyota-camry.jpg"}
                       alt={car.name}
                       fill
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
@@ -57,7 +97,13 @@ export default function HomeCarRentalSection() {
                       {car.category}
                     </span>
                     <div className="absolute bottom-3 right-3 bg-[#b58e45] text-white px-2.5 py-1 text-xs font-bold rounded shadow-xs">
-                      AED {car.dailyPriceAed} <span className="text-[10px] font-normal text-white/90">/ Day</span>
+                      {isContactPrice ? (
+                        <span>Contact for Price</span>
+                      ) : (
+                        <>
+                          AED {car.dailyPriceAed} <span className="text-[10px] font-normal text-white/90">/ Day</span>
+                        </>
+                      )}
                     </div>
                   </Link>
 
@@ -73,11 +119,11 @@ export default function HomeCarRentalSection() {
                     <div className="grid grid-cols-2 gap-2 text-xs text-zinc-600 mb-3 pb-3 border-b border-zinc-100">
                       <div className="flex items-center gap-1.5">
                         <FaUserFriends className="text-[#c5a059] text-xs shrink-0" />
-                        <span>{car.passengers}</span>
+                        <span>{car.seats} Seats</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <FaSuitcase className="text-[#c5a059] text-xs shrink-0" />
-                        <span>{car.luggage}</span>
+                        <FaShieldAlt className="text-[#c5a059] text-xs shrink-0" />
+                        <span>{car.brand}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <FaKey className="text-[#c5a059] text-xs shrink-0" />
@@ -89,14 +135,17 @@ export default function HomeCarRentalSection() {
                       </div>
                     </div>
 
-                    <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed mb-3">
-                      {car.description}
-                    </p>
-
-                    <div className="bg-[#faf6ed] border border-[#e8ce97] px-3 py-1.5 rounded text-xs flex justify-between items-center">
-                      <span className="text-zinc-700">Weekly Rate (Save 15%):</span>
-                      <span className="font-extrabold text-[#946e27]">AED {car.weeklyPriceAed}</span>
-                    </div>
+                    {!isContactPrice && car.weeklyPriceAed ? (
+                      <div className="bg-[#faf6ed] border border-[#e8ce97] px-3 py-1.5 rounded text-xs flex justify-between items-center">
+                        <span className="text-zinc-700">Weekly Rate:</span>
+                        <span className="font-extrabold text-[#946e27]">AED {car.weeklyPriceAed}</span>
+                      </div>
+                    ) : isContactPrice ? (
+                      <div className="bg-[#faf6ed] border border-[#e8ce97] px-3 py-1.5 rounded text-xs flex justify-between items-center">
+                        <span className="text-zinc-700">Rates:</span>
+                        <span className="font-extrabold text-[#946e27]">Custom on Request</span>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
 
@@ -105,7 +154,7 @@ export default function HomeCarRentalSection() {
                     href={detailUrl}
                     className="w-full py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-center font-bold tracking-wider uppercase text-xs transition-colors flex items-center justify-center gap-2 rounded shadow-xs"
                   >
-                    <span>Book Now</span>
+                    <span>View Vehicle Details</span>
                     <FaArrowRight className="text-xs" />
                   </Link>
                 </div>
@@ -124,7 +173,6 @@ export default function HomeCarRentalSection() {
             <FaArrowRight className="text-xs" />
           </Link>
         </div>
-
       </div>
     </section>
   );

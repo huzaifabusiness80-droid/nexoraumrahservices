@@ -1,46 +1,93 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { transportVehicles } from "@/lib/data/transportData";
-import { FaSuitcase, FaUserFriends, FaArrowRight, FaSearch, FaFilter, FaMapMarkerAlt } from "react-icons/fa";
+import { FaSuitcase, FaUserFriends, FaArrowRight, FaSearch, FaFilter, FaMapMarkerAlt, FaSpinner } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface RouteRate {
+  id: string;
+  route: string;
+  fromCity: string;
+  toCity: string;
+  priceSar: number;
+}
+
+interface Vehicle {
+  id: string;
+  name: string;
+  slug: string;
+  category: string;
+  seats: string;
+  luggage: string;
+  image: string;
+  posterImage: string | null;
+  startingPriceSar: number;
+  description: string;
+  features: string[];
+  routes: RouteRate[];
+}
+
 // Extract all unique routes from all vehicles
-function getAllRoutes(vehicles: typeof transportVehicles) {
+function getAllRoutes(vehicles: Vehicle[]) {
   const routeSet = new Set<string>();
-  vehicles.forEach((v) => v.rateList.forEach((r) => routeSet.add(r.route)));
+  vehicles.forEach((v) => v.routes.forEach((r) => routeSet.add(r.route)));
   return Array.from(routeSet).sort();
 }
 
 // Extract unique categories
-function getAllCategories(vehicles: typeof transportVehicles) {
+function getAllCategories(vehicles: Vehicle[]) {
   const catSet = new Set<string>();
   vehicles.forEach((v) => catSet.add(v.category));
   return Array.from(catSet);
 }
 
 export default function TransportFleetSection() {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   const [selectedRoute, setSelectedRoute] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedVehicle, setSelectedVehicle] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const allRoutes = useMemo(() => getAllRoutes(transportVehicles), []);
-  const allCategories = useMemo(() => getAllCategories(transportVehicles), []);
+  // Fetch vehicles from backend API
+  useEffect(() => {
+    async function fetchVehicles() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/services/transport");
+        const data = await res.json();
+        if (data.success) {
+          setVehicles(data.vehicles);
+        } else {
+          setError("Failed to load vehicles");
+        }
+      } catch (err) {
+        setError("Failed to load vehicles");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchVehicles();
+  }, []);
+
+  const allRoutes = useMemo(() => getAllRoutes(vehicles), [vehicles]);
+  const allCategories = useMemo(() => getAllCategories(vehicles), [vehicles]);
 
   // Vehicles available for the selected route (for vehicle dropdown)
   const availableVehicles = useMemo(() => {
-    if (!selectedRoute) return transportVehicles;
-    return transportVehicles.filter((v) =>
-      v.rateList.some((r) => r.route === selectedRoute)
+    if (!selectedRoute) return vehicles;
+    return vehicles.filter((v) =>
+      v.routes.some((r) => r.route === selectedRoute)
     );
-  }, [selectedRoute]);
+  }, [selectedRoute, vehicles]);
 
   // Filter vehicles based on all selections
   const filteredVehicles = useMemo(() => {
-    let result = [...transportVehicles];
+    let result = [...vehicles];
 
     // Filter by category
     if (selectedCategory) {
@@ -50,7 +97,7 @@ export default function TransportFleetSection() {
     // Filter by route — only show vehicles that serve this route
     if (selectedRoute) {
       result = result.filter((v) =>
-        v.rateList.some((r) => r.route === selectedRoute)
+        v.routes.some((r) => r.route === selectedRoute)
       );
     }
 
@@ -70,14 +117,14 @@ export default function TransportFleetSection() {
     }
 
     return result;
-  }, [selectedCategory, selectedRoute, selectedVehicle, searchQuery]);
+  }, [selectedCategory, selectedRoute, selectedVehicle, searchQuery, vehicles]);
 
   // Get price for a specific vehicle on the selected route
   const getPriceForRoute = (vehicleId: string) => {
     if (!selectedRoute) return null;
-    const vehicle = transportVehicles.find((v) => v.id === vehicleId);
+    const vehicle = vehicles.find((v) => v.id === vehicleId);
     if (!vehicle) return null;
-    const rate = vehicle.rateList.find((r) => r.route === selectedRoute);
+    const rate = vehicle.routes.find((r) => r.route === selectedRoute);
     return rate ? rate.priceSar : null;
   };
 
@@ -89,6 +136,29 @@ export default function TransportFleetSection() {
   };
 
   const hasActiveFilters = selectedRoute || selectedCategory || selectedVehicle || searchQuery;
+
+  if (loading) {
+    return (
+      <section className="w-full py-20 text-center">
+        <FaSpinner className="animate-spin text-[#c5a059] text-3xl mx-auto mb-4" />
+        <p className="text-zinc-500 text-sm uppercase tracking-widest">Loading Fleet...</p>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="w-full py-20 text-center">
+        <p className="text-red-500 text-sm mb-4">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
+        >
+          Retry
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full">
@@ -190,7 +260,7 @@ export default function TransportFleetSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         {/* Results count */}
         <p className="text-xs text-zinc-500 uppercase tracking-widest font-semibold mb-6">
-          Showing {filteredVehicles.length} of {transportVehicles.length} vehicles
+          Showing {filteredVehicles.length} of {vehicles.length} vehicles
         </p>
 
         <AnimatePresence mode="wait">
@@ -203,7 +273,7 @@ export default function TransportFleetSection() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             >
               {filteredVehicles.map((car, idx) => {
-                const detailUrl = `/transport/${car.id}`;
+                const detailUrl = `/transport/${car.slug}`;
                 const routePrice = getPriceForRoute(car.id);
 
                 return (
