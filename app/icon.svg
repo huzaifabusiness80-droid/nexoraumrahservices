@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#faecc5"/>
+      <stop offset="30%" stop-color="#e0be70"/>
+      <stop offset="70%" stop-color="#c5a059"/>
+      <stop offset="100%" stop-color="#8c6a2d"/>
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded box with luxury gold border -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="2.5"/>
+  <rect x="4" y="4" width="56" height="28" rx="12" fill="url(#glowGrad)"/>
+
+  <!-- Iconic Monogram "N" -->
+  <path d="M 19 46 L 19 18 L 26.5 18 L 37.5 36.5 L 37.5 18 L 45 18 L 45 46 L 37.5 46 L 26.5 27.5 L 26.5 46 Z" fill="url(#goldGrad)"/>
+
+  <!-- Star Accent top right -->
+  <path d="M 45 13 Q 45 17 49 17 Q 45 17 45 21 Q 45 17 41 17 Q 45 17 45 13 Z" fill="#faecc5"/>
+</svg>
