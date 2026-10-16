@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminEditTransportVehiclePage({
   params,
@@ -25,6 +26,7 @@ export default function AdminEditTransportVehiclePage({
   const [luggage, setLuggage] = useState("");
   const [startingPriceSar, setStartingPriceSar] = useState<number | "">("");
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [featuresText, setFeaturesText] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -44,6 +46,7 @@ export default function AdminEditTransportVehiclePage({
           setLuggage(v.luggage || "");
           setStartingPriceSar(v.startingPriceSar || 0);
           setImage(v.image || "");
+          setGallery(Array.isArray(v.gallery) ? v.gallery.slice(0, 6) : []);
           setDescription(v.description || "");
           setFeaturesText(Array.isArray(v.features) ? v.features.join(", ") : "");
           setIsActive(v.isActive !== undefined ? v.isActive : true);
@@ -109,6 +112,7 @@ export default function AdminEditTransportVehiclePage({
           luggage,
           startingPriceSar: Number(startingPriceSar),
           image,
+          gallery,
           description,
           features,
           routes,
@@ -299,6 +303,7 @@ export default function AdminEditTransportVehiclePage({
             folder="nexora/transport"
             label="Upload or Replace Vehicle Picture"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/transport" />
         </div>
 
         {/* Section 3: Dynamic Route Pricing Builder */}

@@ -29,18 +29,12 @@ interface Vehicle {
   routes: RouteRate[];
 }
 
-// Extract all unique routes from all vehicles
-function getAllRoutes(vehicles: Vehicle[]) {
-  const routeSet = new Set<string>();
-  vehicles.forEach((v) => v.routes.forEach((r) => routeSet.add(r.route)));
-  return Array.from(routeSet).sort();
-}
-
-// Extract unique categories
-function getAllCategories(vehicles: Vehicle[]) {
-  const catSet = new Set<string>();
-  vehicles.forEach((v) => catSet.add(v.category));
-  return Array.from(catSet);
+function getRoutesForVehicles(vehicles: Vehicle[]) {
+  const routes = new Map<string, RouteRate>();
+  vehicles.forEach((vehicle) => {
+    vehicle.routes.forEach((route) => routes.set(route.route, route));
+  });
+  return Array.from(routes.values()).sort((a, b) => a.route.localeCompare(b.route));
 }
 
 export default function TransportFleetSection() {
@@ -51,91 +45,80 @@ export default function TransportFleetSection() {
   const [selectedRoute, setSelectedRoute] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedVehicle, setSelectedVehicle] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [retryCount, setRetryCount] = useState(0);
 
-  // Fetch vehicles from backend API
   useEffect(() => {
     async function fetchVehicles() {
       try {
         setLoading(true);
+        setError("");
         const res = await fetch("/api/services/transport");
-        const data = await res.json();
-        if (data.success) {
-          setVehicles(data.vehicles);
-        } else {
-          setError("Failed to load vehicles");
+        const data: { success?: boolean; vehicles?: Vehicle[]; error?: string } = await res.json();
+        if (!res.ok || !data.success || !Array.isArray(data.vehicles)) {
+          throw new Error(data.error || "Unable to load transport vehicles from the database.");
         }
+        setVehicles(data.vehicles);
       } catch (err) {
-        setError("Failed to load vehicles");
+        console.error("Failed to load transport vehicles:", err);
+        setError(err instanceof Error ? err.message : "Unable to load transport vehicles.");
       } finally {
         setLoading(false);
       }
     }
     fetchVehicles();
-  }, []);
+  }, [retryCount]);
 
-  const allRoutes = useMemo(() => getAllRoutes(vehicles), [vehicles]);
-  const allCategories = useMemo(() => getAllCategories(vehicles), [vehicles]);
+  const allCategories = useMemo(
+    () => Array.from(new Set(vehicles.map((vehicle) => vehicle.category))).sort(),
+    [vehicles]
+  );
 
-  // Vehicles available for the selected route (for vehicle dropdown)
+  const categoryVehicles = useMemo(
+    () => vehicles.filter((vehicle) => !selectedCategory || vehicle.category === selectedCategory),
+    [selectedCategory, vehicles]
+  );
+
+  const selectedVehicleRecord = useMemo(
+    () => vehicles.find((vehicle) => vehicle.id === selectedVehicle),
+    [selectedVehicle, vehicles]
+  );
+
+  const availableRoutes = useMemo(
+    () => getRoutesForVehicles(selectedVehicleRecord ? [selectedVehicleRecord] : categoryVehicles),
+    [categoryVehicles, selectedVehicleRecord]
+  );
+
   const availableVehicles = useMemo(() => {
-    if (!selectedRoute) return vehicles;
-    return vehicles.filter((v) =>
-      v.routes.some((r) => r.route === selectedRoute)
-    );
-  }, [selectedRoute, vehicles]);
+    const routeVehicles = selectedRoute
+      ? categoryVehicles.filter((vehicle) => vehicle.routes.some((route) => route.route === selectedRoute))
+      : categoryVehicles;
+    return routeVehicles;
+  }, [categoryVehicles, selectedRoute]);
 
   // Filter vehicles based on all selections
   const filteredVehicles = useMemo(() => {
-    let result = [...vehicles];
-
-    // Filter by category
-    if (selectedCategory) {
-      result = result.filter((v) => v.category === selectedCategory);
-    }
-
-    // Filter by route — only show vehicles that serve this route
-    if (selectedRoute) {
-      result = result.filter((v) =>
-        v.routes.some((r) => r.route === selectedRoute)
-      );
-    }
-
-    // Filter by specific vehicle
-    if (selectedVehicle) {
-      result = result.filter((v) => v.id === selectedVehicle);
-    }
-
-    // Filter by search query (vehicle name)
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (v) =>
-          v.name.toLowerCase().includes(q) ||
-          v.category.toLowerCase().includes(q)
-      );
-    }
-
-    return result;
-  }, [selectedCategory, selectedRoute, selectedVehicle, searchQuery, vehicles]);
+    return vehicles.filter((vehicle) => {
+      if (selectedCategory && vehicle.category !== selectedCategory) return false;
+      if (selectedRoute && !vehicle.routes.some((route) => route.route === selectedRoute)) return false;
+      if (selectedVehicle && vehicle.id !== selectedVehicle) return false;
+      return true;
+    });
+  }, [selectedCategory, selectedRoute, selectedVehicle, vehicles]);
 
   // Get price for a specific vehicle on the selected route
-  const getPriceForRoute = (vehicleId: string) => {
+  const getPriceForRoute = (vehicle: Vehicle) => {
     if (!selectedRoute) return null;
-    const vehicle = vehicles.find((v) => v.id === vehicleId);
-    if (!vehicle) return null;
-    const rate = vehicle.routes.find((r) => r.route === selectedRoute);
+    const rate = vehicle.routes.find((route) => route.route === selectedRoute);
     return rate ? rate.priceSar : null;
   };
 
   const clearFilters = () => {
-    setSelectedRoute("");
     setSelectedCategory("");
     setSelectedVehicle("");
-    setSearchQuery("");
+    setSelectedRoute("");
   };
 
-  const hasActiveFilters = selectedRoute || selectedCategory || selectedVehicle || searchQuery;
+  const hasActiveFilters = selectedRoute || selectedCategory || selectedVehicle;
 
   if (loading) {
     return (
@@ -151,7 +134,7 @@ export default function TransportFleetSection() {
       <section className="w-full py-20 text-center">
         <p className="text-red-500 text-sm mb-4">{error}</p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => setRetryCount((count) => count + 1)}
           className="px-6 py-2.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-xs font-bold uppercase tracking-widest transition-colors cursor-pointer"
         >
           Retry
@@ -163,7 +146,7 @@ export default function TransportFleetSection() {
   return (
     <section className="w-full">
       {/* Filter Bar */}
-      <div className="bg-white border-b border-zinc-200 sticky top-0 z-20 shadow-sm">
+      <div className="bg-white  border-b border-zinc-200 sticky top-0 z-20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <div className="flex flex-col gap-4">
             {/* Filter Header */}
@@ -186,50 +169,23 @@ export default function TransportFleetSection() {
 
             {/* Filter Controls */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* Search by Name */}
-              <div className="relative">
-                <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search vehicle name..."
-                  className="w-full pl-9 pr-4 py-3 bg-zinc-50 border border-zinc-200 text-sm text-zinc-800 placeholder-zinc-400 focus:outline-none focus:border-[#c5a059] transition-colors"
-                />
-              </div>
-
               {/* Filter by Category */}
               <div className="relative">
                 <FaUserFriends className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
                 <select
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value);
+                    setSelectedVehicle("");
+                    setSelectedRoute("");
+                  }}
+                  aria-label="Filter by vehicle category"
                   className="w-full pl-9 pr-4 py-3 bg-zinc-50 border border-zinc-200 text-sm text-zinc-800 focus:outline-none focus:border-[#c5a059] transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="">All Vehicle Types</option>
+                  <option value="">All Categories</option>
                   {allCategories.map((cat) => (
                     <option key={cat} value={cat}>
                       {cat}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Filter by Route */}
-              <div className="relative">
-                <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
-                <select
-                  value={selectedRoute}
-                  onChange={(e) => {
-                    setSelectedRoute(e.target.value);
-                    setSelectedVehicle(""); // reset vehicle when route changes
-                  }}
-                  className="w-full pl-9 pr-4 py-3 bg-zinc-50 border border-zinc-200 text-sm text-zinc-800 focus:outline-none focus:border-[#c5a059] transition-colors appearance-none cursor-pointer"
-                >
-                  <option value="">Select Route</option>
-                  {allRoutes.map((route) => (
-                    <option key={route} value={route}>
-                      {route}
                     </option>
                   ))}
                 </select>
@@ -240,13 +196,40 @@ export default function TransportFleetSection() {
                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
                 <select
                   value={selectedVehicle}
-                  onChange={(e) => setSelectedVehicle(e.target.value)}
+                  onChange={(e) => {
+                    const vehicleId = e.target.value;
+                    setSelectedVehicle(vehicleId);
+                    const vehicle = vehicles.find((item) => item.id === vehicleId);
+                    if (selectedRoute && !vehicle?.routes.some((route) => route.route === selectedRoute)) {
+                      setSelectedRoute("");
+                    }
+                  }}
+                  aria-label="Filter by vehicle"
                   className="w-full pl-9 pr-4 py-3 bg-zinc-50 border border-zinc-200 text-sm text-zinc-800 focus:outline-none focus:border-[#c5a059] transition-colors appearance-none cursor-pointer"
                 >
                   <option value="">All Vehicles</option>
-                  {availableVehicles.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.name} — {v.seats}
+                  {availableVehicles.map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.name} — {vehicle.seats}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filter by Route */}
+              <div className="relative">
+                <FaMapMarkerAlt className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
+                <select
+                  value={selectedRoute}
+                  onChange={(e) => setSelectedRoute(e.target.value)}
+                  disabled={availableRoutes.length === 0}
+                  aria-label="Filter by route"
+                  className="w-full pl-9 pr-4 py-3 bg-zinc-50 border border-zinc-200 text-sm text-zinc-800 focus:outline-none focus:border-[#c5a059] transition-colors appearance-none cursor-pointer"
+                >
+                  <option value="">All Available Routes</option>
+                  {availableRoutes.map((route) => (
+                    <option key={route.id} value={route.route}>
+                      {route.route}
                     </option>
                   ))}
                 </select>
@@ -274,7 +257,7 @@ export default function TransportFleetSection() {
             >
               {filteredVehicles.map((car, idx) => {
                 const detailUrl = `/transport/${car.slug}`;
-                const routePrice = getPriceForRoute(car.id);
+                const routePrice = getPriceForRoute(car);
 
                 return (
                   <motion.div
@@ -333,7 +316,7 @@ export default function TransportFleetSection() {
 
                       {/* Price Display */}
                       <div className="flex-1 flex flex-col justify-end">
-                        {selectedRoute && routePrice ? (
+                        {selectedRoute && routePrice !== null ? (
                           /* Show specific route price when filter is active */
                           <div className="bg-[#faf6ed] border border-[#c5a059]/30 p-4 mb-4">
                             <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mb-1">

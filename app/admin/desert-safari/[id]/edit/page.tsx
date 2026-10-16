@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner, FaTrash } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminEditDesertSafariPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function AdminEditDesertSafariPage() {
   const [priceAed, setPriceAed] = useState<number | "">(150);
   const [vipPriceAed, setVipPriceAed] = useState<number | "">("");
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [activitiesText, setActivitiesText] = useState("");
   const [includesText, setIncludesText] = useState("");
@@ -40,6 +42,7 @@ export default function AdminEditDesertSafariPage() {
         setPriceAed(s.priceAed !== undefined ? s.priceAed : 150);
         setVipPriceAed(s.vipPriceAed !== null && s.vipPriceAed !== undefined ? s.vipPriceAed : "");
         setImage(s.image || "");
+        setGallery(Array.isArray(s.gallery) ? s.gallery.slice(0, 6) : []);
         setDescription(s.description || "");
         setActivitiesText(Array.isArray(s.activities) ? s.activities.join(", ") : "");
         setIncludesText(Array.isArray(s.includes) ? s.includes.join(", ") : "");
@@ -77,6 +80,7 @@ export default function AdminEditDesertSafariPage() {
           priceAed: Number(priceAed),
           vipPriceAed: vipPriceAed !== "" ? Number(vipPriceAed) : null,
           image,
+          gallery,
           description,
           activities,
           includes,
@@ -298,6 +302,7 @@ export default function AdminEditDesertSafariPage() {
             label="Upload Desert Safari Cover Photo *"
             folder="nexora/desert-safari"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/desert-safari" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-2">

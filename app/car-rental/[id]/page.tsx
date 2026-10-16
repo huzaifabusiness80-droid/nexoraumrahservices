@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import {
   FaWhatsapp,
@@ -90,6 +91,7 @@ export default async function CarRentalDetailPage({ params }: Props) {
       : `Salam Nexora Journeys, I want to rent the "${car.name}" (${car.brand} - ${car.category}) in UAE. Daily rate: ${car.dailyPriceAed} AED. Please confirm availability and delivery.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
+  const galleryImages = car.gallery || [];
 
   return (
     <div className="min-h-screen bg-[#fcfdfd] text-zinc-900 flex flex-col font-sans">
@@ -181,6 +183,7 @@ export default async function CarRentalDetailPage({ params }: Props) {
                   <span>Comprehensive Insurance</span>
                 </div>
               </div>
+              <ServiceImageGallery images={galleryImages} alt={car.name} />
 
               {/* Core Specifications Bar (100% from Backend DB) */}
               <div className="p-5 sm:p-6 bg-white border-t border-gray-100">

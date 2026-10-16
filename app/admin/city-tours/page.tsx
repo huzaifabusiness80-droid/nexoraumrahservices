@@ -53,10 +53,10 @@ export default function AdminCityToursListPage() {
             </Link>
           </div>
           <h1 className="text-xl sm:text-2xl font-extrabold text-zinc-900 uppercase tracking-wider">
-            UAE City Tours &amp; Excursions
+            Tours &amp; Tourism
           </h1>
           <p className="text-xs text-zinc-500 mt-0.5">
-            Manage guided private tours in Dubai, Abu Dhabi, and Sharjah
+            Manage destinations, experience categories, AED rates, and tour galleries
           </p>
         </div>
 
@@ -82,6 +82,7 @@ export default function AdminCityToursListPage() {
                 <tr>
                   <th className="py-3.5 px-4">Tour Name</th>
                   <th className="py-3.5 px-4">Emirate / City</th>
+                  <th className="py-3.5 px-4">Category</th>
                   <th className="py-3.5 px-4">Duration</th>
                   <th className="py-3.5 px-4">Private Tour Price</th>
                   <th className="py-3.5 px-4">Per Person Price</th>
@@ -103,7 +104,7 @@ export default function AdminCityToursListPage() {
                         </div>
                         <div>
                           <p className="font-bold text-zinc-900 text-sm">{tour.title}</p>
-                          <p className="text-[11px] text-zinc-400">{tour.highlights?.length || 0} Highlights</p>
+                          <p className="text-[11px] text-zinc-400">{tour.gallery?.length || 0} Gallery Photos</p>
                         </div>
                       </div>
                     </td>
@@ -113,6 +114,8 @@ export default function AdminCityToursListPage() {
                         {tour.city}
                       </span>
                     </td>
+
+                    <td className="py-3 px-4 text-zinc-700">{tour.category || "City Sightseeing"}</td>
 
                     <td className="py-3 px-4 text-zinc-700 font-medium">{tour.duration}</td>
 

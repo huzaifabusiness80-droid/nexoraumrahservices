@@ -105,6 +105,7 @@ model TransportVehicle {
   seats            String               // e.g. "4 Seater", "7 Seater"
   luggage          String               // e.g. "02 to 03 Luggage"
   image            String               // Cloudinary or local image URL
+  gallery          String[]             @default([])
   posterImage      String?
   startingPriceSar Float
   description      String
@@ -204,9 +205,11 @@ model UaeCityTour {
   title       String   // e.g. "Dubai Full Day Sightseeing", "Abu Dhabi Grand Mosque & Palace Tour"
   slug        String   @unique
   city        String   // "Dubai", "Abu Dhabi", "Sharjah"
+  category    String   @default("City Sightseeing")
   duration    String   // "4 Hours Half Day", "8 Hours Full Day"
   description String
   image       String
+  gallery     String[] @default([])
   highlights  String[] // ["Burj Khalifa", "Dubai Marina", "Palm Jumeirah", "Old Gold Souk"]
   priceAed    Float    // Price in AED / SAR
   pricePerPerson Float?
@@ -230,6 +233,7 @@ model DesertSafariPackage {
   priceAed        Float    // Standard price
   vipPriceAed     Float?   // VIP Quad Bike / Private Table
   image           String
+  gallery         String[] @default([])
   description     String
   activities      String[] // ["4x4 Dune Bashing", "Sunset Camel Trek", "Sandboarding", "BBQ Buffet Dinner", "Tanoura & Fire Show"]
   includes        String[]
@@ -253,6 +257,7 @@ model RentalCar {
   transmission     String   @default("Automatic") // "Automatic", "Manual"
   fuelType         String   @default("Petrol")    // "Petrol", "Hybrid", "Electric"
   image            String
+  gallery          String[] @default([])
   dailyPriceAed    Float
   weeklyPriceAed   Float?
   monthlyPriceAed  Float?

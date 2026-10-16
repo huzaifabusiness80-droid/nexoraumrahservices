@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         duration,
         description,
         image,
-        gallery: Array.isArray(gallery) ? gallery : undefined,
+        gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : undefined,
         placesCovered: Array.isArray(placesCovered) ? placesCovered : undefined,
         priceSedan: priceSedan !== undefined ? Number(priceSedan) : undefined,
         priceVan: priceVan !== undefined ? Number(priceVan) : null,

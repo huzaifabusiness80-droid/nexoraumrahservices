@@ -53,7 +53,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         address,
         startingPrice: startingPrice !== undefined ? Number(startingPrice) : undefined,
         image,
-        gallery: Array.isArray(gallery) ? gallery : undefined,
+        gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : undefined,
         description,
         amenities: Array.isArray(amenities) ? amenities : undefined,
         isActive: isActive !== undefined ? isActive : undefined,

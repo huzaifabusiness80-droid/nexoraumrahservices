@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaSnapchatGhost, FaClock, FaShieldAlt } from "react-icons/fa";
+import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaSnapchatGhost, FaClock, FaShieldAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -175,7 +175,7 @@ export default function Footer() {
               <ul className="space-y-3.5 text-sm sm:text-[15px] text-zinc-300 font-medium">
                 <li>
                   <Link href="/services/uae-city-tours" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
-                    UAE City Tours
+                    Tours &amp; Tourism
                   </Link>
                 </li>
                 <li>
@@ -235,6 +235,33 @@ export default function Footer() {
                     +92 315 8494785
                   </a>
                 </div>
+              </div>
+
+              <div className="space-y-3 text-xs sm:text-sm text-zinc-300">
+                <a
+                  href="https://maps.google.com/?q=District+Al+Kakiya,+Makkah"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2.5 hover:text-[#c5a059] transition-colors"
+                >
+                  <FaMapMarkerAlt className="mt-0.5 shrink-0 text-[#c5a059]" />
+                  <span>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">Makkah Office</span>
+                    District Al Kakiya, Makkah
+                  </span>
+                </a>
+                <a
+                  href="https://maps.google.com/?q=Ch+Zahoor+Ellahi+Stadium,+Gujrat,+Pakistan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-2.5 hover:text-[#c5a059] transition-colors"
+                >
+                  <FaMapMarkerAlt className="mt-0.5 shrink-0 text-[#c5a059]" />
+                  <span>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-zinc-400">Pakistan Office</span>
+                    Ch Zahoor Ellahi Stadium, Gujrat, Pakistan
+                  </span>
+                </a>
               </div>
 
               {/* Working Hours & Instant Inquiry Notice */}

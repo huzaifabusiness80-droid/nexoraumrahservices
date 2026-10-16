@@ -62,7 +62,7 @@ export default function Header() {
             href="/services/uae-city-tours"
             className="text-[11px] xl:text-[12px] font-bold tracking-wider text-zinc-800 hover:text-[#c5a059] uppercase transition-colors whitespace-nowrap"
           >
-            UAE City Tours
+            Travels & Tourism
           </Link>
           <Link
             href="/services/uae-desert-safari"
@@ -159,7 +159,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
-              UAE City Tours
+              Tours & Tourism
             </Link>
             <Link
               href="/services/uae-desert-safari"

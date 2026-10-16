@@ -19,9 +19,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const {
       title,
       city,
+      category,
       duration,
       description,
       image,
+      gallery,
       highlights,
       priceAed,
       pricePerPerson,
@@ -35,9 +37,11 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data: {
         title,
         city,
+        category,
         duration,
         description,
         image,
+        gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : undefined,
         highlights: Array.isArray(highlights) ? highlights : undefined,
         priceAed: priceAed !== undefined ? Number(priceAed) : undefined,
         pricePerPerson: pricePerPerson !== undefined ? Number(pricePerPerson) : null,

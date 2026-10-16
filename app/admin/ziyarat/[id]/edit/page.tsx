@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminEditZiyaratPage({
   params,
@@ -25,6 +26,7 @@ export default function AdminEditZiyaratPage({
   const [priceVan, setPriceVan] = useState<number | "">("");
   const [priceSuv, setPriceSuv] = useState<number | "">("");
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [placesText, setPlacesText] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -42,6 +44,7 @@ export default function AdminEditZiyaratPage({
           setPriceVan(t.priceVan !== null ? t.priceVan : "");
           setPriceSuv(t.priceSuv !== null ? t.priceSuv : "");
           setImage(t.image || "");
+          setGallery(Array.isArray(t.gallery) ? t.gallery.slice(0, 6) : []);
           setDescription(t.description || "");
           setPlacesText(Array.isArray(t.placesCovered) ? t.placesCovered.join(", ") : "");
           setIsActive(t.isActive !== undefined ? t.isActive : true);
@@ -77,6 +80,7 @@ export default function AdminEditZiyaratPage({
           priceVan: priceVan !== "" ? Number(priceVan) : null,
           priceSuv: priceSuv !== "" ? Number(priceSuv) : null,
           image,
+          gallery,
           description,
           placesCovered,
           isActive,
@@ -257,6 +261,7 @@ export default function AdminEditZiyaratPage({
             2. Tour Photo (Cloudinary Upload)
           </h2>
           <ImageUploader value={image} onChange={(url) => setImage(url)} folder="nexora/ziyarat" label="Upload or Replace Tour Photo" />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/ziyarat" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200">

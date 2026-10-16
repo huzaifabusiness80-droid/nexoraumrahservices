@@ -1,26 +1,21 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import { useLanguage } from "@/context/LanguageContext";
-
-const slideImages = [
-  "/images/hero/slide-1.jpg",
-  "/images/hero/slide-2.jpg",
-  "/images/hero/slide-3.jpg",
-  "/images/hero/slide-4.jpg",
-];
 
 export default function HeroCarousel() {
   const { t, isRtl } = useLanguage();
   const [currentSlide, setCurrentSlide] = useState(0);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
-  const slidesCount = slideImages.length;
+  const slides = t.heroSlides.length ? t.heroSlides : [];
+  const slidesCount = slides.length;
 
   useEffect(() => {
+    if (!slidesCount) return;
+
     autoPlayRef.current = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slidesCount);
     }, 5500);
@@ -33,71 +28,57 @@ export default function HeroCarousel() {
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slidesCount);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slidesCount) % slidesCount);
 
-  const active = t.heroSlides[currentSlide] || t.heroSlides[0];
+  const active = slides[currentSlide] || slides[0];
 
   return (
     <section className="relative w-full min-h-[480px] sm:min-h-[540px] md:min-h-[620px] lg:h-[720px] xl:h-[780px] flex items-center overflow-hidden bg-black py-16 sm:py-20 lg:py-0">
       {/* 4-Image Background Carousel */}
       <div className="absolute inset-0 w-full h-full">
-        {slideImages.map((imgSrc, index) => {
+        {slides.map((slide, index) => {
           const isActive = index === currentSlide;
           return (
             <div
-              key={index}
+              key={`${slide.titleLine1}-${slide.titleLine2}-${index}`}
               className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
                 isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
               }`}
             >
-              <Image
-                src={imgSrc}
-                alt={`${active.titleLine1} ${active.titleLine2}`}
-                fill
-                priority={index === 0}
-                className={`object-cover object-center ${isActive ? "ken-burns-active" : ""}`}
-                sizes="100vw"
-              />
-
-              {/* Enhanced Dark Gradient for Crisp White Typography on all screens */}
               <div
-                className={`absolute inset-0 w-full lg:w-[75%] ${
-                  isRtl
-                    ? "bg-gradient-to-l from-black/95 via-black/85 to-black/30 end-0"
-                    : "bg-gradient-to-r from-black/95 via-black/85 to-black/30 start-0"
+                className={`absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-[1600ms] ease-out ${
+                  isActive ? "scale-105" : "scale-100"
                 }`}
+                style={{ backgroundImage: `url(${slide.image})` }}
+                aria-label={`${slide.titleLine1} ${slide.titleLine2}`}
               />
-              <div className="absolute inset-0 bg-black/30 sm:bg-black/15" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/30" />
             </div>
           );
         })}
       </div>
 
-      {/* Hero Content — Fully Responsive Padding & Typography */}
       <div className="relative z-20 max-w-7xl mx-auto w-full px-5 sm:px-8 flex flex-col justify-center">
-        <div className="max-w-3xl animate-hero-text">
-          {/* Top Tag Kicker Badge */}
-          <div className="inline-block bg-[#c5a059] text-white px-3 sm:px-4 py-1 sm:py-1.5 mb-3 sm:mb-6 rounded-xs shadow-sm">
-            <span className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.24em] uppercase">
+        <div className="max-w-[1160px] animate-hero-text">
+          <div className="inline-flex items-center bg-[#c5a059]/90 text-white px-3 sm:px-5 py-1.5 sm:py-2 mb-4 sm:mb-6 rounded-full shadow-[0_12px_24px_rgba(0,0,0,0.22)] backdrop-blur-sm">
+            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.18em] uppercase">
               {active.tag}
             </span>
           </div>
 
-          {/* Main Heading — responsive font clamp */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-[56px] font-semibold text-white tracking-tight leading-[1.25] sm:leading-[1.3] mb-4 sm:mb-6">
+          <h1 className="max-w-[1120px] text-3xl sm:text-5xl md:text-6xl lg:text-[68px] xl:text-[76px] font-semibold text-white tracking-[-0.045em] leading-[0.98] sm:leading-[1.02] mb-4 sm:mb-5 drop-shadow-[0_8px_30px_rgba(0,0,0,0.28)]">
             <span className="block">{active.titleLine1}</span>
-            <span className="block text-zinc-100 mt-1">{active.titleLine2}</span>
+            <span className="block text-zinc-100/95 mt-1 sm:mt-2">{active.titleLine2}</span>
           </h1>
 
-          <p className="text-xs sm:text-sm md:text-xl text-zinc-300 max-w-xl leading-relaxed mb-6 sm:mb-8 font-normal">
-            Private licensed airport transfers, verified seasonal hotel tariffs, and holy sanctuary tours across Makkah, Madinah, and the UAE.
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl text-zinc-100 max-w-[700px] leading-relaxed mb-6 sm:mb-8 font-normal drop-shadow-[0_4px_14px_rgba(0,0,0,0.35)]">
+            {active.description}
           </p>
 
-          {/* 2 Hero Buttons with mobile stack / tablet row */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 pt-1">
             <Link
-              href="#services"
-              className="group px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-[15px] font-semibold text-white bg-[#cfa258] hover:bg-[#be9146]  shadow-sm transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer"
+              href={active.href}
+              className="group px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-[15px] font-semibold text-white bg-[#cfa258] hover:bg-[#be9146] shadow-[0_18px_40px_rgba(207,162,88,0.32)] transition-all duration-200 inline-flex items-center justify-center gap-2.5 cursor-pointer"
             >
-              <span>Explore Services</span>
+              <span>{active.buttonText}</span>
               <FaArrowRight className="text-xs transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
 
@@ -105,7 +86,7 @@ export default function HeroCarousel() {
               href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 sm:px-7 py-3 sm:py-3.5 text-sm sm:text-[15px] font-semibold text-white bg-black/35 hover:bg-black/55 border border-white/40 hover:border-white/80  backdrop-blur-xs transition-all duration-200 inline-flex items-center justify-center cursor-pointer text-center"
+              className="px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-[15px] font-semibold text-white bg-white/8 hover:bg-white/12 border border-white/40 hover:border-white/70 backdrop-blur-sm transition-all duration-200 inline-flex items-center justify-center cursor-pointer text-center"
             >
               Book Your Ride
             </a>
@@ -121,9 +102,9 @@ export default function HeroCarousel() {
       >
         {/* Slide Dots / Indicators */}
         <div className="flex items-center gap-1.5 sm:gap-2 mx-1 sm:mx-2">
-          {slideImages.map((_, idx) => (
+          {slides.map((slide, idx) => (
             <button
-              key={idx}
+              key={`${slide.titleLine1}-${idx}`}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
               className={`h-1.5 transition-all rounded-full cursor-pointer ${
@@ -139,7 +120,7 @@ export default function HeroCarousel() {
         <button
           onClick={isRtl ? nextSlide : prevSlide}
           aria-label="Previous Slide"
-          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 rounded cursor-pointer"
+          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 cursor-pointer"
         >
           <svg
             className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`}
@@ -154,7 +135,7 @@ export default function HeroCarousel() {
         <button
           onClick={isRtl ? prevSlide : nextSlide}
           aria-label="Next Slide"
-          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 rounded cursor-pointer"
+          className="w-7 h-7 sm:w-9 sm:h-9 border border-white/30 text-white hover:border-[#c5a059] hover:text-[#c5a059] flex items-center justify-center transition-colors bg-black/40 cursor-pointer"
         >
           <svg
             className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isRtl ? "rotate-180" : ""}`}

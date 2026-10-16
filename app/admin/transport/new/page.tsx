@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminNewTransportVehiclePage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function AdminNewTransportVehiclePage() {
   const [luggage, setLuggage] = useState("02 to 03 Luggage");
   const [startingPriceSar, setStartingPriceSar] = useState<number | "">(100);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [featuresText, setFeaturesText] = useState(
     "Chilled Dual-Zone Climate Control, Complimentary Chilled Bottled Water, Professional Chauffeur, Door-to-door luggage assistance"
@@ -78,6 +80,7 @@ export default function AdminNewTransportVehiclePage() {
           luggage,
           startingPriceSar: Number(startingPriceSar),
           image,
+          gallery,
           description,
           features,
           routes,
@@ -263,6 +266,7 @@ export default function AdminNewTransportVehiclePage() {
             folder="nexora/transport"
             label="Upload Vehicle Picture *"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/transport" />
         </div>
 
         {/* Section 3: Dynamic Route Pricing Builder */}

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         duration: duration || "3 - 4 Hours",
         description: description || "",
         image,
-        gallery: Array.isArray(gallery) ? gallery : [image],
+        gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : [],
         placesCovered: Array.isArray(placesCovered) ? placesCovered : [],
         priceSedan: Number(priceSedan || 0),
         priceVan: priceVan !== undefined ? Number(priceVan) : null,

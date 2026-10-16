@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         address: address || "",
         startingPrice: Number(startingPrice),
         image,
-        gallery: Array.isArray(gallery) ? gallery : [image],
+        gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : [],
         description: description || "",
         amenities: Array.isArray(amenities) ? amenities : [],
         isActive: isActive !== undefined ? isActive : true,

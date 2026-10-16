@@ -10,7 +10,7 @@ export default function OurServicesSection() {
       id: "umrah-transport",
       slug: "umrah-transport",
       title: "NEXORA UMRAH TRANSPORT",
-      image: "/images/services/umrahtransport.png",
+      image: "/images/hero/hero-transport.jpg",
       description:
         "Private VIP airport transfers, intercity express shuttles, and luxury chauffeur services across Jeddah, Makkah, and Madinah.",
     },
@@ -18,7 +18,7 @@ export default function OurServicesSection() {
       id: "umrah-hotels",
       slug: "umrah-hotels",
       title: "NEXORA UMRAH HOTELS",
-      image: "/images/services/umrah-hotels.png",
+      image: "/images/hero/hero-hotels.jpg",
       description:
         "Verified seasonal hotel accommodations in Makkah & Madinah with official transparent tariffs.",
     },
@@ -26,7 +26,7 @@ export default function OurServicesSection() {
       id: "umrah-ziyarat",
       slug: "umrah-ziyarat",
       title: "NEXORA UMRAH ZIYARAT",
-      image: "/images/services/umrahziarat.png",
+      image: "/images/hero/hero-ziyarat.jpg",
       description:
         "Sacred historical excursions to Cave Hira, Mount Uhud, Masjid Quba with private multilingual chauffeurs.",
     },
@@ -34,7 +34,7 @@ export default function OurServicesSection() {
       id: "uae-city-tours",
       slug: "uae-city-tours",
       title: "NEXORA TRAVEL & TOURISM",
-      image: "/images/services/Uaetravels&toursim.png",
+      image: "/images/services/city-tours-dubai.jpg",
       description:
         "Guided private sightseeing excursions across Dubai Marina, Burj Khalifa, and Abu Dhabi Grand Mosque.",
     },
@@ -42,7 +42,7 @@ export default function OurServicesSection() {
       id: "uae-desert-safari",
       slug: "uae-desert-safari",
       title: "NEXORA DESERT SAFARI",
-      image: "/images/services/desertsafari.png",
+      image: "/images/services/desert-safari-dunes.jpg",
       description:
         "Red dune bashing, sunset camel treks, quad biking, sandboarding, and 5-star Bedouin BBQ dinners.",
     },
@@ -50,7 +50,7 @@ export default function OurServicesSection() {
       id: "uae-car-rental",
       slug: "uae-car-rental",
       title: "NEXORA RENTAL CARS",
-      image: "/images/services/rentacars.png",
+      image: "/images/services/car-rental-luxury.jpg",
       description:
         "Self-drive and VIP chauffeur car rentals in Dubai, Abu Dhabi, and Sharjah with free airport delivery.",
     },

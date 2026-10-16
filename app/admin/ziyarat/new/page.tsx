@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminNewZiyaratPage() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function AdminNewZiyaratPage() {
   const [priceVan, setPriceVan] = useState<number | "">(350);
   const [priceSuv, setPriceSuv] = useState<number | "">(449);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [placesText, setPlacesText] = useState("Jabal Al-Noor (Cave of Hira), Jabal Thawr, Mount Arafat, Mina & Muzdalifah, Masjid Aisha");
   const [includesText, setIncludesText] = useState("Doorstep Hotel Pickup & Drop, Private AC Car, Multilingual Chauffeur, Road Tolls");
@@ -48,6 +50,7 @@ export default function AdminNewZiyaratPage() {
           priceVan: priceVan !== "" ? Number(priceVan) : null,
           priceSuv: priceSuv !== "" ? Number(priceSuv) : null,
           image,
+          gallery,
           description,
           placesCovered,
           includes,
@@ -224,6 +227,7 @@ export default function AdminNewZiyaratPage() {
             2. Tour Photo (Cloudinary Upload)
           </h2>
           <ImageUploader value={image} onChange={(url) => setImage(url)} folder="nexora/ziyarat" label="Upload Tour Photo *" />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/ziyarat" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200">

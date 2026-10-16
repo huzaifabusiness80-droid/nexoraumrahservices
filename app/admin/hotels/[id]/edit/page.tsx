@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminEditHotelPage({
   params,
@@ -26,6 +27,7 @@ export default function AdminEditHotelPage({
   const [address, setAddress] = useState("");
   const [startingPrice, setStartingPrice] = useState<number | "">("");
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [amenitiesText, setAmenitiesText] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -48,6 +50,7 @@ export default function AdminEditHotelPage({
           setAddress(h.address || "");
           setStartingPrice(h.startingPrice || 0);
           setImage(h.image || "");
+          setGallery(Array.isArray(h.gallery) ? h.gallery.slice(0, 6) : []);
           setDescription(h.description || "");
           setAmenitiesText(Array.isArray(h.amenities) ? h.amenities.join(", ") : "");
           setIsActive(h.isActive !== undefined ? h.isActive : true);
@@ -115,6 +118,7 @@ export default function AdminEditHotelPage({
           address,
           startingPrice: Number(startingPrice),
           image,
+          gallery,
           description,
           amenities,
           rooms,
@@ -324,6 +328,7 @@ export default function AdminEditHotelPage({
             folder="nexora/hotels"
             label="Upload or Replace Hotel Picture"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/hotels" />
         </div>
 
         {/* Section 3: Dynamic Room Tariffs */}

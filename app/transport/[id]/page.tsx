@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { transportVehicles } from "@/lib/data/transportData";
 import { FaWhatsapp, FaSuitcase, FaUserFriends, FaCheck, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
@@ -39,6 +40,7 @@ async function getVehicleData(id: string) {
         seats: vehicle.seats || "4-7 Seater",
         luggage: vehicle.luggage || "Luggage Space Available",
         image: vehicle.image || "/images/fleet/toyota-camry.jpg",
+        gallery: vehicle.gallery || [],
         posterImage: vehicle.posterImage || undefined,
         startingPriceSar: vehicle.startingPriceSar || (vehicle.routes?.[0]?.priceSar ?? 150),
         description: vehicle.description || `Luxury private chauffeur service for ${vehicle.name} across Makkah, Madinah, and Jeddah.`,
@@ -107,6 +109,7 @@ export default async function TransportDetailPage({ params }: Props) {
     `Salam Nexora Journeys, I would like to book the ${car.name} (${car.seats}). Please confirm price and availability for my travel dates.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
+  const galleryImages = "gallery" in car && Array.isArray(car.gallery) ? car.gallery : [];
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-zinc-900 flex flex-col font-sans">
@@ -142,6 +145,7 @@ export default async function TransportDetailPage({ params }: Props) {
                 </span>
               </div>
             </div>
+            <ServiceImageGallery images={galleryImages} alt={car.name} />
 
             {/* Quick Specs Bar */}
             <div className="p-6 border-t border-zinc-200">

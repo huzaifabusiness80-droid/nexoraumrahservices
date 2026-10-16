@@ -4,7 +4,10 @@ export interface SlideData {
   tag: string;
   titleLine1: string;
   titleLine2: string;
+  description: string;
   buttonText: string;
+  image: string;
+  href: string;
 }
 
 export interface VehicleData {
@@ -114,28 +117,64 @@ export const translations: Record<Language, TranslationSchema> = {
 
     heroSlides: [
       {
-        tag: "PREMIUM TRANSPORTATION FOR PILGRIMS & VISITORS",
-        titleLine1: "Your Trusted Transportation",
-        titleLine2: "Partner in Makkah & Madinah",
-        buttonText: "EXPLORE SERVICES",
+        tag: "Umrah Transport",
+        titleLine1: "Premium Umrah Transport",
+        titleLine2: "Across Makkah & Madinah",
+        description:
+          "Safe airport pickups, intercity transfers, and VIP chauffeur service across Makkah, Madinah, and Jeddah.",
+        buttonText: "Book Umrah Transport",
+        image: "/images/services/umrah-transport-hd.jpg",
+        href: "/services/umrah-transport",
       },
       {
-        tag: "VIP PILGRIMAGE CHAUFFEUR SERVICES",
-        titleLine1: "Sacred Journeys in Serene",
-        titleLine2: "Comfort Across Sanctuaries",
-        buttonText: "EXPLORE SERVICES",
+        tag: "Umrah Hotels",
+        titleLine1: "Premium Umrah Hotels",
+        titleLine2: "Near Makkah's Holy Sites",
+        description:
+          "Handpicked premium accommodations in Makkah and Madinah with transparent seasonal rates and family comfort.",
+        buttonText: "Explore Hotels",
+        image: "/images/services/umrah-hotels-hd.jpg",
+        href: "/services/umrah-hotels",
       },
       {
-        tag: "JEDDAH AIRPORT PRIVATE VIP TERMINAL TRANSFERS",
-        titleLine1: "Direct VIP Arrival with",
-        titleLine2: "Zero Waiting to Makkah",
-        buttonText: "EXPLORE SERVICES",
+        tag: "Umrah Ziyarat",
+        titleLine1: "Guided Umrah Ziyarat",
+        titleLine2: "Tours to Sacred Landmarks",
+        description:
+          "Private guided visits to sacred landmarks with licensed drivers and flexible travel plans for your group.",
+        buttonText: "Plan Ziyarat",
+        image: "/images/services/umrah-ziyarat-hd.jpg",
+        href: "/services/umrah-ziyarat",
       },
       {
-        tag: "EXECUTIVE FLEET FOR DIGNITARIES & FAMILIES",
-        titleLine1: "Luxury Limousine & Ziyarat",
-        titleLine2: "Tours in Makkah & Madinah",
-        buttonText: "EXPLORE SERVICES",
+        tag: "Tours & Tourism",
+        titleLine1: "UAE Tours & Tourism",
+        titleLine2: "Explore Dubai & Abu Dhabi",
+        description:
+          "Guided city tours, sightseeing adventures, and premium UAE experiences crafted for travelers and families.",
+        buttonText: "Explore Tours",
+        image: "/images/services/Uaetravels&toursim.png",
+        href: "/services/uae-city-tours",
+      },
+      {
+        tag: "Desert Safari",
+        titleLine1: "Dubai Desert Safari",
+        titleLine2: "Adventure Beyond the City",
+        description:
+          "Red dune adventures, camel rides, desert dining, and unforgettable moments for families and groups.",
+        buttonText: "Book Safari",
+        image: "/images/services/desertsafari.png",
+        href: "/services/uae-desert-safari",
+      },
+      {
+        tag: "Rent a Car",
+        titleLine1: "Premium Car Rental",
+        titleLine2: "Across the UAE",
+        description:
+          "Self-drive and chauffeur-driven rentals with airport delivery, flexible plans, and premium comfort.",
+        buttonText: "Rent a Car",
+        image: "/images/services/rentacars.png",
+        href: "/services/uae-car-rental",
       },
     ],
 
@@ -301,28 +340,64 @@ export const translations: Record<Language, TranslationSchema> = {
 
     heroSlides: [
       {
-        tag: "خدمات نقل راقية للحجاج والمعتمرين والزوار",
-        titleLine1: "شريككم الموثوق للنقل الفاخر",
-        titleLine2: "في مكة المكرمة والمدينة المنورة",
-        buttonText: "استكشف الخدمات",
+        tag: "نقل العمرة",
+        titleLine1: "نقل فاخر للعمرة",
+        titleLine2: "في مكة والمدينة المنورة",
+        description:
+          "استقبال آمن من المطار، ونقل بين المدن، وخدمة سائق VIP في مكة والمدينة وجدة.",
+        buttonText: "احجز نقل العمرة",
+        image: "/images/services/umrah-transport-hd.jpg",
+        href: "/services/umrah-transport",
       },
       {
-        tag: "خدمات سائق خاص لكبار الشخصيات والمعتمرين",
-        titleLine1: "رحلات مباركة براحة وسكينة",
-        titleLine2: "بين رحاب الحرمين الشريفين",
-        buttonText: "استكشف الخدمات",
+        tag: "فنادق العمرة",
+        titleLine1: "فنادق العمرة المميزة",
+        titleLine2: "بالقرب من الحرم الشريف",
+        description:
+          "إقامات فاخرة مختارة بعناية في مكة والمدينة بأسعار موسمية شفافة وراحة عائلية.",
+        buttonText: "استكشف الفنادق",
+        image: "/images/services/umrah-hotels-hd.jpg",
+        href: "/services/umrah-hotels",
       },
       {
-        tag: "استقبال خاص لكبار الشخصيات من مطار جدة",
-        titleLine1: "توصيل مباشر من صالة كبار الشخصيات",
-        titleLine2: "بدون انتظار إلى مكة المكرمة",
-        buttonText: "استكشف الخدمات",
+        tag: "زيارات العمرة",
+        titleLine1: "جولات عمرة بإرشاد خاص",
+        titleLine2: "إلى المعالم المقدسة",
+        description:
+          "زيارات خاصة إلى المعالم المقدسة مع سائقين مرخصين وخطط مرنة تناسب مجموعاتك.",
+        buttonText: "خطط للزيارة",
+        image: "/images/services/umrah-ziyarat-hd.jpg",
+        href: "/services/umrah-ziyarat",
       },
       {
-        tag: "أسطول تنفيذي للضيوف والعائلات",
-        titleLine1: "ليموزين فاخر وجولات مزارات",
-        titleLine2: "في مكة المكرمة والمدينة المنورة",
-        buttonText: "استكشف الخدمات",
+        tag: "الجولات والسياحة",
+        titleLine1: "جولات وسياحة الإمارات",
+        titleLine2: "اكتشف دبي وأبوظبي",
+        description:
+          "جولات داخل المدن وتجارب سياحية فاخرة مصممة للعائلات والمسافرين.",
+        buttonText: "استكشف الجولات",
+        image: "/images/services/Uaetravels&toursim.png",
+        href: "/services/uae-city-tours",
+      },
+      {
+        tag: "سفاري الصحراء",
+        titleLine1: "سفاري صحراء دبي",
+        titleLine2: "مغامرات وذكريات لا تُنسى",
+        description:
+          "رحلات الرمال الحمراء، والجمال، والمساءات الصحراوية الفاخرة للتجارب المميزة.",
+        buttonText: "احجز السفاري",
+        image: "/images/services/desertsafari.png",
+        href: "/services/uae-desert-safari",
+      },
+      {
+        tag: "تأجير السيارات",
+        titleLine1: "تأجير سيارات مميز",
+        titleLine2: "للتنقل في أنحاء الإمارات",
+        description:
+          "تأجير سيارات ذاتية القيادة أو مع سائق مع توصيل المطار وخيارات مرنة وراحة عالية.",
+        buttonText: "احجز سيارة",
+        image: "/images/services/rentacars.png",
+        href: "/services/uae-car-rental",
       },
     ],
 

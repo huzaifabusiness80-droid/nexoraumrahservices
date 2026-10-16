@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { uaeTours, UaeTourItem } from "@/lib/data/tourData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
@@ -37,6 +38,7 @@ async function getTourData(id: string) {
         duration: cityTour.duration || "4 - 8 Hours",
         priceAed: Math.round(cityTour.priceAed),
         image: cityTour.image || "/images/hero/slide-1.jpg",
+        gallery: cityTour.gallery || [],
         overview: cityTour.description,
         highlights: Array.isArray(cityTour.highlights) && cityTour.highlights.length > 0
           ? cityTour.highlights
@@ -72,6 +74,7 @@ async function getTourData(id: string) {
         duration: safari.timing || "3:00 PM - 9:30 PM",
         priceAed: Math.round(safari.priceAed),
         image: safari.image || "/images/hero/slide-3.jpg",
+        gallery: safari.gallery || [],
         overview: safari.description,
         highlights: Array.isArray(safari.activities) && safari.activities.length > 0
           ? safari.activities
@@ -126,6 +129,7 @@ export default async function TourDetailPage({ params }: Props) {
     `Salam Nexora Journeys, I would like to book the "${tour.title}" (${tour.duration}, ${tour.priceAed} AED). Please confirm availability.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
+  const galleryImages = "gallery" in tour && Array.isArray(tour.gallery) ? tour.gallery : [];
 
   return (
     <div className="min-h-screen bg-white text-zinc-900 flex flex-col font-sans">
@@ -140,7 +144,7 @@ export default async function TourDetailPage({ params }: Props) {
             href={tour.category === "city-tour" ? "/services/uae-city-tours" : "/services/uae-desert-safari"}
             className="hover:text-black"
           >
-            {tour.category === "city-tour" ? "UAE City Tours" : "UAE Desert Safari"}
+            {tour.category === "city-tour" ? "Tours & Tourism" : "UAE Desert Safari"}
           </Link>
           <span>/</span>
           <span className="font-semibold text-zinc-900">{tour.title}</span>
@@ -174,6 +178,7 @@ export default async function TourDetailPage({ params }: Props) {
                 </h1>
               </div>
             </div>
+            <ServiceImageGallery images={galleryImages} alt={tour.title} />
 
             {/* Overview */}
             <div className="p-6">

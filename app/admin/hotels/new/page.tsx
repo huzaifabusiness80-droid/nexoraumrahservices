@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaPlus, FaTrash, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminNewHotelPage() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function AdminNewHotelPage() {
   const [address, setAddress] = useState("");
   const [startingPrice, setStartingPrice] = useState<number | "">(450);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [amenitiesText, setAmenitiesText] = useState(
     "Haram View, Direct Elevator Access, Free High-Speed WiFi, Buffet Breakfast, 24/7 Room Service"
@@ -80,6 +82,7 @@ export default function AdminNewHotelPage() {
           address,
           startingPrice: Number(startingPrice),
           image,
+          gallery,
           description,
           amenities,
           rooms,
@@ -286,6 +289,7 @@ export default function AdminNewHotelPage() {
             folder="nexora/hotels"
             label="Upload Main Hotel Photo *"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/hotels" />
         </div>
 
         {/* Section 3: Dynamic Room Tariffs */}

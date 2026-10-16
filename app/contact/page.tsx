@@ -79,12 +79,12 @@ export default function ContactPage() {
                   </span>
                   <h3 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
                     <FaMapMarkerAlt className="text-[#b58e45] text-base shrink-0" />
-                    <span>Makkah Al-Mukarramah Hub</span>
+                    <span>Makkah Office — Al Kakiya</span>
                   </h3>
                 </div>
 
                 <a
-                  href="https://maps.google.com/?q=Masjid+al-Haram,+Makkah,+Saudi+Arabia"
+                  href="https://maps.google.com/?q=District+Al+Kakiya,+Makkah"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-[#faf6ed] hover:text-[#b58e45] border border-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors"
@@ -97,8 +97,8 @@ export default function ContactPage() {
               {/* Embedded Google Map */}
               <div className="relative w-full flex-1 min-h-[380px] sm:min-h-[440px] lg:min-h-[480px] rounded-xl overflow-hidden border border-gray-200/80 shadow-inner">
                 <iframe
-                  title="Masjid Al-Haram, Makkah Map"
-                  src="https://maps.google.com/maps?q=Masjid%20al-Haram,%20Makkah,%20Saudi%20Arabia&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                  title="District Al Kakiya, Makkah Map"
+                  src="https://maps.google.com/maps?q=District%20Al%20Kakiya,%20Makkah&t=&z=15&ie=UTF8&iwloc=&output=embed"
                   className="w-full h-full border-0 absolute inset-0"
                   loading="lazy"
                   allowFullScreen
@@ -113,10 +113,32 @@ export default function ContactPage() {
                       <FaMapMarkerAlt className="text-xs" />
                     </div>
                     <div>
-                      <p className="font-bold text-gray-900">Ground Headquarters</p>
-                      <p className="text-gray-500 text-[11px] leading-snug">
-                        Ibrahim Al Khalil St, Haram District, Makkah, Saudi Arabia
-                      </p>
+                      <p className="font-bold text-gray-900">Makkah Office</p>
+                      <a
+                        href="https://maps.google.com/?q=District+Al+Kakiya,+Makkah"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 text-[11px] leading-snug hover:text-[#b58e45]"
+                      >
+                        District Al Kakiya, Makkah
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-gray-50/80 rounded-xl border border-gray-100 flex items-start gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-[#faf6ed] text-[#b58e45] flex items-center justify-center shrink-0 border border-[#e8ce97]/60">
+                      <FaMapMarkerAlt className="text-xs" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900">Pakistan Office</p>
+                      <a
+                        href="https://maps.google.com/?q=Ch+Zahoor+Ellahi+Stadium,+Gujrat,+Pakistan"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-500 text-[11px] leading-snug hover:text-[#b58e45]"
+                      >
+                        Ch Zahoor Ellahi Stadium, Gujrat, Pakistan
+                      </a>
                     </div>
                   </div>
 

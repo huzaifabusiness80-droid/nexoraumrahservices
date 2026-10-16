@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
+import { RENTAL_CAR_COMPANIES, RENTAL_CAR_TYPES } from "@/lib/carRentalOptions";
 
 export default function AdminNewCarRentalPage() {
   const router = useRouter();
@@ -13,7 +15,7 @@ export default function AdminNewCarRentalPage() {
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("Mercedes-Benz");
-  const [category, setCategory] = useState("Executive Sedan");
+  const [category, setCategory] = useState<string>(RENTAL_CAR_TYPES[0]);
   const [year, setYear] = useState<number | "">(2024);
   const [seats, setSeats] = useState<number | "">(5);
   const [transmission, setTransmission] = useState("Automatic");
@@ -25,6 +27,7 @@ export default function AdminNewCarRentalPage() {
   const [securityDeposit, setSecurityDeposit] = useState<number | "">(1500);
   const [freeMileagePerDay, setFreeMileagePerDay] = useState<number | "">(250);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [featuresText, setFeaturesText] = useState(
     "Apple CarPlay, 360-Degree Camera, Panoramic Sunroof, Leather Seats, Cruise Control, GPS Navigation"
   );
@@ -77,6 +80,7 @@ export default function AdminNewCarRentalPage() {
           isSelfDrive,
           withDriverOption,
           image,
+          gallery,
           isActive,
         }),
       });
@@ -86,8 +90,8 @@ export default function AdminNewCarRentalPage() {
 
       router.push("/admin/car-rental");
       router.refresh();
-    } catch (err: any) {
-      setError(err?.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -124,7 +128,7 @@ export default function AdminNewCarRentalPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Model Name *
+                Car Model *
               </label>
               <input
                 type="text"
@@ -138,32 +142,33 @@ export default function AdminNewCarRentalPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Brand / Make *
+                Car Company *
               </label>
-              <input
-                type="text"
+              <select
                 required
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                placeholder="e.g. Mercedes-Benz, BMW, Audi, Toyota, Nissan"
-                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
-              />
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+              >
+                {RENTAL_CAR_COMPANIES.map((company) => (
+                  <option key={company} value={company}>{company}</option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Category *
+                Rental Car Type *
               </label>
               <select
+                required
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
               >
-                <option value="Executive Sedan">Executive Sedan</option>
-                <option value="Luxury SUV">Luxury SUV</option>
-                <option value="Sports & Exotic">Sports & Exotic</option>
-                <option value="Economy & Midsize">Economy & Midsize</option>
-                <option value="Premium Van / Chauffeur">Premium Van / Chauffeur</option>
+                {RENTAL_CAR_TYPES.map((carType) => (
+                  <option key={carType} value={carType}>{carType}</option>
+                ))}
               </select>
             </div>
 
@@ -385,6 +390,7 @@ export default function AdminNewCarRentalPage() {
             label="Upload High-Quality Car Photo *"
             folder="nexora/car-rental"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/car-rental" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-2">

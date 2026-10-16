@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminNewDesertSafariPage() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function AdminNewDesertSafariPage() {
   const [priceAed, setPriceAed] = useState<number | "">(150);
   const [vipPriceAed, setVipPriceAed] = useState<number | "">(280);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [activitiesText, setActivitiesText] = useState(
     "Dune Bashing in 4x4 Land Cruiser, Camel Ride, Sandboarding, Henna Tattoo, Sunset Photography, Fire Show, Tanoura Dance, Belly Dance"
@@ -50,6 +52,7 @@ export default function AdminNewDesertSafariPage() {
           priceAed: Number(priceAed),
           vipPriceAed: vipPriceAed !== "" ? Number(vipPriceAed) : null,
           image,
+          gallery,
           description,
           activities,
           includes,
@@ -238,6 +241,7 @@ export default function AdminNewDesertSafariPage() {
             label="Upload Desert Safari Cover Photo *"
             folder="nexora/desert-safari"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/desert-safari" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-2">

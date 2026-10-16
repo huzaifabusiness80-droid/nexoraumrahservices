@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { ziyaratTours, ZiyaratTourItem } from "@/lib/data/ziyaratData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
@@ -36,6 +37,7 @@ async function getZiyaratData(id: string) {
         duration: tour.duration || "3 - 4 Hours",
         startingPriceSar: tour.priceSedan || 200,
         image: tour.image || "/images/hero/slide-2.jpg",
+        gallery: tour.gallery || [],
         overview: tour.description || `Experience the profound history of Islam through the guided ${tour.title}.`,
         stops: Array.isArray(tour.placesCovered) && tour.placesCovered.length > 0
           ? tour.placesCovered.map((place) => ({
@@ -100,6 +102,7 @@ export default async function ZiyaratDetailPage({ params }: Props) {
     `Salam Nexora Umrah Services, I would like to book the "${tour.title}" (${tour.duration}, starting from ${tour.startingPriceSar} SAR). Please share available dates.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
+  const galleryImages = "gallery" in tour && Array.isArray(tour.gallery) ? tour.gallery : [];
 
   return (
     <div className="min-h-screen bg-white text-zinc-900 flex flex-col font-sans">
@@ -143,6 +146,7 @@ export default async function ZiyaratDetailPage({ params }: Props) {
                 </h1>
               </div>
             </div>
+            <ServiceImageGallery images={galleryImages} alt={tour.title} />
 
             {/* Tour Overview */}
             <div className="p-6">

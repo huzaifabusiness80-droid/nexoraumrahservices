@@ -5,6 +5,13 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner, FaTrash } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
+import {
+  LEGACY_RENTAL_CAR_COMPANY_MAP,
+  LEGACY_RENTAL_CAR_TYPE_MAP,
+  RENTAL_CAR_COMPANIES,
+  RENTAL_CAR_TYPES,
+} from "@/lib/carRentalOptions";
 
 export default function AdminEditCarRentalPage() {
   const router = useRouter();
@@ -18,7 +25,7 @@ export default function AdminEditCarRentalPage() {
 
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("Mercedes-Benz");
-  const [category, setCategory] = useState("Executive Sedan");
+  const [category, setCategory] = useState<string>(RENTAL_CAR_TYPES[0]);
   const [year, setYear] = useState<number | "">(2024);
   const [seats, setSeats] = useState<number | "">(5);
   const [transmission, setTransmission] = useState("Automatic");
@@ -30,6 +37,7 @@ export default function AdminEditCarRentalPage() {
   const [securityDeposit, setSecurityDeposit] = useState<number | "">(1500);
   const [freeMileagePerDay, setFreeMileagePerDay] = useState<number | "">(250);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [featuresText, setFeaturesText] = useState("");
   const [isSelfDrive, setIsSelfDrive] = useState(true);
   const [withDriverOption, setWithDriverOption] = useState(true);
@@ -43,13 +51,17 @@ export default function AdminEditCarRentalPage() {
         if (!res.ok || !data.success) throw new Error(data.error || "Car not found");
         const c = data.car;
         setName(c.name || "");
-        setBrand(c.brand || "Mercedes-Benz");
-        setCategory(c.category || "Executive Sedan");
+        const currentBrand = c.brand || "Mercedes-Benz";
+        const currentCategory = c.category || RENTAL_CAR_TYPES[0];
+        setBrand(LEGACY_RENTAL_CAR_COMPANY_MAP[currentBrand] || currentBrand);
+        setCategory(LEGACY_RENTAL_CAR_TYPE_MAP[currentCategory.toLowerCase()] || currentCategory);
         setYear(c.year !== undefined ? c.year : 2024);
         setSeats(c.seats !== undefined ? c.seats : 5);
         setTransmission(c.transmission || "Automatic");
         setFuelType(c.fuelType || "Petrol");
         setDailyPriceAed(c.dailyPriceAed !== undefined ? c.dailyPriceAed : 0);
+        setImage(c.image || "");
+        setGallery(Array.isArray(c.gallery) ? c.gallery.slice(0, 6) : []);
         setWeeklyPriceAed(c.weeklyPriceAed !== null && c.weeklyPriceAed !== undefined ? c.weeklyPriceAed : "");
         setMonthlyPriceAed(c.monthlyPriceAed !== null && c.monthlyPriceAed !== undefined ? c.monthlyPriceAed : "");
         setSecurityDeposit(c.securityDeposit !== undefined ? c.securityDeposit : 0);
@@ -61,8 +73,8 @@ export default function AdminEditCarRentalPage() {
         setIsSelfDrive(c.isSelfDrive !== undefined ? c.isSelfDrive : true);
         setWithDriverOption(c.withDriverOption !== undefined ? c.withDriverOption : true);
         setIsActive(c.isActive !== undefined ? c.isActive : true);
-      } catch (err: any) {
-        setError(err?.message || "Failed to load rental car");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load rental car");
       } finally {
         setInitialLoading(false);
       }
@@ -115,6 +127,7 @@ export default function AdminEditCarRentalPage() {
           isSelfDrive,
           withDriverOption,
           image,
+          gallery,
           isActive,
         }),
       });
@@ -124,8 +137,8 @@ export default function AdminEditCarRentalPage() {
 
       router.push("/admin/car-rental");
       router.refresh();
-    } catch (err: any) {
-      setError(err?.message || "An error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setSaving(false);
     }
@@ -140,8 +153,8 @@ export default function AdminEditCarRentalPage() {
       if (!res.ok || !data.success) throw new Error(data.error || "Failed to delete");
       router.push("/admin/car-rental");
       router.refresh();
-    } catch (err: any) {
-      alert(err?.message || "Delete failed");
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Delete failed");
       setDeleting(false);
     }
   };
@@ -209,32 +222,39 @@ export default function AdminEditCarRentalPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Brand / Make *
+                Car Company *
               </label>
-              <input
-                type="text"
+              <select
                 required
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                placeholder="e.g. Mercedes-Benz, BMW, Audi, Toyota, Nissan"
-                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
-              />
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+              >
+                {!RENTAL_CAR_COMPANIES.includes(brand as typeof RENTAL_CAR_COMPANIES[number]) && (
+                  <option value={brand}>{brand} (Existing)</option>
+                )}
+                {RENTAL_CAR_COMPANIES.map((company) => (
+                  <option key={company} value={company}>{company}</option>
+                ))}
+              </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Category *
+                Rental Car Type *
               </label>
               <select
+                required
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
               >
-                <option value="Executive Sedan">Executive Sedan</option>
-                <option value="Luxury SUV">Luxury SUV</option>
-                <option value="Sports & Exotic">Sports & Exotic</option>
-                <option value="Economy & Midsize">Economy & Midsize</option>
-                <option value="Premium Van / Chauffeur">Premium Van / Chauffeur</option>
+                {!RENTAL_CAR_TYPES.includes(category as typeof RENTAL_CAR_TYPES[number]) && (
+                  <option value={category}>{category} (Existing)</option>
+                )}
+                {RENTAL_CAR_TYPES.map((carType) => (
+                  <option key={carType} value={carType}>{carType}</option>
+                ))}
               </select>
             </div>
 
@@ -456,6 +476,7 @@ export default function AdminEditCarRentalPage() {
             label="Upload High-Quality Car Photo *"
             folder="nexora/car-rental"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/car-rental" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-2">

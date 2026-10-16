@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminNewCityTourPage() {
   const router = useRouter();
@@ -13,10 +14,12 @@ export default function AdminNewCityTourPage() {
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("Dubai");
+  const [category, setCategory] = useState("City Sightseeing");
   const [duration, setDuration] = useState("4 - 5 Hours");
   const [priceAed, setPriceAed] = useState<number | "">(250);
   const [pricePerPerson, setPricePerPerson] = useState<number | "">(120);
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [highlightsText, setHighlightsText] = useState("Burj Khalifa, Dubai Marina Walk, Palm Jumeirah, Burj Al Arab, Gold Souk");
   const [inclusionsText, setInclusionsText] = useState("Private AC Vehicle, Chauffeur, Fuel & Salik Tolls, Doorstep Pickup");
@@ -42,11 +45,13 @@ export default function AdminNewCityTourPage() {
         body: JSON.stringify({
           title,
           city,
+          category,
           duration,
           priceAed: Number(priceAed),
           pricePerPerson: pricePerPerson !== "" ? Number(pricePerPerson) : null,
           privateCarPrice: Number(priceAed),
           image,
+          gallery,
           description,
           highlights,
           inclusions,
@@ -136,6 +141,23 @@ export default function AdminNewCityTourPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                Tour Category *
+              </label>
+              <select
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+              >
+                <option value="City Sightseeing">City Sightseeing</option>
+                <option value="Heritage & Culture">Heritage &amp; Culture</option>
+                <option value="Family & Theme Parks">Family &amp; Theme Parks</option>
+                <option value="Private Excursion">Private Excursion</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
                 Private Vehicle Price (AED) *
               </label>
               <input
@@ -206,6 +228,7 @@ export default function AdminNewCityTourPage() {
             2. Tour Photo (Cloudinary Upload)
           </h2>
           <ImageUploader value={image} onChange={(url) => setImage(url)} folder="nexora/tours" label="Upload Tour Photo *" />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/tours" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200">

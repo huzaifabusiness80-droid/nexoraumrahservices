@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaSave, FaSpinner, FaTrash } from "react-icons/fa";
 import ImageUploader from "@/components/admin/ImageUploader";
+import ImageGalleryUploader from "@/components/admin/ImageGalleryUploader";
 
 export default function AdminEditCityTourPage() {
   const router = useRouter();
@@ -18,10 +19,12 @@ export default function AdminEditCityTourPage() {
 
   const [title, setTitle] = useState("");
   const [city, setCity] = useState("Dubai");
+  const [category, setCategory] = useState("City Sightseeing");
   const [duration, setDuration] = useState("4 - 5 Hours");
   const [priceAed, setPriceAed] = useState<number | "">(250);
   const [pricePerPerson, setPricePerPerson] = useState<number | "">("");
   const [image, setImage] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [highlightsText, setHighlightsText] = useState("");
   const [inclusionsText, setInclusionsText] = useState("");
@@ -36,10 +39,12 @@ export default function AdminEditCityTourPage() {
         const tour = data.tour;
         setTitle(tour.title || "");
         setCity(tour.city || "Dubai");
+        setCategory(tour.category || "City Sightseeing");
         setDuration(tour.duration || "4 - 5 Hours");
         setPriceAed(tour.priceAed !== undefined ? tour.priceAed : 250);
         setPricePerPerson(tour.pricePerPerson !== null && tour.pricePerPerson !== undefined ? tour.pricePerPerson : "");
         setImage(tour.image || "");
+        setGallery(Array.isArray(tour.gallery) ? tour.gallery.slice(0, 6) : []);
         setDescription(tour.description || "");
         setHighlightsText(Array.isArray(tour.highlights) ? tour.highlights.join(", ") : "");
         setInclusionsText(Array.isArray(tour.inclusions) ? tour.inclusions.join(", ") : "");
@@ -73,11 +78,13 @@ export default function AdminEditCityTourPage() {
         body: JSON.stringify({
           title,
           city,
+          category,
           duration,
           priceAed: Number(priceAed),
           pricePerPerson: pricePerPerson !== "" ? Number(pricePerPerson) : null,
           privateCarPrice: Number(priceAed),
           image,
+          gallery,
           description,
           highlights,
           inclusions,
@@ -200,6 +207,23 @@ export default function AdminEditCityTourPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                Tour Category *
+              </label>
+              <select
+                required
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+              >
+                <option value="City Sightseeing">City Sightseeing</option>
+                <option value="Heritage & Culture">Heritage &amp; Culture</option>
+                <option value="Family & Theme Parks">Family &amp; Theme Parks</option>
+                <option value="Private Excursion">Private Excursion</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
                 Private Vehicle Price (AED) *
               </label>
               <input
@@ -294,6 +318,7 @@ export default function AdminEditCityTourPage() {
             label="Upload High-Quality Tour Photo *"
             folder="nexora/city-tours"
           />
+          <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/city-tours" />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-2">

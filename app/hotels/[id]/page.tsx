@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { allHotels, HotelItem } from "@/lib/data/hotelData";
 import { FaWhatsapp, FaMapMarkerAlt, FaWalking, FaBusAlt, FaCheck, FaPhoneAlt, FaBed } from "react-icons/fa";
@@ -46,6 +47,8 @@ async function getHotelData(id: string) {
         city: (hotel.city?.toLowerCase() === "madinah" ? "madinah" : "makkah") as "makkah" | "madinah",
         location: hotel.address || (hotel.city?.toLowerCase() === "makkah" ? "Ibrahim Khalil Road" : "Markazia Central Area"),
         distance: hotel.distance || "Walking Distance",
+        image: hotel.image,
+        gallery: hotel.gallery || [],
         sharingBed: sharingRoom ? Math.round(sharingRoom.pricePerNight) : undefined,
         quadBed: standardRoom ? Math.round(standardRoom.pricePerNight) : Math.round(hotel.startingPrice || 350),
         quintBed: quintRoom ? Math.round(quintRoom.pricePerNight) : undefined,
@@ -102,6 +105,7 @@ export default async function HotelDetailPage({ params }: Props) {
     `Salam Nexora Journeys, I would like to book "${hotel.name}" in ${cityName} (${hotel.location}, ${hotel.distance}). Please confirm availability for my travel dates.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
+  const galleryImages = "gallery" in hotel && Array.isArray(hotel.gallery) ? hotel.gallery : [];
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-zinc-900 flex flex-col font-sans">
@@ -126,7 +130,7 @@ export default async function HotelDetailPage({ params }: Props) {
           <div className="lg:col-span-7 bg-white border border-zinc-200 shadow-sm overflow-hidden">
             <div className="relative w-full h-80 sm:h-96 bg-zinc-900">
               <Image
-                src={hotel.city === "makkah" ? "/images/hero/slide-1.jpg" : "/images/hero/slide-3.jpg"}
+                src={hotel.image}
                 alt={hotel.name}
                 fill
                 priority
@@ -152,6 +156,7 @@ export default async function HotelDetailPage({ params }: Props) {
                 </p>
               </div>
             </div>
+            <ServiceImageGallery images={galleryImages} alt={hotel.name} />
 
             {/* Room Rate Cards */}
             <div className="p-6">
