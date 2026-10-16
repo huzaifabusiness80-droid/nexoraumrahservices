@@ -167,7 +167,7 @@ export default function TransportFleetSection() {
               )}
             </div>
 
-            {/* Filter Controls */}
+     
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Filter by Category */}
               <div className="relative">
