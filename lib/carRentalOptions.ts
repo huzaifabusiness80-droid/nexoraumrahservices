@@ -9,6 +9,7 @@ export const RENTAL_CAR_TYPES = [
   "Shooting Brake",
   "Roadster",
   "Electric Vehicles",
+  "Truck",
 ] as const;
 
 export const RENTAL_CAR_COMPANIES = [
