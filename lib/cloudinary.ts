@@ -1,9 +1,16 @@
 import { v2 as cloudinary } from "cloudinary";
 
+// Clean credentials helper to remove accidental quotes, whitespace, or newlines (common in Vercel env UI)
+const clean = (val?: string) => (val || "").trim().replace(/^["']|["']$/g, "").trim();
+
+const cloud_name = clean(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+const api_key = clean(process.env.CLOUDINARY_API_KEY);
+const api_secret = clean(process.env.CLOUDINARY_API_SECRET);
+
 cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name,
+  api_key,
+  api_secret,
   secure: true,
 });
 
@@ -19,9 +26,23 @@ export async function uploadImageToCloudinary(
   folder: string = "nexora"
 ) {
   try {
+    const cName = clean(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+    const aKey = clean(process.env.CLOUDINARY_API_KEY);
+    const aSecret = clean(process.env.CLOUDINARY_API_SECRET);
+
+    if (!cName || !aKey || !aSecret) {
+      return {
+        success: false,
+        error: "Missing Cloudinary configuration. Please verify NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.",
+      };
+    }
+
     const uploadResponse = await cloudinary.uploader.upload(fileUri, {
       folder,
       resource_type: "auto",
+      cloud_name: cName,
+      api_key: aKey,
+      api_secret: aSecret,
     });
     return {
       success: true,
@@ -42,7 +63,15 @@ export async function uploadImageToCloudinary(
  */
 export async function deleteImageFromCloudinary(publicId: string) {
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    const cName = clean(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
+    const aKey = clean(process.env.CLOUDINARY_API_KEY);
+    const aSecret = clean(process.env.CLOUDINARY_API_SECRET);
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      cloud_name: cName,
+      api_key: aKey,
+      api_secret: aSecret,
+    });
     return { success: result.result === "ok" };
   } catch (error: any) {
     console.error("Cloudinary deletion error:", error);
