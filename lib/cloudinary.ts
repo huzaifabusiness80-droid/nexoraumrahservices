@@ -67,10 +67,17 @@ export async function deleteImageFromCloudinary(publicId: string) {
     const aKey = clean(process.env.CLOUDINARY_API_KEY);
     const aSecret = clean(process.env.CLOUDINARY_API_SECRET);
 
+    if (cName && aKey && aSecret) {
+      cloudinary.config({
+        cloud_name: cName,
+        api_key: aKey,
+        api_secret: aSecret,
+        secure: true,
+      });
+    }
+
     const result = await cloudinary.uploader.destroy(publicId, {
-      cloud_name: cName,
-      api_key: aKey,
-      api_secret: aSecret,
+      invalidate: true,
     });
     return { success: result.result === "ok" };
   } catch (error: any) {
