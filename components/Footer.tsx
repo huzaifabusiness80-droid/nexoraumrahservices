@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaSnapchatGhost, FaClock, FaShieldAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaInstagram, FaClock, FaShieldAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa6";
 
 export default function Footer() {
   return (
@@ -112,7 +113,7 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/Nexoraumrahservices"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#1877F2] hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
@@ -122,13 +123,23 @@ export default function Footer() {
                 </a>
 
                 <a
-                  href="https://snapchat.com"
+                  href="https://www.instagram.com/nexoraumrahservices"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#FFFC00] hover:text-black text-zinc-300 flex items-center justify-center transition-all duration-200"
-                  aria-label="Snapchat"
+                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#E4405F] hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
+                  aria-label="Instagram"
                 >
-                  <FaSnapchatGhost className="w-5 h-5" />
+                  <FaInstagram className="w-5 h-5" />
+                </a>
+
+                <a
+                  href="https://www.tiktok.com/@nexoraumrahservices"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-black hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
+                  aria-label="TikTok"
+                >
+                  <FaTiktok className="w-5 h-5" />
                 </a>
               </div>
             </div>
