@@ -26,6 +26,9 @@ export default function AdminEditHotelPage({
   const [distance, setDistance] = useState("");
   const [address, setAddress] = useState("");
   const [startingPrice, setStartingPrice] = useState<number | "">("");
+  const [isContactPricing, setIsContactPricing] = useState(false);
+  const [priceValidFrom, setPriceValidFrom] = useState("");
+  const [priceValidUntil, setPriceValidUntil] = useState("");
   const [image, setImage] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
@@ -49,6 +52,9 @@ export default function AdminEditHotelPage({
           setDistance(h.distance || "");
           setAddress(h.address || "");
           setStartingPrice(h.startingPrice || 0);
+          setIsContactPricing(Boolean(h.isContactPricing));
+          setPriceValidFrom(h.priceValidFrom || "");
+          setPriceValidUntil(h.priceValidUntil || "");
           setImage(h.image || "");
           setGallery(Array.isArray(h.gallery) ? h.gallery.slice(0, 6) : []);
           setDescription(h.description || "");
@@ -93,8 +99,12 @@ export default function AdminEditHotelPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !image || startingPrice === "") {
-      setError("Please fill in Hotel Name, Starting Price, and Upload an Image.");
+    if (!name || !image) {
+      setError("Please fill in Hotel Name and Upload an Image.");
+      return;
+    }
+    if (!isContactPricing && (!startingPrice || !priceValidFrom || !priceValidUntil || priceValidUntil < priceValidFrom)) {
+      setError("Enter the starting rate and a valid pricing date range, or choose Contact for pricing.");
       return;
     }
 
@@ -116,12 +126,15 @@ export default function AdminEditHotelPage({
           stars: Number(stars),
           distance,
           address,
-          startingPrice: Number(startingPrice),
+          startingPrice: isContactPricing ? 0 : Number(startingPrice),
+          isContactPricing,
+          priceValidFrom: isContactPricing ? null : priceValidFrom,
+          priceValidUntil: isContactPricing ? null : priceValidUntil,
           image,
           gallery,
           description,
           amenities,
-          rooms,
+          rooms: isContactPricing ? undefined : rooms,
           isActive,
           featured,
         }),
@@ -243,19 +256,66 @@ export default function AdminEditHotelPage({
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Starting Rate (SAR / Night) *
+            <div className="sm:col-span-2 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isContactPricing}
+                  onChange={(e) => setIsContactPricing(e.target.checked)}
+                  className="mt-0.5 rounded border-zinc-300 text-[#c5a059] focus:ring-0"
+                />
+                <span>
+                  <span className="block text-xs font-bold text-zinc-800">Contact for pricing</span>
+                  <span className="block text-xs text-zinc-500 mt-1">
+                    Use this when rates are not available. Customers will see no room prices and can request a quote.
+                  </span>
+                </span>
               </label>
-              <input
-                type="number"
-                required
-                min="0"
-                value={startingPrice}
-                onChange={(e) => setStartingPrice(e.target.value === "" ? "" : Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
-              />
             </div>
+
+            {!isContactPricing && (
+              <>
+                <div>
+                  <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                    Starting Rate (SAR / Night) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min="1"
+                    value={startingPrice}
+                    onChange={(e) => setStartingPrice(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                    Price Valid From *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={priceValidFrom}
+                    max={priceValidUntil || undefined}
+                    onChange={(e) => setPriceValidFrom(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                    Price Valid Until *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={priceValidUntil}
+                    min={priceValidFrom || undefined}
+                    onChange={(e) => setPriceValidUntil(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                  />
+                </div>
+              </>
+            )}
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
@@ -332,7 +392,7 @@ export default function AdminEditHotelPage({
         </div>
 
         {/* Section 3: Dynamic Room Tariffs */}
-        <div className="bg-white border border-zinc-200 rounded-xl p-6 sm:p-7 space-y-4">
+        {!isContactPricing && <div className="bg-white border border-zinc-200 rounded-xl p-6 sm:p-7 space-y-4">
           <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
             <div>
               <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
@@ -426,7 +486,7 @@ export default function AdminEditHotelPage({
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* Submit Actions */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-zinc-200">

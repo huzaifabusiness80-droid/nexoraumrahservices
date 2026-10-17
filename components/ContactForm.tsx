@@ -14,7 +14,7 @@ export default function ContactForm() {
     message: "",
   });
 
-  const saudiWhatsApp = "966536376568";
+  const whatsappNumber = "447882749006";
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -37,7 +37,7 @@ export default function ContactForm() {
 ${formData.message || "No specific note provided"}`;
 
     const encoded = encodeURIComponent(textMessage);
-    window.open(`https://wa.me/${saudiWhatsApp}?text=${encoded}`, "_blank");
+    window.open(`https://wa.me/${whatsappNumber}?text=${encoded}`, "_blank");
   };
 
   return (
@@ -92,7 +92,7 @@ ${formData.message || "No specific note provided"}`;
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+966 / +92 / +44..."
+                  placeholder="+966 / +92 / +971 / +44..."
                   className="w-full pl-9 pr-3.5 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#b58e45] focus:bg-white text-gray-900 text-xs sm:text-sm transition-all"
                 />
               </div>
@@ -134,8 +134,8 @@ ${formData.message || "No specific note provided"}`;
                 <option value="Umrah Hotel Booking (Makkah / Madinah)">Umrah Hotel Booking (Makkah / Madinah)</option>
                 <option value="Holy Ziyarat Sanctuary Excursion">Holy Ziyarat Sanctuary Excursion</option>
                 <option value="VIP Airport Chauffeur Service">VIP Airport Chauffeur Service</option>
-                <option value="UAE Car Rental (Self-Drive / Chauffeur)">UAE Car Rental (Self-Drive / Chauffeur)</option>
-                <option value="UAE Desert Safari & City Tours">UAE Desert Safari &amp; City Tours</option>
+                <option value="Car Rental (Self-Drive / Chauffeur)">Car Rental (Self-Drive / Chauffeur)</option>
+                <option value="Travels & Tourism, Desert Safari">Travels &amp; Tourism, Desert Safari</option>
               </select>
             </div>
           </div>

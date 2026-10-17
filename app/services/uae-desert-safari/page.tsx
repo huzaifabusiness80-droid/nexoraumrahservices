@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
-import { FaCheck, FaClock, FaArrowRight, FaSpinner } from "react-icons/fa";
+import { FaCheck, FaClock, FaArrowRight, FaSpinner, FaWhatsapp } from "react-icons/fa";
 
 interface SafariPackage {
   id: string;
@@ -22,7 +22,7 @@ interface SafariPackage {
 }
 
 export default function UaeDesertSafariPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const [safaris, setSafaris] = useState<SafariPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -55,7 +55,7 @@ export default function UaeDesertSafariPage() {
       <section className="relative w-full bg-zinc-950 py-16 sm:py-20 border-b border-zinc-800">
         <div className="absolute inset-0 overflow-hidden opacity-30">
           <Image
-            src="/images/hero/slide-3.jpg"
+            src="/images/services/desertsafariimage.png"
             alt="UAE Desert Safari"
             fill
             className="object-cover object-center"
@@ -166,6 +166,15 @@ export default function UaeDesertSafariPage() {
                       <span>View Details</span>
                       <FaArrowRight className="text-xs" />
                     </Link>
+                    <a
+                      href={waLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white text-center font-bold tracking-[0.16em] uppercase text-xs transition-all flex items-center justify-center gap-2 shadow-sm"
+                    >
+                      <FaWhatsapp className="text-sm" />
+                      <span>Book on WhatsApp</span>
+                    </a>
                   </div>
                 </div>
               );

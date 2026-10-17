@@ -83,7 +83,7 @@ export default function HeroCarousel() {
             </Link>
 
             <a
-              href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
+              href="https://wa.me/447882749006?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20book%20a%20ride."
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 sm:px-7 py-3.5 sm:py-4 text-sm sm:text-[15px] font-semibold text-white bg-white/8 hover:bg-white/12 border border-white/40 hover:border-white/70 backdrop-blur-sm transition-all duration-200 inline-flex items-center justify-center cursor-pointer text-center"

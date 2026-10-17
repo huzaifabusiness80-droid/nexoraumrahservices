@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { isHotelPriceAvailable } from "@/lib/hotelPricing";
 
 // Public API: Get all active hotels with rooms
 // Supports: ?city=...&stars=...&sort=...&search=...
@@ -46,7 +47,17 @@ export async function GET(req: NextRequest) {
       orderBy,
     });
 
-    return NextResponse.json({ success: true, hotels });
+    const customerHotels = hotels.map((hotel) => {
+      const hasPrice = isHotelPriceAvailable(hotel);
+      return {
+        ...hotel,
+        isContactPricing: !hasPrice,
+        startingPrice: hasPrice ? hotel.startingPrice : 0,
+        rooms: hasPrice ? hotel.rooms : [],
+      };
+    });
+
+    return NextResponse.json({ success: true, hotels: customerHotels });
   } catch (error: any) {
     if (error?.digest === "NEXT_PRERENDER_INTERRUPTED") throw error;
     console.error("Public hotels API error:", error);

@@ -3,12 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaArrowRight } from "react-icons/fa";
-import { useLanguage } from "@/context/LanguageContext";
+import HeaderSearch from "@/components/HeaderSearch";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { t } = useLanguage();
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200 animate-header-enter">
@@ -27,7 +25,7 @@ export default function Header() {
         </Link>
 
         {/* Center / Right: Nav Items */}
-        <nav className="hidden lg:flex items-center justify-center flex-1 gap-2.5 xl:gap-4 2xl:gap-9">
+        <nav className="hidden xl:flex items-center justify-center flex-1 gap-2.5 xl:gap-4 2xl:gap-9">
           <Link
             href="/"
             className="text-[11px] xl:text-[12px] font-bold tracking-wider text-[#c5a059] uppercase transition-colors whitespace-nowrap hover:text-[#b08c47]"
@@ -74,7 +72,7 @@ export default function Header() {
             href="/services/uae-car-rental"
             className="text-[11px] xl:text-[12px] font-bold tracking-wider text-zinc-800 hover:text-[#c5a059] uppercase transition-colors whitespace-nowrap"
           >
-            UAE Car Rental
+            Car Rental
           </Link>
           <Link
             href="/contact"
@@ -84,23 +82,12 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Right Action: Book Now button */}
-        <div className="hidden lg:flex items-center shrink-0">
-          <a
-            href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20make%20a%20booking."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group px-5 xl:px-6 py-2.5 text-xs xl:text-sm font-semibold tracking-[0.14em] uppercase bg-black text-white border border-black hover:bg-zinc-800 transition-colors whitespace-nowrap inline-flex items-center gap-2.5"
-          >
-            <span>{t.requestRide}</span>
-            <FaArrowRight className="text-[11px] transition-transform duration-200 group-hover:translate-x-1" />
-          </a>
-        </div>
+        <HeaderSearch className="hidden xl:block w-52 2xl:w-64 shrink-0" />
 
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2 text-black border border-zinc-200"
+          className="xl:hidden p-2 text-black border border-zinc-200"
           aria-label="Toggle navigation menu"
         >
           {mobileMenuOpen ? (
@@ -115,9 +102,13 @@ export default function Header() {
         </button>
       </div>
 
+      <div className="xl:hidden px-4 sm:px-6 pb-3">
+        <HeaderSearch className="w-full" />
+      </div>
+
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden w-full bg-white border-b border-black p-6 space-y-4 animate-header-enter">
+        <div className="xl:hidden w-full bg-white border-b border-black p-6 space-y-4 animate-header-enter">
           <nav className="flex flex-col space-y-3">
             <Link
               href="/"
@@ -159,7 +150,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
-              Tours & Tourism
+              Travels & Tourism
             </Link>
             <Link
               href="/services/uae-desert-safari"
@@ -173,7 +164,7 @@ export default function Header() {
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
-              UAE Car Rental
+              Car Rental
             </Link>
             <Link
               href="/contact"
@@ -184,14 +175,6 @@ export default function Header() {
             </Link>
           </nav>
 
-          <a
-            href="https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20make%20a%20booking."
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full text-center py-3 text-sm font-bold tracking-widest uppercase border border-[#c5a059] text-white bg-black hover:bg-zinc-800 transition-all"
-          >
-            {t.requestRide}
-          </a>
         </div>
       )}
     </header>

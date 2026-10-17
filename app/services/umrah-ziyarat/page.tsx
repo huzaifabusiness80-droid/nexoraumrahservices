@@ -35,7 +35,7 @@ interface ZiyaratTour {
 }
 
 export default function UmrahZiyaratPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
 
   // Data state
   const [tours, setTours] = useState<ZiyaratTour[]>([]);

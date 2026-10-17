@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { uaeTours, UaeTourItem } from "@/lib/data/tourData";
-import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
 
 
 export const instant = false;
@@ -124,7 +124,7 @@ export default async function TourDetailPage({ params }: Props) {
     notFound();
   }
 
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const bookingText = encodeURIComponent(
     `Salam Nexora Journeys, I would like to book the "${tour.title}" (${tour.duration}, ${tour.priceAed} AED). Please confirm availability.`
   );
@@ -144,7 +144,7 @@ export default async function TourDetailPage({ params }: Props) {
             href={tour.category === "city-tour" ? "/services/uae-city-tours" : "/services/uae-desert-safari"}
             className="hover:text-black"
           >
-            {tour.category === "city-tour" ? "Tours & Tourism" : "UAE Desert Safari"}
+            {tour.category === "city-tour" ? "Travels & Tourism" : "UAE Desert Safari"}
           </Link>
           <span>/</span>
           <span className="font-semibold text-zinc-900">{tour.title}</span>
@@ -256,13 +256,6 @@ export default async function TourDetailPage({ params }: Props) {
                 <span>Book This Tour On WhatsApp</span>
               </a>
 
-              <a
-                href={`tel:${targetPhone}`}
-                className="w-full py-3.5 bg-zinc-900 hover:bg-black text-white text-center font-semibold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-              >
-                <FaPhoneAlt className="text-xs" />
-                <span>Call Chauffeur Desk (+{targetPhone})</span>
-              </a>
             </div>
           </div>
         </div>

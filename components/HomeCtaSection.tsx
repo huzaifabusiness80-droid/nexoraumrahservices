@@ -4,8 +4,7 @@ import Image from "next/image";
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function HomeCtaSection() {
-  const whatsappNumber = "+92 315 8494785";
-  const whatsappLink = "https://wa.me/923158494785?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20inquire%20about%20your%20services.";
+  const whatsappLink = "https://wa.me/447882749006?text=Salam%20Nexora%20Journeys,%20I%20would%20like%20to%20inquire%20about%20your%20services.";
 
   return (
     <section className="relative w-full py-20 sm:py-24 lg:py-28 overflow-hidden font-sans border-y border-zinc-800">

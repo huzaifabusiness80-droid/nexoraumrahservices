@@ -8,7 +8,6 @@ import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import {
   FaWhatsapp,
-  FaPhoneAlt,
   FaCar,
   FaGasPump,
   FaKey,
@@ -62,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     (Array.isArray(car.features) && car.features.includes("contact_for_price"));
 
   return {
-    title: `${car.name} (${car.brand}) UAE Car Rental | Nexora Journeys`,
+    title: `${car.name} (${car.brand}) Car Rental | Nexora Journeys`,
     description: isContactPrice
       ? `Rent ${car.name} in Dubai & Abu Dhabi. Custom rates available on request. Free hotel & airport delivery.`
       : `Rent ${car.name} in Dubai & Abu Dhabi from ${car.dailyPriceAed} AED/day. ${car.seats} seats, ${car.transmission}, free airport delivery.`,
@@ -77,7 +76,7 @@ export default async function CarRentalDetailPage({ params }: Props) {
     notFound();
   }
 
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const realFeatures = (Array.isArray(car.features) ? car.features : []).filter(
     (f) => f && f !== "contact_for_price"
   );
@@ -105,7 +104,7 @@ export default async function CarRentalDetailPage({ params }: Props) {
           </Link>
           <span>/</span>
           <Link href="/services/uae-car-rental" className="hover:text-gray-900 transition-colors">
-            UAE Car Rental
+            Car Rental
           </Link>
           <span>/</span>
           <span className="font-semibold text-gray-900">{car.name}</span>
@@ -377,13 +376,6 @@ export default async function CarRentalDetailPage({ params }: Props) {
                   <span>{isContactPrice ? "Inquire on WhatsApp" : "Book on WhatsApp"}</span>
                 </a>
 
-                <a
-                  href={`tel:+${targetPhone}`}
-                  className="w-full py-3 px-4 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs sm:text-sm font-medium rounded-md shadow-2xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <FaPhoneAlt className="text-xs text-gray-400" />
-                  <span>Call Us: +92 315 8494785</span>
-                </a>
               </div>
             </div>
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { isValidHotelDate } from "@/lib/hotelPricing";
 
 export async function GET() {
   try {
@@ -24,6 +25,9 @@ export async function POST(req: NextRequest) {
       distance,
       address,
       startingPrice,
+      isContactPricing,
+      priceValidFrom,
+      priceValidUntil,
       image,
       gallery,
       description,
@@ -33,8 +37,16 @@ export async function POST(req: NextRequest) {
       featured,
     } = body;
 
-    if (!name || !city || !image || startingPrice === undefined) {
-      return NextResponse.json({ error: "Name, city, image, and starting price are required" }, { status: 400 });
+    if (!name || !city || !image) {
+      return NextResponse.json({ error: "Name, city, and image are required" }, { status: 400 });
+    }
+
+    const contactPricing = Boolean(isContactPricing);
+    if (!contactPricing && (!Number.isFinite(Number(startingPrice)) || Number(startingPrice) <= 0)) {
+      return NextResponse.json({ error: "Enter a valid starting price or choose contact for pricing" }, { status: 400 });
+    }
+    if (!contactPricing && (!isValidHotelDate(priceValidFrom) || !isValidHotelDate(priceValidUntil) || priceValidUntil < priceValidFrom)) {
+      return NextResponse.json({ error: "Enter a valid pricing start date and end date" }, { status: 400 });
     }
 
     const generatedSlug = slug
@@ -49,7 +61,10 @@ export async function POST(req: NextRequest) {
         stars: Number(stars || 5),
         distance: distance || "Near Haram",
         address: address || "",
-        startingPrice: Number(startingPrice),
+        startingPrice: contactPricing ? 0 : Number(startingPrice),
+        isContactPricing: contactPricing,
+        priceValidFrom: contactPricing ? null : priceValidFrom,
+        priceValidUntil: contactPricing ? null : priceValidUntil,
         image,
         gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : [],
         description: description || "",
@@ -57,7 +72,7 @@ export async function POST(req: NextRequest) {
         isActive: isActive !== undefined ? isActive : true,
         featured: Boolean(featured),
         rooms: {
-          create: Array.isArray(rooms)
+          create: !contactPricing && Array.isArray(rooms)
             ? rooms.map((r: any) => ({
                 roomType: r.roomType,
                 capacity: Number(r.capacity || 2),

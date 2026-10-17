@@ -6,8 +6,9 @@ import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
 
 export default function BookTripSection() {
   const { t } = useLanguage();
-  const phoneNumber = "03158494785";
-  const whatsappUrl = `https://wa.me/923158494785?text=Salam%20Nexora,%20I%20would%20like%20to%20request%20a%20ride.`;
+  const phoneNumber = "+44 7882 749006";
+  const phoneHref = "+447882749006";
+  const whatsappUrl = `https://wa.me/447882749006?text=Salam%20Nexora,%20I%20would%20like%20to%20request%20a%20ride.`;
 
   return (
     <section className="w-full bg-[#11151c] overflow-hidden">
@@ -53,7 +54,7 @@ export default function BookTripSection() {
 
               {/* Phone Number */}
               <a
-                href={`tel:${phoneNumber}`}
+                href={`tel:${phoneHref}`}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-[#c5a059] bg-[#c5a059]/10 hover:bg-[#c5a059] text-white hover:text-black text-sm font-semibold tracking-wide transition-all duration-300"
                 dir="ltr"
               >

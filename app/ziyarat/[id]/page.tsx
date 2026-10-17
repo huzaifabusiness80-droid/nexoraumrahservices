@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { ziyaratTours, ZiyaratTourItem } from "@/lib/data/ziyaratData";
-import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaPhoneAlt, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
+import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
 
 
 export const instant = false;
@@ -97,7 +97,7 @@ export default async function ZiyaratDetailPage({ params }: Props) {
     notFound();
   }
 
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const bookingText = encodeURIComponent(
     `Salam Nexora Umrah Services, I would like to book the "${tour.title}" (${tour.duration}, starting from ${tour.startingPriceSar} SAR). Please share available dates.`
   );
@@ -245,22 +245,6 @@ export default async function ZiyaratDetailPage({ params }: Props) {
                 <span>Book Ziyarat On WhatsApp</span>
               </a>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                <a
-                  href={`tel:923158494785`}
-                  className="py-3 bg-zinc-900 hover:bg-black text-white text-center font-semibold tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-                >
-                  <FaPhoneAlt className="text-xs" />
-                  <span>PK (+923158494785)</span>
-                </a>
-                <a
-                  href={`tel:+966536376568`}
-                  className="py-3 bg-zinc-900 hover:bg-black text-white text-center font-semibold tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-                >
-                  <FaPhoneAlt className="text-xs" />
-                  <span>KSA (+966536376568)</span>
-                </a>
-              </div>
             </div>
 
             <div className="text-[11px] text-zinc-500 text-center pt-2">

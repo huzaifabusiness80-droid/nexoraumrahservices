@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { isValidHotelDate } from "@/lib/hotelPricing";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -28,6 +29,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       distance,
       address,
       startingPrice,
+      isContactPricing,
+      priceValidFrom,
+      priceValidUntil,
       image,
       gallery,
       description,
@@ -36,6 +40,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       isActive,
       featured,
     } = body;
+
+    const contactPricing = Boolean(isContactPricing);
+    if (!contactPricing && (!Number.isFinite(Number(startingPrice)) || Number(startingPrice) <= 0)) {
+      return NextResponse.json({ error: "Enter a valid starting price or choose contact for pricing" }, { status: 400 });
+    }
+    if (!contactPricing && (!isValidHotelDate(priceValidFrom) || !isValidHotelDate(priceValidUntil) || priceValidUntil < priceValidFrom)) {
+      return NextResponse.json({ error: "Enter a valid pricing start date and end date" }, { status: 400 });
+    }
 
     if (Array.isArray(rooms)) {
       await prisma.hotelRoom.deleteMany({
@@ -51,14 +63,17 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         stars: stars !== undefined ? Number(stars) : undefined,
         distance,
         address,
-        startingPrice: startingPrice !== undefined ? Number(startingPrice) : undefined,
+        startingPrice: contactPricing ? 0 : Number(startingPrice),
+        isContactPricing: contactPricing,
+        priceValidFrom: contactPricing ? null : priceValidFrom,
+        priceValidUntil: contactPricing ? null : priceValidUntil,
         image,
         gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : undefined,
         description,
         amenities: Array.isArray(amenities) ? amenities : undefined,
         isActive: isActive !== undefined ? isActive : undefined,
         featured: featured !== undefined ? Boolean(featured) : undefined,
-        rooms: Array.isArray(rooms)
+        rooms: !contactPricing && Array.isArray(rooms)
           ? {
               create: rooms.map((r: any) => ({
                 roomType: r.roomType,

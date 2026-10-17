@@ -48,7 +48,7 @@ const featureIcons: Record<string, React.ReactNode> = {
 
 export default function WhyChooseSection() {
   const { t } = useLanguage();
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
 
   return (
     <section id="about" className="w-full bg-[#f4f5f7] py-14 sm:py-20 lg:py-24 font-sans">

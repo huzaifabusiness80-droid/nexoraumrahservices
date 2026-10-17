@@ -16,7 +16,7 @@ import {
 export const metadata: Metadata = {
   title: "Contact Us | Nexora Journeys Umrah & Tourism",
   description:
-    "Get in touch with Nexora Journeys 24/7 Pilgrimage Concierge. Contact our Saudi Arabia (+966 53 637 6568) and International (+92 315 8494785) dispatch desks.",
+    "Get in touch with Nexora Journeys. Contact our Saudi (+966 53 637 6568), Pakistan (+92 315 849 4785), UAE (+971 50 840 15369), and UK (+44 7882 749006) service desks.",
   keywords: [
     "Contact Nexora Journeys",
     "Umrah Taxi Contact",
@@ -28,7 +28,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   const saudiPhone = "966536376568";
-  const intlPhone = "923158494785";
+  const pakistanPhone = "923158494785";
+  const uaePhone = "9715084015369";
+  const ukPhone = "447882749006";
 
   return (
     <div className="min-h-screen bg-[#fcfdfd] text-zinc-900 flex flex-col font-sans">
@@ -155,26 +157,38 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
-                  <div className="flex items-center gap-3">
-                    <a
-                      href={`https://wa.me/${saudiPhone}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700"
-                    >
-                      <FaWhatsapp className="text-sm" />
-                      <span>+966 53 637 6568</span>
-                    </a>
-                    <span className="text-gray-300">•</span>
-                    <a
-                      href={`tel:+${intlPhone}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
-                    >
-                      <FaPhoneAlt className="text-[11px]" />
-                      <span>+92 315 8494785</span>
-                    </a>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                  <a
+                    href={`tel:+${saudiPhone}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
+                  >
+                    <FaPhoneAlt className="text-[11px]" />
+                    <span>Saudi Arabia: +966 53 637 6568</span>
+                  </a>
+                  <a
+                    href={`tel:+${pakistanPhone}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
+                  >
+                    <FaPhoneAlt className="text-[11px]" />
+                    <span>Pakistan: +92 315 849 4785</span>
+                  </a>
+                  <a
+                    href={`tel:+${uaePhone}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
+                  >
+                    <FaPhoneAlt className="text-[11px]" />
+                    <span>UAE: +971 50 840 15369</span>
+                  </a>
+                  <a
+                    href={`https://wa.me/${ukPhone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 hover:text-emerald-700"
+                  >
+                    <FaWhatsapp className="text-sm" />
+                    <span>UK WhatsApp: +44 7882 749006</span>
+                  </a>
+                </div>
 
                   <span className="text-[11px] font-semibold text-[#b58e45] bg-[#faf6ed] px-2.5 py-1 rounded-full border border-[#e8ce97]/50">
                     Makkah • Madinah • Jeddah • UAE
@@ -185,7 +199,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-        </div>
       </main>
 
       <Footer />

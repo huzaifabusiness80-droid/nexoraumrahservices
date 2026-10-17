@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaPlus, FaEdit, FaTrash, FaSpinner, FaArrowLeft, FaCheck, FaTimes, FaStar } from "react-icons/fa";
+import { formatHotelPriceValidity, isHotelPriceAvailable } from "@/lib/hotelPricing";
 
 export default function AdminHotelsListPage() {
   const [hotels, setHotels] = useState<any[]>([]);
@@ -140,10 +141,19 @@ export default function AdminHotelsListPage() {
                     </td>
 
                     <td className="py-3 px-4">
-                      <span className="font-bold text-zinc-900 text-sm">
-                        {hotel.startingPrice}
-                      </span>
-                      <span className="text-[10px] text-[#c5a059] font-bold ml-1">SAR / Night</span>
+                      {!isHotelPriceAvailable(hotel) ? (
+                        <span className="font-semibold text-amber-700">Contact for pricing</span>
+                      ) : (
+                        <>
+                          <span className="font-bold text-zinc-900 text-sm">{hotel.startingPrice}</span>
+                          <span className="text-[10px] text-[#c5a059] font-bold ml-1">SAR / Night</span>
+                          {formatHotelPriceValidity(hotel.priceValidFrom, hotel.priceValidUntil) && (
+                            <span className="block text-[10px] text-zinc-500 mt-1">
+                              {formatHotelPriceValidity(hotel.priceValidFrom, hotel.priceValidUntil)}
+                            </span>
+                          )}
+                        </>
+                      )}
                     </td>
 
                     <td className="py-3 px-4">

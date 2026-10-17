@@ -42,7 +42,7 @@ export default function OurServicesSection() {
       id: "uae-desert-safari",
       slug: "uae-desert-safari",
       title: "NEXORA DESERT SAFARI",
-      image: "/images/services/desert-safari-dunes.jpg",
+      image: "/images/services/desertsafariimage.png",
       description:
         "Red dune bashing, sunset camel treks, quad biking, sandboarding, and 5-star Bedouin BBQ dinners.",
     },

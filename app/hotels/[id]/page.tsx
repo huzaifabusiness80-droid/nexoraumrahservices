@@ -7,7 +7,8 @@ import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { allHotels, HotelItem } from "@/lib/data/hotelData";
-import { FaWhatsapp, FaMapMarkerAlt, FaWalking, FaBusAlt, FaCheck, FaPhoneAlt, FaBed } from "react-icons/fa";
+import { formatHotelPriceValidity, isHotelPriceAvailable } from "@/lib/hotelPricing";
+import { FaWhatsapp, FaMapMarkerAlt, FaWalking, FaBusAlt, FaCheck, FaBed } from "react-icons/fa";
 
 
 export const instant = false;
@@ -52,7 +53,10 @@ async function getHotelData(id: string) {
         sharingBed: sharingRoom ? Math.round(sharingRoom.pricePerNight) : undefined,
         quadBed: standardRoom ? Math.round(standardRoom.pricePerNight) : Math.round(hotel.startingPrice || 350),
         quintBed: quintRoom ? Math.round(quintRoom.pricePerNight) : undefined,
-        validity: "Current Umrah Season",
+        isContactPricing: hotel.isContactPricing,
+        priceValidFrom: hotel.priceValidFrom,
+        priceValidUntil: hotel.priceValidUntil,
+        validity: formatHotelPriceValidity(hotel.priceValidFrom, hotel.priceValidUntil) || "Current Umrah Season",
       };
     }
   } catch (error) {
@@ -63,7 +67,9 @@ async function getHotelData(id: string) {
   const staticHotel = allHotels.find(
     (h) => h.id === id || h.name.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
   );
-  return staticHotel || null;
+  return staticHotel
+    ? { ...staticHotel, isContactPricing: false, priceValidFrom: null, priceValidUntil: null }
+    : null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -77,10 +83,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const cityName = hotel.city === "makkah" ? "Makkah Al-Mukarramah" : "Madinah Al-Munawwarah";
+  const hasPrice = isHotelPriceAvailable(hotel);
 
   return {
-    title: `${hotel.name} Rates & Booking | Hotels in ${cityName} | Nexora Journeys`,
-    description: `Official rates for ${hotel.name} in ${cityName} (${hotel.location}, ${hotel.distance}). Sharing beds from ${hotel.sharingBed || hotel.quadBed} SAR.`,
+    title: `${hotel.name} ${hasPrice ? "Rates & Booking" : "Price Quote"} | Hotels in ${cityName} | Nexora Journeys`,
+    description: hasPrice
+      ? `Official rates for ${hotel.name} in ${cityName} (${hotel.location}, ${hotel.distance}). Sharing beds from ${hotel.sharingBed || hotel.quadBed} SAR.`
+      : `Contact Nexora Journeys for current room rates and availability at ${hotel.name} in ${cityName}.`,
     keywords: [
       `${hotel.name} rates`,
       `${hotel.name} ${hotel.city}`,
@@ -99,10 +108,11 @@ export default async function HotelDetailPage({ params }: Props) {
     notFound();
   }
 
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
+  const hasPrice = isHotelPriceAvailable(hotel);
   const cityName = hotel.city === "makkah" ? "Makkah" : "Madinah";
   const bookingText = encodeURIComponent(
-    `Salam Nexora Journeys, I would like to book "${hotel.name}" in ${cityName} (${hotel.location}, ${hotel.distance}). Please confirm availability for my travel dates.`
+    `Salam Nexora Journeys, I would like to ${hasPrice ? "book" : "get a price quote for"} "${hotel.name}" in ${cityName} (${hotel.location}, ${hotel.distance}). Please confirm availability for my travel dates.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
   const galleryImages = "gallery" in hotel && Array.isArray(hotel.gallery) ? hotel.gallery : [];
@@ -159,46 +169,54 @@ export default async function HotelDetailPage({ params }: Props) {
             <ServiceImageGallery images={galleryImages} alt={hotel.name} />
 
             {/* Room Rate Cards */}
-            <div className="p-6">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-900 mb-4 pb-2 border-b border-zinc-200">
-                Official Room Configuration Rates ({hotel.validity})
-              </h2>
+            {hasPrice ? (
+              <div className="p-6">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-900 mb-4 pb-2 border-b border-zinc-200">
+                  Official Room Configuration Rates ({hotel.validity})
+                </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                {/* Sharing Bed */}
-                <div className="bg-zinc-50 border border-zinc-200 p-4 text-center">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                    Sharing Bed
-                  </span>
-                  <p className="text-xl font-extrabold text-zinc-900">
-                    {hotel.sharingBed ? `${hotel.sharingBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
-                  </p>
-                  <span className="text-[10px] text-zinc-500 block mt-1">Per Bed / Night</span>
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-zinc-50 border border-zinc-200 p-4 text-center">
+                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
+                      Sharing Bed
+                    </span>
+                    <p className="text-xl font-extrabold text-zinc-900">
+                      {hotel.sharingBed ? `${hotel.sharingBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
+                    </p>
+                    <span className="text-[10px] text-zinc-500 block mt-1">Per Bed / Night</span>
+                  </div>
 
-                {/* Double / Triple / Quad Bed */}
-                <div className="bg-amber-50/50 border border-amber-200 p-4 text-center">
-                  <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block mb-1">
-                    Dbl / Trpl / Quad
-                  </span>
-                  <p className="text-xl font-extrabold text-zinc-950">
-                    {hotel.quadBed ? `${hotel.quadBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
-                  </p>
-                  <span className="text-[10px] text-amber-800 font-medium block mt-1">Room / Night</span>
-                </div>
+                  <div className="bg-amber-50/50 border border-amber-200 p-4 text-center">
+                    <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider block mb-1">
+                      Dbl / Trpl / Quad
+                    </span>
+                    <p className="text-xl font-extrabold text-zinc-950">
+                      {hotel.quadBed ? `${hotel.quadBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
+                    </p>
+                    <span className="text-[10px] text-amber-800 font-medium block mt-1">Room / Night</span>
+                  </div>
 
-                {/* Quint Bed */}
-                <div className="bg-zinc-50 border border-zinc-200 p-4 text-center">
-                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                    Quint Bed
-                  </span>
-                  <p className="text-xl font-extrabold text-zinc-900">
-                    {hotel.quintBed ? `${hotel.quintBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
-                  </p>
-                  <span className="text-[10px] text-zinc-500 block mt-1">Room / Night</span>
+                  <div className="bg-zinc-50 border border-zinc-200 p-4 text-center">
+                    <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
+                      Quint Bed
+                    </span>
+                    <p className="text-xl font-extrabold text-zinc-900">
+                      {hotel.quintBed ? `${hotel.quintBed} SAR` : <span className="text-zinc-400 font-normal">N/A</span>}
+                    </p>
+                    <span className="text-[10px] text-zinc-500 block mt-1">Room / Night</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="p-6">
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-5 text-center">
+                  <h2 className="text-lg font-bold text-zinc-900">Contact for pricing</h2>
+                  <p className="mt-2 text-sm text-zinc-600">
+                    Current room rates are not listed. Contact us on WhatsApp for pricing and availability.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right: Booking Summary & Direct WhatsApp */}
@@ -245,22 +263,6 @@ export default async function HotelDetailPage({ params }: Props) {
                 <span>Inquire &amp; Book On WhatsApp</span>
               </a>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <a
-                  href={`tel:923158494785`}
-                  className="py-3 bg-zinc-900 hover:bg-black text-white text-center font-semibold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-                >
-                  <FaPhoneAlt className="text-xs" />
-                  <span>PK Desk (+923158494785)</span>
-                </a>
-                <a
-                  href={`tel:+966536376568`}
-                  className="py-3 bg-zinc-900 hover:bg-black text-white text-center font-semibold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-                >
-                  <FaPhoneAlt className="text-xs" />
-                  <span>KSA Desk (+966536376568)</span>
-                </a>
-              </div>
             </div>
           </div>
         </div>

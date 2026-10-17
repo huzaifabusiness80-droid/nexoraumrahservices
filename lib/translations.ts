@@ -147,8 +147,8 @@ export const translations: Record<Language, TranslationSchema> = {
         href: "/services/umrah-ziyarat",
       },
       {
-        tag: "Tours & Tourism",
-        titleLine1: "UAE Tours & Tourism",
+        tag: "Travels & Tourism",
+        titleLine1: "Travels & Tourism",
         titleLine2: "Explore Dubai & Abu Dhabi",
         description:
           "Guided city tours, sightseeing adventures, and premium UAE experiences crafted for travelers and families.",
@@ -163,7 +163,7 @@ export const translations: Record<Language, TranslationSchema> = {
         description:
           "Red dune adventures, camel rides, desert dining, and unforgettable moments for families and groups.",
         buttonText: "Book Safari",
-        image: "/images/services/desertsafari.png",
+        image: "/images/services/desertsafariimage.png",
         href: "/services/uae-desert-safari",
       },
       {
@@ -173,7 +173,7 @@ export const translations: Record<Language, TranslationSchema> = {
         description:
           "Self-drive and chauffeur-driven rentals with airport delivery, flexible plans, and premium comfort.",
         buttonText: "Rent a Car",
-        image: "/images/services/rentacars.png",
+        image: "/images/services/car-rental-luxury.jpg",
         href: "/services/uae-car-rental",
       },
     ],
@@ -386,7 +386,7 @@ export const translations: Record<Language, TranslationSchema> = {
         description:
           "رحلات الرمال الحمراء، والجمال، والمساءات الصحراوية الفاخرة للتجارب المميزة.",
         buttonText: "احجز السفاري",
-        image: "/images/services/desertsafari.png",
+        image: "/images/services/desertsafariimage.png",
         href: "/services/uae-desert-safari",
       },
       {
@@ -396,7 +396,7 @@ export const translations: Record<Language, TranslationSchema> = {
         description:
           "تأجير سيارات ذاتية القيادة أو مع سائق مع توصيل المطار وخيارات مرنة وراحة عالية.",
         buttonText: "احجز سيارة",
-        image: "/images/services/rentacars.png",
+        image: "/images/services/car-rental-luxury.jpg",
         href: "/services/uae-car-rental",
       },
     ],

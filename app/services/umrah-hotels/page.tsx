@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { formatHotelPriceValidity, isHotelPriceAvailable } from "@/lib/hotelPricing";
 import {
   FaMapMarkerAlt,
   FaStar,
@@ -37,6 +38,9 @@ interface HotelItem {
   distance: string;
   address: string | null;
   startingPrice: number;
+  isContactPricing?: boolean;
+  priceValidFrom?: string | null;
+  priceValidUntil?: string | null;
   image: string;
   gallery: string[];
   description: string;
@@ -46,6 +50,11 @@ interface HotelItem {
 }
 
 function getHotelCategory(hotel: HotelItem): "Economy" | "Standard" | "Deluxe" | "Luxury" {
+  if (!isHotelPriceAvailable(hotel)) {
+    if (hotel.stars >= 5) return "Luxury";
+    if (hotel.stars === 4) return "Deluxe";
+    return "Economy";
+  }
   if (hotel.stars >= 5 || hotel.startingPrice >= 500) return "Luxury";
   if (hotel.stars === 4 || hotel.startingPrice >= 250) return "Deluxe";
   if (hotel.startingPrice >= 120) return "Standard";
@@ -53,7 +62,7 @@ function getHotelCategory(hotel: HotelItem): "Economy" | "Standard" | "Deluxe" |
 }
 
 export default function UmrahHotelsPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
 
   // Data state
   const [allHotels, setAllHotels] = useState<HotelItem[]>([]);
@@ -144,6 +153,14 @@ export default function UmrahHotelsPage() {
       if (locCounts[cityKey] !== undefined) locCounts[cityKey]++;
 
       // Price
+      if (!isHotelPriceAvailable(h)) {
+        const s = h.stars || 3;
+        if (starCounts[s] !== undefined) starCounts[s]++;
+        const cat = getHotelCategory(h);
+        if (typeCounts[cat] !== undefined) typeCounts[cat]++;
+        return;
+      }
+
       const price = h.startingPrice;
       if (price < 100) priceCounts["under-100"]++;
       else if (price <= 250) priceCounts["100-250"]++;
@@ -177,6 +194,7 @@ export default function UmrahHotelsPage() {
     // Filter by Price Range
     if (selectedPriceRanges.length > 0) {
       list = list.filter((h) => {
+        if (!isHotelPriceAvailable(h)) return false;
         const price = h.startingPrice;
         return selectedPriceRanges.some((range) => {
           if (range === "under-100") return price < 100;
@@ -200,9 +218,19 @@ export default function UmrahHotelsPage() {
 
     // Sorting
     if (sortBy === "price-asc") {
-      list.sort((a, b) => a.startingPrice - b.startingPrice);
+      list.sort((a, b) => {
+        const aHasPrice = isHotelPriceAvailable(a);
+        const bHasPrice = isHotelPriceAvailable(b);
+        if (aHasPrice !== bHasPrice) return aHasPrice ? -1 : 1;
+        return a.startingPrice - b.startingPrice;
+      });
     } else if (sortBy === "price-desc") {
-      list.sort((a, b) => b.startingPrice - a.startingPrice);
+      list.sort((a, b) => {
+        const aHasPrice = isHotelPriceAvailable(a);
+        const bHasPrice = isHotelPriceAvailable(b);
+        if (aHasPrice !== bHasPrice) return aHasPrice ? -1 : 1;
+        return b.startingPrice - a.startingPrice;
+      });
     } else if (sortBy === "stars-desc") {
       list.sort((a, b) => (b.stars || 3) - (a.stars || 3));
     } else if (sortBy === "distance") {
@@ -410,12 +438,14 @@ export default function UmrahHotelsPage() {
               ) : (
                 <div className="space-y-4">
                   {filteredHotels.map((hotel) => {
+                    const hasPrice = isHotelPriceAvailable(hotel);
                     const price = hotel.startingPrice;
                     const unit = hotel.rooms.length > 0 ? "Per Room / Night" : "Per Night";
+                    const priceValidity = formatHotelPriceValidity(hotel.priceValidFrom, hotel.priceValidUntil);
                     const detailUrl = `/hotels/${hotel.slug}`;
                     const cityDisplay = hotel.city.charAt(0).toUpperCase() + hotel.city.slice(1);
                     const hotelWaText = encodeURIComponent(
-                      `Salam Nexora Umrah Services, I would like to book "${hotel.name}" in ${cityDisplay} (${hotel.distance}). Starting from SAR ${price} (${unit}). Please confirm room availability.`
+                      `Salam Nexora Umrah Services, I would like to ${hasPrice ? "book" : "get a price quote for"} "${hotel.name}" in ${cityDisplay} (${hotel.distance})${hasPrice ? `. Starting from SAR ${price} (${unit})` : ""}. Please confirm room availability.`
                     );
                     const hotelWaLink = `https://wa.me/${targetPhone}?text=${hotelWaText}`;
 
@@ -496,16 +526,23 @@ export default function UmrahHotelsPage() {
                         {/* Right: Pricing & CTA Buttons */}
                         <div className="w-full md:w-48 lg:w-52 flex flex-col justify-between items-end border-t md:border-t-0 md:border-l border-gray-100 pt-3 md:pt-0 md:pl-5 shrink-0 text-right">
                           <div>
-                            <span className="text-xs text-gray-400 font-medium block">
-                              Starting from
-                            </span>
-                            <div className="text-xl sm:text-2xl font-black text-gray-900 mt-0.5 tracking-tight">
-                              <span className="text-sm font-bold text-gray-600 mr-1">SAR</span>
-                              {price}
-                            </div>
-                            <span className="text-[11px] text-gray-400 font-medium block mt-0.5">
-                              {unit}
-                            </span>
+                            {hasPrice ? (
+                              <>
+                                <span className="text-xs text-gray-400 font-medium block">Starting from</span>
+                                <div className="text-xl sm:text-2xl font-black text-gray-900 mt-0.5 tracking-tight">
+                                  <span className="text-sm font-bold text-gray-600 mr-1">SAR</span>
+                                  {price}
+                                </div>
+                                <span className="text-[11px] text-gray-400 font-medium block mt-0.5">{unit}</span>
+                                {priceValidity && (
+                                  <span className="text-[10px] text-gray-400 font-medium block mt-1">
+                                    Valid {priceValidity}
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              <span className="text-sm font-bold text-[#9b762c] block">Contact for pricing</span>
+                            )}
                           </div>
 
                           {/* CTA Actions */}

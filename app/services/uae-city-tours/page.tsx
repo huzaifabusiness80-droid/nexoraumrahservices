@@ -43,7 +43,7 @@ const displayLabel = (value: string) =>
   value.trim().replace(/\b\w/g, (letter) => letter.toUpperCase());
 
 export default function UaeCityToursPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const [tours, setTours] = useState<CityTour[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -158,7 +158,7 @@ export default function UaeCityToursPage() {
             Private Chauffeur Excursions
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight uppercase mb-4">
-            Tours &amp; Tourism
+            Travels &amp; Tourism
           </h1>
           <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
             Discover curated sightseeing and cultural experiences across Dubai, Abu Dhabi, and Sharjah, with transparent prices and private comfort.

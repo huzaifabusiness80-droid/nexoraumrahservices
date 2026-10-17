@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
 import prisma from "@/lib/prisma";
 import { transportVehicles } from "@/lib/data/transportData";
-import { FaWhatsapp, FaSuitcase, FaUserFriends, FaCheck, FaPhoneAlt, FaShieldAlt } from "react-icons/fa";
+import { FaWhatsapp, FaSuitcase, FaUserFriends, FaCheck, FaShieldAlt } from "react-icons/fa";
 
 
 export const instant = false;
@@ -104,7 +104,7 @@ export default async function TransportDetailPage({ params }: Props) {
     notFound();
   }
 
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const bookingText = encodeURIComponent(
     `Salam Nexora Journeys, I would like to book the ${car.name} (${car.seats}). Please confirm price and availability for my travel dates.`
   );
@@ -218,13 +218,6 @@ export default async function TransportDetailPage({ params }: Props) {
                 <span>Book This Vehicle On WhatsApp</span>
               </a>
 
-              <a
-                href={`tel:${targetPhone}`}
-                className="w-full py-3.5 bg-zinc-900 hover:bg-black text-white text-center font-semibold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2"
-              >
-                <FaPhoneAlt className="text-xs" />
-                <span>Call Chauffeur Desk (+{targetPhone})</span>
-              </a>
             </div>
           </div>
         </div>

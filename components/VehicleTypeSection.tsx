@@ -19,7 +19,7 @@ const vehicleIcons: Record<string, React.ReactNode> = {
 
 export default function VehicleTypeSection() {
   const { t } = useLanguage();
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
 
   return (
     <section className="w-full bg-[#f4f5f7] py-14 sm:py-20 lg:py-24 font-sans">

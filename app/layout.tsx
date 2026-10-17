@@ -86,7 +86,7 @@ const jsonLdSchema = {
   image: "https://nexorajourneys.com/images/hero/slide-1.jpg",
   description:
     "Premier VIP pilgrimage & tourism services across Saudi Arabia and the UAE. Private chauffeur airport transfers, Makkah & Madinah hotels, and sacred Ziyarat tours.",
-  telephone: "+923158494785",
+  telephone: "+447882749006",
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",

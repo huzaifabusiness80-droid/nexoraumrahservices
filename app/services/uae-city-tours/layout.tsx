@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tours & Tourism in Dubai, Abu Dhabi & Sharjah | Nexora Journeys",
+  title: "Travels & Tourism in Dubai, Abu Dhabi & Sharjah | Nexora Journeys",
   description:
     "Private full-day and half-day sightseeing tours of Dubai and Abu Dhabi. Visit Burj Khalifa, Palm Jumeirah, Dubai Marina, Sheikh Zayed Grand Mosque, and Presidential Palace in air-conditioned comfort.",
   keywords: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     canonical: "https://nexorajourneys.com/services/uae-city-tours",
   },
   openGraph: {
-    title: "Tours & Tourism in Dubai, Abu Dhabi & Sharjah | Nexora Journeys",
+    title: "Travels & Tourism in Dubai, Abu Dhabi & Sharjah | Nexora Journeys",
     description:
       "Private sightseeing tours of Dubai and Abu Dhabi with dedicated chauffeur, hotel pickup, and custom photo stops.",
     url: "https://nexorajourneys.com/services/uae-city-tours",

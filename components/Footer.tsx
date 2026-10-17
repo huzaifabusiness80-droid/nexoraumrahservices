@@ -40,12 +40,12 @@ export default function Footer() {
               },
               {
                 src: "/images/logos/Nexora Luxury Travel Emblem.png",
-                alt: "Nexora Travel & Tourism",
+                alt: "Nexora Travels & Tourism",
                 href: "/services/uae-city-tours",
               },
               {
                 src: "/images/logos/Nexora Premium Car Rental Emblem.png",
-                alt: "Nexora Rental Cars",
+                alt: "Nexora Car Rental",
                 href: "/services/uae-car-rental",
               },
             ].map((branch) => (
@@ -102,7 +102,7 @@ export default function Footer() {
               {/* Social Channels */}
               <div className="flex items-center gap-3 pt-2">
                 <a
-                  href="https://wa.me/923158494785"
+                  href="https://wa.me/447882749006"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-11 h-11 rounded-lg bg-white/[0.08] hover:bg-[#25D366] hover:text-white text-zinc-300 flex items-center justify-center transition-all duration-200"
@@ -167,10 +167,10 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Col 3: UAE Tourism Services (2 cols) */}
+            {/* Col 3: Travels & Tourism Services (2 cols) */}
             <div className="lg:col-span-2 space-y-5">
               <h4 className="text-sm sm:text-base font-extrabold text-white tracking-widest uppercase border-l-2 border-[#c5a059] pl-3">
-                UAE Tourism
+                Travels &amp; Tourism
               </h4>
               <ul className="space-y-3.5 text-sm sm:text-[15px] text-zinc-300 font-medium">
                 <li>
@@ -185,7 +185,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link href="/services/uae-car-rental" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
-                    UAE Car Rental
+                    Car Rental
                   </Link>
                 </li>
                 <li>
@@ -223,16 +223,42 @@ export default function Footer() {
 
                 <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
                   <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
-                    International &amp; WhatsApp
+                    Pakistan Umrah Desk
                   </span>
                   <a
-                    href="https://wa.me/923158494785"
+                    href="tel:+923158494785"
+                    className="text-base sm:text-lg font-bold text-white hover:text-[#25D366] transition-colors flex items-center gap-2"
+                  >
+                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
+                    +92 315 849 4785
+                  </a>
+                </div>
+
+                <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
+                  <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
+                    UAE Tourism, Safari &amp; Car Rental
+                  </span>
+                  <a
+                    href="tel:+9715084015369"
+                    className="text-base sm:text-lg font-bold text-white hover:text-[#c5a059] transition-colors flex items-center gap-2"
+                  >
+                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
+                    +971 50 840 15369
+                  </a>
+                </div>
+
+                <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
+                  <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
+                    UK WhatsApp &amp; All-Service Desk
+                  </span>
+                  <a
+                    href="https://wa.me/447882749006"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-base sm:text-lg font-bold text-white hover:text-[#25D366] transition-colors flex items-center gap-2"
                   >
                     <FaWhatsapp className="text-sm text-[#25D366]" />
-                    +92 315 8494785
+                    +44 7882 749006
                   </a>
                 </div>
               </div>
@@ -272,7 +298,7 @@ export default function Footer() {
                 </div>
 
                 <a
-                  href="https://wa.me/923158494785?text=Salam%20Nexora,%20I%20would%20like%20to%20book%20a%20service."
+                  href="https://wa.me/447882749006?text=Salam%20Nexora,%20I%20would%20like%20to%20book%20a%20service."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-3.5 bg-[#c5a059] hover:bg-[#b08c47] text-white text-xs sm:text-sm font-bold tracking-[0.14em] uppercase transition-all duration-200 inline-flex items-center justify-center gap-2 shadow-sm"
@@ -314,15 +340,7 @@ export default function Footer() {
 
       {/* Floating Action Buttons */}
       <a
-        href="tel:03158494785"
-        className="fixed bottom-6 left-6 z-50 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#00A859] text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"
-        aria-label="Call Direct Desk"
-      >
-        <FaPhoneAlt className="text-lg text-white" />
-      </a>
-
-      <a
-        href="https://wa.me/923158494785?text=Salam%20Nexora,%20I%20would%20like%20to%20inquire%20about%20booking%20services."
+        href="https://wa.me/447882749006?text=Salam%20Nexora,%20I%20would%20like%20to%20inquire%20about%20booking%20services."
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all duration-200"

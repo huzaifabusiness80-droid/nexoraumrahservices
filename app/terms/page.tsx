@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 export default function TermsAndPoliciesPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
 
   return (
     <div className="min-h-screen bg-[#fcfdfd] text-zinc-900 flex flex-col font-sans">

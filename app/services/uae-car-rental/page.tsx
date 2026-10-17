@@ -58,7 +58,7 @@ const getCompanyKey = (brand: string) => {
 };
 
 export default function UaeCarRentalPage() {
-  const targetPhone = "923158494785";
+  const targetPhone = "447882749006";
   const [cars, setCars] = useState<RentalCar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -159,7 +159,7 @@ export default function UaeCarRentalPage() {
         <div className="absolute inset-0 overflow-hidden opacity-30">
           <Image
             src="/images/hero/slide-1.jpg"
-            alt="UAE Car Rental"
+            alt="Car Rental"
             fill
             className="object-cover object-center"
             priority
@@ -170,7 +170,7 @@ export default function UaeCarRentalPage() {
             Self-Drive &amp; Chauffeur Rentals
           </span>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight uppercase mb-3">
-            UAE Car Rental Fleet
+            Car Rental Fleet
           </h1>
           <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
             Hassle-free car rental in Dubai, Abu Dhabi, and Sharjah with transparent rates, zero hidden deposit deductions, and free airport delivery.

@@ -144,6 +144,9 @@ model Hotel {
   distance       String      // "100m from Haram", "Facing Kaaba", "Clock Tower"
   address        String?
   startingPrice  Float       // Price in SAR per night
+  isContactPricing Boolean   @default(false)
+  priceValidFrom String?
+  priceValidUntil String?
   image          String
   gallery        String[]
   description    String
