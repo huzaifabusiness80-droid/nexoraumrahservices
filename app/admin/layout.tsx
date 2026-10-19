@@ -14,6 +14,7 @@ import {
   FaKey,
   FaCalendarCheck,
   FaEnvelope,
+  FaNewspaper,
   FaSignOutAlt,
   FaExternalLinkAlt,
   FaBars,
@@ -77,6 +78,8 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     { label: "UAE City Tours", href: "/admin/city-tours", icon: FaCompass },
     { label: "Desert Safari", href: "/admin/desert-safari", icon: FaCampground },
     { label: "UAE Rental Cars", href: "/admin/car-rental", icon: FaKey },
+    { type: "header", label: "CONTENT MANAGEMENT" },
+    { label: "Blog Articles", href: "/admin/blogs", icon: FaNewspaper },
     { type: "header", label: "LEADS & INQUIRIES" },
     { label: "Contact Inquiries", href: "/admin/inquiries", icon: FaEnvelope },
   ];

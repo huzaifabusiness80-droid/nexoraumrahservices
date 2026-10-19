@@ -80,6 +80,12 @@ export default function Header() {
           >
             Contact
           </Link>
+          <Link
+            href="/blogs"
+            className="text-[11px] xl:text-[12px] font-bold tracking-wider text-zinc-800 hover:text-[#c5a059] uppercase transition-colors whitespace-nowrap"
+          >
+            Travel Guides
+          </Link>
         </nav>
 
         <HeaderSearch className="hidden xl:block w-52 2xl:w-64 shrink-0" />
@@ -172,6 +178,13 @@ export default function Header() {
               className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
             >
               Contact
+            </Link>
+            <Link
+              href="/blogs"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-bold tracking-wider text-zinc-800 py-2 border-b border-zinc-100 uppercase"
+            >
+              Travel Guides
             </Link>
           </nav>
 

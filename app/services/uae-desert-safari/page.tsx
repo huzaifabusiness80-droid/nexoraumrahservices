@@ -14,7 +14,6 @@ interface SafariPackage {
   packageType: string;
   timing: string;
   priceAed: number;
-  vipPriceAed: number | null;
   image: string;
   description: string;
   activities: string[];
@@ -106,7 +105,7 @@ export default function UaeDesertSafariPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {safaris.map((pkg) => {
               const waText = encodeURIComponent(
-                `Salam Nexora Journeys, I want to book the "${pkg.title}" (${pkg.priceAed} AED). Please confirm pickup availability for my dates.`
+                `Salam Nexora Journeys, I want to book the "${pkg.title}" (${pkg.priceAed} AED fixed package price, not per person). Please confirm pickup availability for my dates.`
               );
               const waLink = `https://wa.me/${targetPhone}?text=${waText}`;
 
@@ -129,7 +128,7 @@ export default function UaeDesertSafariPage() {
                         </span>
                       </div>
                       <div className="absolute bottom-4 right-4 bg-black/85 text-white px-3.5 py-1.5 font-extrabold text-sm uppercase backdrop-blur-sm border border-white/10">
-                        {pkg.priceAed} AED <span className="text-[10px] text-zinc-400 font-normal">/ Person</span>
+                        {pkg.priceAed} AED <span className="text-[10px] text-zinc-400 font-normal">/ Package</span>
                       </div>
                     </div>
 

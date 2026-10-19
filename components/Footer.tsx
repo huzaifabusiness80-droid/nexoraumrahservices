@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaWhatsapp, FaPhoneAlt, FaFacebookF, FaInstagram, FaClock, FaShieldAlt, FaMapMarkerAlt } from "react-icons/fa";
+import { FaWhatsapp, FaFacebookF, FaInstagram, FaClock, FaShieldAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa6";
 
 export default function Footer() {
@@ -200,6 +200,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/blogs" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
+                    Travel Guides &amp; Blogs
+                  </Link>
+                </li>
+                <li>
                   <Link href="/terms" className="hover:text-[#c5a059] hover:translate-x-1 inline-block transition-all">
                     Terms &amp; Conditions
                   </Link>
@@ -221,40 +226,46 @@ export default function Footer() {
               <div className="space-y-3 text-sm sm:text-[15px]">
                 <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
                   <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
-                    Saudi Arabia Hotline
+                    Saudi Arabia WhatsApp Desk
                   </span>
                   <a
-                    href="tel:+966536376568"
+                    href="https://wa.me/966536376568"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-base sm:text-lg font-bold text-white hover:text-[#c5a059] transition-colors flex items-center gap-2"
                   >
-                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
                     +966 53 637 6568
                   </a>
                 </div>
 
                 <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
                   <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
-                    Pakistan Umrah Desk
+                    Pakistan Umrah WhatsApp Desk
                   </span>
                   <a
-                    href="tel:+923158494785"
+                    href="https://wa.me/923158494785"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-base sm:text-lg font-bold text-white hover:text-[#25D366] transition-colors flex items-center gap-2"
                   >
-                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
                     +92 315 849 4785
                   </a>
                 </div>
 
                 <div className="p-3.5 bg-white/[0.04] border border-zinc-800 rounded-sm">
                   <span className="text-xs text-zinc-400 block font-semibold uppercase tracking-wider mb-1">
-                    UAE Tourism, Safari &amp; Car Rental
+                    UAE WhatsApp Desk · Tourism, Safari &amp; Car Rental
                   </span>
                   <a
-                    href="tel:+9715084015369"
+                    href="https://wa.me/971508401539"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-base sm:text-lg font-bold text-white hover:text-[#c5a059] transition-colors flex items-center gap-2"
                   >
-                    <FaPhoneAlt className="text-xs text-[#c5a059]" />
-                    +971 50 840 15369
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
+                    +971 50 840 1539
                   </a>
                 </div>
 

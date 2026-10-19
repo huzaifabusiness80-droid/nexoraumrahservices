@@ -126,7 +126,7 @@ export default async function TourDetailPage({ params }: Props) {
 
   const targetPhone = "447882749006";
   const bookingText = encodeURIComponent(
-    `Salam Nexora Journeys, I would like to book the "${tour.title}" (${tour.duration}, ${tour.priceAed} AED). Please confirm availability.`
+    `Salam Nexora Journeys, I would like to book the "${tour.title}" (${tour.duration}, ${tour.priceAed} AED${tour.category === "city-tour" ? " fixed per private vehicle, not per person" : tour.category === "desert-safari" ? " fixed package price, not per person" : ""}). Please confirm availability.`
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
   const galleryImages = "gallery" in tour && Array.isArray(tour.gallery) ? tour.gallery : [];
@@ -234,13 +234,17 @@ export default async function TourDetailPage({ params }: Props) {
             {/* Price Box */}
             <div className="p-4 border border-[#c5a059]/40 bg-[#fdfbf6] text-center">
               <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">
-                Total Experience Price
+                {tour.category === "city-tour" ? "Private Vehicle Price" : "Total Experience Price"}
               </span>
               <div className="text-3xl font-black text-zinc-950 mt-1">
                 {tour.priceAed} <span className="text-sm text-[#9b762c] font-bold">AED</span>
               </div>
               <span className="text-[11px] text-zinc-500 block mt-1">
-                {tour.category === "city-tour" ? "Per Private Vehicle" : "Per Person All-Inclusive"}
+                {tour.category === "city-tour"
+                  ? "Fixed vehicle rate — not charged per person"
+                  : tour.category === "desert-safari"
+                    ? "Fixed package price — not charged per person"
+                    : "Per Person All-Inclusive"}
               </span>
             </div>
 

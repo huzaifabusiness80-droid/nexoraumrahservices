@@ -26,8 +26,6 @@ interface CityTour {
   image: string;
   highlights: string[];
   priceAed: number;
-  pricePerPerson: number | null;
-  privateCarPrice: number | null;
   inclusions: string[];
 }
 
@@ -315,7 +313,7 @@ export default function UaeCityToursPage() {
                     const detailUrl = `/tours/${tour.slug}`;
                     const cityLabel = displayLabel(tour.city);
                     const whatsAppMessage = encodeURIComponent(
-                      `Salam Nexora Journeys, I am interested in the "${tour.title}" in ${cityLabel}. Starting from AED ${tour.priceAed}. Please confirm availability.`
+                      `Salam Nexora Journeys, I am interested in the "${tour.title}" in ${cityLabel} at AED ${tour.priceAed} fixed per private vehicle (not per person). Please confirm availability.`
                     );
 
                     return (
@@ -376,12 +374,14 @@ export default function UaeCityToursPage() {
 
                         <div className="w-full md:w-48 lg:w-52 flex flex-row md:flex-col justify-between md:items-end border-t md:border-t-0 md:border-l border-zinc-100 pt-3 md:pt-0 md:pl-5 shrink-0 text-left md:text-right gap-4">
                           <div>
-                            <span className="text-xs text-zinc-500 font-medium block">Starting from</span>
+                            <span className="text-xs text-zinc-500 font-medium block">Private vehicle rate</span>
                             <div className="text-xl sm:text-2xl font-black text-zinc-900 mt-0.5 tracking-tight">
                               <span className="text-sm font-bold text-zinc-600 mr-1">AED</span>
                               {tour.priceAed}
                             </div>
-                            <span className="text-[11px] text-zinc-400 font-medium block mt-0.5">Per tour</span>
+                            <span className="text-[11px] text-zinc-400 font-medium block mt-0.5">
+                              Flat rate, not per person
+                            </span>
                           </div>
 
                           <div className="w-1/2 md:w-full min-w-0 space-y-2">

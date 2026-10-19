@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import {
   FaSearch,
   FaEnvelope,
-  FaPhoneAlt,
   FaWhatsapp,
-  FaCheckCircle,
   FaSpinner,
   FaTrash,
 } from "react-icons/fa";
@@ -190,13 +188,6 @@ export default function AdminInquiriesPage() {
                   {/* Actions & Contact */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                     <div className="flex items-center gap-2">
-                      <a
-                        href={`tel:${item.phone}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 rounded text-xs text-zinc-800 font-mono font-medium"
-                      >
-                        <FaPhoneAlt className="text-[10px] text-[#c5a059]" />
-                        <span>{item.phone}</span>
-                      </a>
                       {cleanPhone && (
                         <a
                           href={`https://wa.me/${cleanPhone}`}
@@ -205,7 +196,7 @@ export default function AdminInquiriesPage() {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold"
                         >
                           <FaWhatsapp className="text-xs" />
-                          <span>WhatsApp</span>
+                          <span>{item.phone}</span>
                         </a>
                       )}
                       {item.email && (

@@ -12,7 +12,6 @@ interface SafariPackage {
   packageType: string;
   timing: string;
   priceAed: number;
-  vipPriceAed: number | null;
   image: string;
   activities: string[];
   includes: string[];
@@ -123,8 +122,7 @@ export default function AdminDesertSafariPage() {
                   <th className="py-3.5 px-4">Package</th>
                   <th className="py-3.5 px-4">Type</th>
                   <th className="py-3.5 px-4">Timing</th>
-                  <th className="py-3.5 px-4">Standard Price</th>
-                  <th className="py-3.5 px-4">VIP Price</th>
+                  <th className="py-3.5 px-4">Fixed Package Price</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -164,15 +162,7 @@ export default function AdminDesertSafariPage() {
                     <td className="py-3 px-4 text-zinc-600 font-mono text-[11px]">{safari.timing}</td>
                     <td className="py-3 px-4 font-bold text-zinc-900">
                       {safari.priceAed} <span className="text-[10px] text-zinc-500 font-normal">AED</span>
-                    </td>
-                    <td className="py-3 px-4 text-zinc-700">
-                      {safari.vipPriceAed ? (
-                        <span className="font-bold text-[#c5a059]">
-                          {safari.vipPriceAed} <span className="text-[10px] font-normal">AED</span>
-                        </span>
-                      ) : (
-                        <span className="text-zinc-400 text-[11px]">N/A</span>
-                      )}
+                      <span className="block text-[10px] font-normal text-zinc-500">Flat package rate - not per person</span>
                     </td>
                     <td className="py-3 px-4">
                       <span

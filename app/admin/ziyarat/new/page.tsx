@@ -18,6 +18,8 @@ export default function AdminNewZiyaratPage() {
   const [priceSedan, setPriceSedan] = useState<number | "">(249);
   const [priceVan, setPriceVan] = useState<number | "">(350);
   const [priceSuv, setPriceSuv] = useState<number | "">(449);
+  const [priceStaria, setPriceStaria] = useState<number | "">("");
+  const [priceBus, setPriceBus] = useState<number | "">("");
   const [image, setImage] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
@@ -49,6 +51,8 @@ export default function AdminNewZiyaratPage() {
           priceSedan: Number(priceSedan),
           priceVan: priceVan !== "" ? Number(priceVan) : null,
           priceSuv: priceSuv !== "" ? Number(priceSuv) : null,
+          priceStaria: priceStaria !== "" ? Number(priceStaria) : null,
+          priceBus: priceBus !== "" ? Number(priceBus) : null,
           image,
           gallery,
           description,
@@ -154,7 +158,7 @@ export default function AdminNewZiyaratPage() {
           </div>
 
           {/* Pricing Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
                 Sedan Rate (SAR) *
@@ -191,6 +195,32 @@ export default function AdminNewZiyaratPage() {
                 min="0"
                 value={priceSuv}
                 onChange={(e) => setPriceSuv(e.target.value === "" ? "" : Number(e.target.value))}
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                Hyundai Staria Rate (SAR)
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={priceStaria}
+                onChange={(e) => setPriceStaria(e.target.value === "" ? "" : Number(e.target.value))}
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                Bus Rate (SAR)
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={priceBus}
+                onChange={(e) => setPriceBus(e.target.value === "" ? "" : Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
               />
             </div>

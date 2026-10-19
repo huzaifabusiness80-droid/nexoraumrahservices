@@ -4,7 +4,9 @@ import OurServicesSection from "@/components/OurServicesSection";
 import HomeCtaSection from "@/components/HomeCtaSection";
 import HomeAboutSection from "@/components/HomeAboutSection";
 import HomeReviewsSection from "@/components/HomeReviewsSection";
+import LatestBlogsSection from "@/components/blog/LatestBlogsSection";
 import Footer from "@/components/Footer";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -31,9 +33,14 @@ export default function Home() {
 
         {/* 6. What Our Customers Say (Single Line Animated Marquee) */}
         <HomeReviewsSection />
+
+        {/* 7. Latest travel guides */}
+        <Suspense fallback={null}>
+          <LatestBlogsSection />
+        </Suspense>
       </main>
 
-      {/* 7. Footer */}
+      {/* 8. Footer */}
       <Footer />
     </div>
   );

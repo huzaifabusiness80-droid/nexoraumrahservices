@@ -31,6 +31,8 @@ interface ZiyaratTour {
   priceSedan: number;
   priceVan: number | null;
   priceSuv: number | null;
+  priceStaria: number | null;
+  priceBus: number | null;
   includes: string[];
 }
 
@@ -317,11 +319,15 @@ export default function UmrahZiyaratPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <FaCar className="text-[#b58e45]" />
-                    <span>SUV / Family (Staria 5-7 Pax)</span>
+                    <span>Hyundai Staria (5-7 Pax)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <FaCar className="text-[#b58e45]" />
                     <span>VIP GMC Yukon XL</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FaCar className="text-[#b58e45]" />
+                    <span>Bus for Groups</span>
                   </div>
                 </div>
               </div>

@@ -21,7 +21,6 @@ export default function AdminEditDesertSafariPage() {
   const [packageType, setPackageType] = useState("Evening Safari");
   const [timing, setTiming] = useState("03:00 PM - 09:00 PM");
   const [priceAed, setPriceAed] = useState<number | "">(150);
-  const [vipPriceAed, setVipPriceAed] = useState<number | "">("");
   const [image, setImage] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
@@ -40,7 +39,6 @@ export default function AdminEditDesertSafariPage() {
         setPackageType(s.packageType || "Evening Safari");
         setTiming(s.timing || "03:00 PM - 09:00 PM");
         setPriceAed(s.priceAed !== undefined ? s.priceAed : 150);
-        setVipPriceAed(s.vipPriceAed !== null && s.vipPriceAed !== undefined ? s.vipPriceAed : "");
         setImage(s.image || "");
         setGallery(Array.isArray(s.gallery) ? s.gallery.slice(0, 6) : []);
         setDescription(s.description || "");
@@ -78,7 +76,6 @@ export default function AdminEditDesertSafariPage() {
           packageType,
           timing,
           priceAed: Number(priceAed),
-          vipPriceAed: vipPriceAed !== "" ? Number(vipPriceAed) : null,
           image,
           gallery,
           description,
@@ -208,7 +205,7 @@ export default function AdminEditDesertSafariPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Standard Price (AED per Person) *
+                Fixed Package Price (AED) *
               </label>
               <input
                 type="number"
@@ -218,19 +215,9 @@ export default function AdminEditDesertSafariPage() {
                 onChange={(e) => setPriceAed(e.target.value === "" ? "" : Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
               />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                VIP Seating / Private Price (AED, Optional)
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={vipPriceAed}
-                onChange={(e) => setVipPriceAed(e.target.value === "" ? "" : Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
-              />
+              <p className="mt-1.5 text-xs text-zinc-500">
+                One fixed package price, regardless of passenger count.
+              </p>
             </div>
 
             <div>

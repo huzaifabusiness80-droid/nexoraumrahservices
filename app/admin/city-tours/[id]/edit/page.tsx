@@ -22,7 +22,6 @@ export default function AdminEditCityTourPage() {
   const [category, setCategory] = useState("City Sightseeing");
   const [duration, setDuration] = useState("4 - 5 Hours");
   const [priceAed, setPriceAed] = useState<number | "">(250);
-  const [pricePerPerson, setPricePerPerson] = useState<number | "">("");
   const [image, setImage] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
   const [description, setDescription] = useState("");
@@ -42,7 +41,6 @@ export default function AdminEditCityTourPage() {
         setCategory(tour.category || "City Sightseeing");
         setDuration(tour.duration || "4 - 5 Hours");
         setPriceAed(tour.priceAed !== undefined ? tour.priceAed : 250);
-        setPricePerPerson(tour.pricePerPerson !== null && tour.pricePerPerson !== undefined ? tour.pricePerPerson : "");
         setImage(tour.image || "");
         setGallery(Array.isArray(tour.gallery) ? tour.gallery.slice(0, 6) : []);
         setDescription(tour.description || "");
@@ -81,7 +79,6 @@ export default function AdminEditCityTourPage() {
           category,
           duration,
           priceAed: Number(priceAed),
-          pricePerPerson: pricePerPerson !== "" ? Number(pricePerPerson) : null,
           privateCarPrice: Number(priceAed),
           image,
           gallery,
@@ -224,7 +221,7 @@ export default function AdminEditCityTourPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Private Vehicle Price (AED) *
+                Fixed Private Vehicle Price (AED) *
               </label>
               <input
                 type="number"
@@ -234,19 +231,9 @@ export default function AdminEditCityTourPage() {
                 onChange={(e) => setPriceAed(e.target.value === "" ? "" : Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
               />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Per Person Price (AED, Optional)
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={pricePerPerson}
-                onChange={(e) => setPricePerPerson(e.target.value === "" ? "" : Number(e.target.value))}
-                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
-              />
+              <p className="mt-1.5 text-xs text-zinc-500">
+                One flat vehicle price, regardless of passenger count.
+              </p>
             </div>
 
             <div>

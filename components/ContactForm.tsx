@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaWhatsapp, FaUser, FaPhoneAlt, FaEnvelope, FaCalendarAlt, FaUsers, FaPaperPlane } from "react-icons/fa";
+import { FaWhatsapp, FaUser, FaEnvelope, FaCalendarAlt, FaUsers } from "react-icons/fa";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -84,7 +84,7 @@ ${formData.message || "No specific note provided"}`;
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
-                  <FaPhoneAlt className="text-xs" />
+                  <FaWhatsapp className="text-xs" />
                 </div>
                 <input
                   type="tel"

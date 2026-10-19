@@ -87,7 +87,7 @@ export default function AdminZiyaratListPage() {
                   <th className="py-3.5 px-4">City</th>
                   <th className="py-3.5 px-4">Duration</th>
                   <th className="py-3.5 px-4">Sedan Rate</th>
-                  <th className="py-3.5 px-4">Van / SUV</th>
+                  <th className="py-3.5 px-4">Vehicle Rates</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -133,7 +133,10 @@ export default function AdminZiyaratListPage() {
                     </td>
 
                     <td className="py-3 px-4 text-zinc-600">
-                      {tour.priceVan ? `${tour.priceVan} SAR` : "—"} / {tour.priceSuv ? `${tour.priceSuv} SAR` : "—"}
+                      <div>Van: {tour.priceVan != null ? `${tour.priceVan} SAR` : "—"}</div>
+                      <div>GMC: {tour.priceSuv != null ? `${tour.priceSuv} SAR` : "—"}</div>
+                      <div>Staria: {tour.priceStaria != null ? `${tour.priceStaria} SAR` : "—"}</div>
+                      <div>Bus: {tour.priceBus != null ? `${tour.priceBus} SAR` : "—"}</div>
                     </td>
 
                     <td className="py-3 px-4">

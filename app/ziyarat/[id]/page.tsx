@@ -57,8 +57,10 @@ async function getZiyaratData(id: string) {
             ],
         vehiclePrices: [
           { vehicle: "Executive Sedan (Camry)", capacity: "4 Passengers", luggage: "2 Bags", priceSar: Math.round(tour.priceSedan || 250) },
-          ...(tour.priceVan ? [{ vehicle: "Spacious Family Van (HiAce)", capacity: "10-12 Passengers", luggage: "8-10 Bags", priceSar: Math.round(tour.priceVan) }] : []),
-          ...(tour.priceSuv ? [{ vehicle: "VIP Luxury SUV (GMC Yukon)", capacity: "7 Passengers", luggage: "6 Bags", priceSar: Math.round(tour.priceSuv) }] : []),
+          ...(tour.priceStaria != null ? [{ vehicle: "Hyundai Staria", capacity: "5-7 Guests", luggage: "4 Bags", priceSar: Math.round(tour.priceStaria) }] : []),
+          ...(tour.priceVan != null ? [{ vehicle: "Spacious Family Van (HiAce)", capacity: "10-12 Passengers", luggage: "8-10 Bags", priceSar: Math.round(tour.priceVan) }] : []),
+          ...(tour.priceSuv != null ? [{ vehicle: "VIP Luxury SUV (GMC Yukon)", capacity: "7 Passengers", luggage: "6 Bags", priceSar: Math.round(tour.priceSuv) }] : []),
+          ...(tour.priceBus != null ? [{ vehicle: "Bus", capacity: "Capacity varies", luggage: "Luggage varies", priceSar: Math.round(tour.priceBus) }] : []),
         ],
       };
     }

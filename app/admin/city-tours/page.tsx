@@ -84,8 +84,7 @@ export default function AdminCityToursListPage() {
                   <th className="py-3.5 px-4">Emirate / City</th>
                   <th className="py-3.5 px-4">Category</th>
                   <th className="py-3.5 px-4">Duration</th>
-                  <th className="py-3.5 px-4">Private Tour Price</th>
-                  <th className="py-3.5 px-4">Per Person Price</th>
+                  <th className="py-3.5 px-4">Vehicle Price</th>
                   <th className="py-3.5 px-4">Status</th>
                   <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
@@ -121,10 +120,7 @@ export default function AdminCityToursListPage() {
 
                     <td className="py-3 px-4 font-bold text-zinc-900">
                       {tour.priceAed} <span className="text-[10px] text-[#c5a059]">AED</span>
-                    </td>
-
-                    <td className="py-3 px-4 text-zinc-600">
-                      {tour.pricePerPerson ? `${tour.pricePerPerson} AED` : "—"}
+                      <span className="block text-[10px] font-normal text-zinc-500">Flat rate · not per person</span>
                     </td>
 
                     <td className="py-3 px-4">

@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
-import { FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function BookTripSection() {
   const { t } = useLanguage();
   const phoneNumber = "+44 7882 749006";
-  const phoneHref = "+447882749006";
   const whatsappUrl = `https://wa.me/447882749006?text=Salam%20Nexora,%20I%20would%20like%20to%20request%20a%20ride.`;
 
   return (
@@ -52,13 +51,15 @@ export default function BookTripSection() {
                 <span>{t.bookTripBtn}</span>
               </a>
 
-              {/* Phone Number */}
+              {/* WhatsApp contact number */}
               <a
-                href={`tel:${phoneHref}`}
+                href="https://wa.me/447882749006"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-[#c5a059] bg-[#c5a059]/10 hover:bg-[#c5a059] text-white hover:text-black text-sm font-semibold tracking-wide transition-all duration-300"
                 dir="ltr"
               >
-                <FaPhoneAlt className="text-xs shrink-0" />
+                <FaWhatsapp className="text-sm shrink-0" />
                 <span>{phoneNumber}</span>
               </a>
             </div>

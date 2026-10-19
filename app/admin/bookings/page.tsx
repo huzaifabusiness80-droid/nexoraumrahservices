@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FaSearch,
-  FaCalendarCheck,
   FaEye,
   FaTrash,
   FaSpinner,
-  FaPhoneAlt,
+  FaWhatsapp,
   FaEnvelope,
 } from "react-icons/fa";
 
@@ -201,10 +200,15 @@ export default function AdminBookingsPage() {
                     <td className="py-3 px-4">
                       <p className="font-bold text-zinc-900 leading-tight">{b.customerName}</p>
                       <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-1">
-                        <span className="flex items-center gap-1 font-mono">
-                          <FaPhoneAlt className="text-[9px] text-[#c5a059]" />
+                        <a
+                          href={`https://wa.me/${b.customerPhone.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center gap-1 font-mono hover:text-emerald-700"
+                        >
+                          <FaWhatsapp className="text-[10px] text-emerald-600" />
                           {b.customerPhone}
-                        </span>
+                        </a>
                         {b.customerEmail && (
                           <span className="flex items-center gap-1">
                             <FaEnvelope className="text-[9px] text-zinc-400" />

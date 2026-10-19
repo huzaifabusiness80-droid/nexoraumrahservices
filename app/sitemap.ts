@@ -67,6 +67,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/blogs`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/terms`,
       lastModified: now,
       changeFrequency: "monthly",
@@ -86,9 +92,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ziyaratSlugs = new Set<string>(ziyaratTours.map((z) => z.id));
   const tourSlugs = new Set<string>(uaeTours.map((t) => t.id));
   const carSlugs = new Set<string>(carRentalVehicles.map((c) => c.id));
+  let blogRoutes: MetadataRoute.Sitemap = [];
 
   try {
-    const [dbHotels, dbVehicles, dbZiyarat, dbCityTours, dbSafari, dbCars] =
+    const [dbHotels, dbVehicles, dbZiyarat, dbCityTours, dbSafari, dbCars, dbBlogs] =
       await Promise.allSettled([
         prisma.hotel.findMany({ where: { isActive: true }, select: { slug: true, id: true } }),
         prisma.transportVehicle.findMany({ where: { isActive: true }, select: { slug: true, id: true } }),
@@ -96,6 +103,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         prisma.uaeCityTour.findMany({ where: { isActive: true }, select: { slug: true, id: true } }),
         prisma.desertSafariPackage.findMany({ where: { isActive: true }, select: { slug: true, id: true } }),
         prisma.rentalCar.findMany({ where: { isActive: true }, select: { slug: true, id: true } }),
+        prisma.blogPost.findMany({
+          where: { isPublished: true },
+          select: { slug: true, updatedAt: true, publishedAt: true },
+        }),
       ]);
 
     if (dbHotels.status === "fulfilled") {
@@ -116,6 +127,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (dbCars.status === "fulfilled") {
       dbCars.value.forEach((c) => carSlugs.add(c.slug || c.id));
     }
+    blogRoutes =
+      dbBlogs.status === "fulfilled"
+        ? dbBlogs.value.map((post) => ({
+            url: `${baseUrl}/blogs/${post.slug}`,
+            lastModified: post.updatedAt,
+            changeFrequency: "monthly",
+            priority: 0.7,
+          }))
+        : [];
   } catch (error) {
     console.warn("Sitemap: Database fetch skipped, using static fallback entries:", error);
   }
@@ -162,5 +182,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...ziyaratRoutes,
     ...tourRoutes,
     ...carRoutes,
+    ...blogRoutes,
   ];
 }

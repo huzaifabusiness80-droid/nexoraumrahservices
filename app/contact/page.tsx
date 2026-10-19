@@ -5,18 +5,15 @@ import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
 import {
   FaWhatsapp,
-  FaPhoneAlt,
-  FaEnvelope,
   FaMapMarkerAlt,
   FaClock,
-  FaCompass,
   FaExternalLinkAlt,
 } from "react-icons/fa";
 
 export const metadata: Metadata = {
   title: "Contact Us | Nexora Journeys Umrah & Tourism",
   description:
-    "Get in touch with Nexora Journeys. Contact our Saudi (+966 53 637 6568), Pakistan (+92 315 849 4785), UAE (+971 50 840 15369), and UK (+44 7882 749006) service desks.",
+    "Get in touch with Nexora Journeys on WhatsApp. Contact our Saudi (+966 53 637 6568), Pakistan (+92 315 849 4785), UAE (+971 50 840 1539), and UK (+44 7882 749006) service desks.",
   keywords: [
     "Contact Nexora Journeys",
     "Umrah Taxi Contact",
@@ -29,7 +26,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   const saudiPhone = "966536376568";
   const pakistanPhone = "923158494785";
-  const uaePhone = "9715084015369";
+  const uaePhone = "971508401539";
   const ukPhone = "447882749006";
 
   return (
@@ -159,25 +156,31 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                   <a
-                    href={`tel:+${saudiPhone}`}
+                    href={`https://wa.me/${saudiPhone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
                   >
-                    <FaPhoneAlt className="text-[11px]" />
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
                     <span>Saudi Arabia: +966 53 637 6568</span>
                   </a>
                   <a
-                    href={`tel:+${pakistanPhone}`}
+                    href={`https://wa.me/${pakistanPhone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
                   >
-                    <FaPhoneAlt className="text-[11px]" />
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
                     <span>Pakistan: +92 315 849 4785</span>
                   </a>
                   <a
-                    href={`tel:+${uaePhone}`}
+                    href={`https://wa.me/${uaePhone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 hover:text-[#b58e45]"
                   >
-                    <FaPhoneAlt className="text-[11px]" />
-                    <span>UAE: +971 50 840 15369</span>
+                    <FaWhatsapp className="text-sm text-[#25D366]" />
+                    <span>UAE: +971 50 840 1539</span>
                   </a>
                   <a
                     href={`https://wa.me/${ukPhone}`}
