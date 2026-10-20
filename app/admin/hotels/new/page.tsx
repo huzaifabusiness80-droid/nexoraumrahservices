@@ -274,13 +274,13 @@ export default function AdminNewHotelPage() {
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Address / Street
+                Hotel Location / Address
               </label>
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="e.g. Abraj Al Bait, South Markazia"
+                placeholder="e.g. Abraj Al Bait, Makkah, Saudi Arabia"
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
               />
             </div>

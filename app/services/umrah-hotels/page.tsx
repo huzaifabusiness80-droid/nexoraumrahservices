@@ -444,6 +444,8 @@ export default function UmrahHotelsPage() {
                     const priceValidity = formatHotelPriceValidity(hotel.priceValidFrom, hotel.priceValidUntil);
                     const detailUrl = `/hotels/${hotel.slug}`;
                     const cityDisplay = hotel.city.charAt(0).toUpperCase() + hotel.city.slice(1);
+                    const mapQuery = [hotel.name, hotel.address, cityDisplay].filter(Boolean).join(", ");
+                    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`;
                     const hotelWaText = encodeURIComponent(
                       `Salam Nexora Umrah Services, I would like to ${hasPrice ? "book" : "get a price quote for"} "${hotel.name}" in ${cityDisplay} (${hotel.distance})${hasPrice ? `. Starting from SAR ${price} (${unit})` : ""}. Please confirm room availability.`
                     );
@@ -497,6 +499,18 @@ export default function UmrahHotelsPage() {
                                 </>
                               )}
                             </div>
+
+                            {hotel.address && (
+                              <a
+                                href={mapsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 mt-2 text-xs font-medium text-[#9b762c] hover:underline"
+                              >
+                                <FaMapMarkerAlt className="shrink-0" />
+                                <span>{hotel.address}</span>
+                              </a>
+                            )}
 
                             {/* Description */}
                             <p className="text-xs sm:text-sm text-gray-500 mt-2.5 line-clamp-2 leading-relaxed">

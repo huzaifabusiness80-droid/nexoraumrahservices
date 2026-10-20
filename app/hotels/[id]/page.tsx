@@ -47,6 +47,7 @@ async function getHotelData(id: string) {
         name: hotel.name,
         city: (hotel.city?.toLowerCase() === "madinah" ? "madinah" : "makkah") as "makkah" | "madinah",
         location: hotel.address || (hotel.city?.toLowerCase() === "makkah" ? "Ibrahim Khalil Road" : "Markazia Central Area"),
+        mapLocation: hotel.address,
         distance: hotel.distance || "Walking Distance",
         image: hotel.image,
         gallery: hotel.gallery || [],
@@ -68,7 +69,7 @@ async function getHotelData(id: string) {
     (h) => h.id === id || h.name.toLowerCase().replace(/\s+/g, "-") === id.toLowerCase()
   );
   return staticHotel
-    ? { ...staticHotel, isContactPricing: false, priceValidFrom: null, priceValidUntil: null }
+    ? { ...staticHotel, mapLocation: staticHotel.location, isContactPricing: false, priceValidFrom: null, priceValidUntil: null }
     : null;
 }
 
@@ -116,6 +117,9 @@ export default async function HotelDetailPage({ params }: Props) {
   );
   const waLink = `https://wa.me/${targetPhone}?text=${bookingText}`;
   const galleryImages = "gallery" in hotel && Array.isArray(hotel.gallery) ? hotel.gallery : [];
+  const mapLocation = hotel.mapLocation;
+  const mapQuery = [hotel.name, mapLocation, cityName].filter(Boolean).join(", ");
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(mapQuery)}`;
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-zinc-900 flex flex-col font-sans">
@@ -266,6 +270,40 @@ export default async function HotelDetailPage({ params }: Props) {
             </div>
           </div>
         </div>
+
+        {mapLocation && (
+          <section className="mb-12 border border-zinc-200 bg-white p-5 sm:p-7 shadow-sm">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-zinc-900">Hotel Location</h2>
+                <a
+                  href={mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block text-sm text-zinc-600 hover:text-[#9b762c] hover:underline"
+                >
+                  {mapLocation}
+                </a>
+              </div>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-[#c5a059] px-4 py-2.5 text-xs font-bold text-white hover:bg-[#b08c47]"
+              >
+                <FaMapMarkerAlt />
+                Get Directions
+              </a>
+            </div>
+            <iframe
+              title={`${hotel.name} location map`}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&output=embed`}
+              className="h-72 w-full border-0 sm:h-96"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </section>
+        )}
       </main>
 
       <Footer />

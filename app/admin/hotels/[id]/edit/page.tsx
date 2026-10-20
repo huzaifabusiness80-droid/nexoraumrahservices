@@ -319,7 +319,7 @@ export default function AdminEditHotelPage({
 
             <div>
               <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                Address / Street
+                Hotel Location / Address
               </label>
               <input
                 type="text"
