@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FaSuitcase, FaUserFriends, FaArrowRight, FaSearch, FaFilter, FaMapMarkerAlt, FaSpinner } from "react-icons/fa";
+import { FaSuitcase, FaUserFriends, FaArrowRight, FaSearch, FaFilter, FaMapMarkerAlt, FaSpinner, FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface RouteRate {
@@ -258,6 +258,13 @@ export default function TransportFleetSection() {
               {filteredVehicles.map((car, idx) => {
                 const detailUrl = `/transport/${car.slug}`;
                 const routePrice = getPriceForRoute(car);
+                const bookingDetails = selectedRoute && routePrice !== null
+                  ? `${selectedRoute} (${routePrice} SAR)`
+                  : `starting from ${car.startingPriceSar} SAR`;
+                const whatsappMessage = encodeURIComponent(
+                  `Salam Nexora Journeys, I would like to book the ${car.name} for ${bookingDetails}. Please confirm availability.`
+                );
+                const whatsappUrl = `https://wa.me/447882749006?text=${whatsappMessage}`;
 
                 return (
                   <motion.div
@@ -351,6 +358,15 @@ export default function TransportFleetSection() {
                           <span>View Full Rates & Book</span>
                           <FaArrowRight className="text-[10px]" />
                         </Link>
+                        <a
+                          href={whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 mt-2 bg-[#25D366] hover:bg-[#20ba5a] text-white text-center font-bold tracking-[0.14em] uppercase text-xs transition-all flex items-center justify-center gap-2"
+                        >
+                          <FaWhatsapp className="text-sm" />
+                          <span>Book via WhatsApp</span>
+                        </a>
                       </div>
                     </div>
                   </motion.div>
