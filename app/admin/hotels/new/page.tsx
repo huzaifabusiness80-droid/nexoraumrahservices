@@ -64,8 +64,13 @@ export default function AdminNewHotelPage() {
       setError("Please fill in Hotel Name and Upload an Image.");
       return;
     }
-    if (!isContactPricing && (!startingPrice || !priceValidFrom || !priceValidUntil || priceValidUntil < priceValidFrom)) {
-      setError("Enter the starting rate and a valid pricing date range, or choose Contact for pricing.");
+    const hasRoomPrice = Array.isArray(rooms) && rooms.some((r) => Number(r.pricePerNight) > 0);
+    if (!isContactPricing && !startingPrice && !hasRoomPrice) {
+      setError("Please enter a starting rate or configure room tariffs, or choose Contact for pricing.");
+      return;
+    }
+    if (!isContactPricing && priceValidFrom && priceValidUntil && priceValidUntil < priceValidFrom) {
+      setError("Price Valid Until date cannot be earlier than Price Valid From date.");
       return;
     }
 
@@ -245,11 +250,10 @@ export default function AdminNewHotelPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                    Price Valid From *
+                    Price Valid From (Optional)
                   </label>
                   <input
                     type="date"
-                    required
                     value={priceValidFrom}
                     max={priceValidUntil || undefined}
                     onChange={(e) => setPriceValidFrom(e.target.value)}
@@ -258,11 +262,10 @@ export default function AdminNewHotelPage() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
-                    Price Valid Until *
+                    Price Valid Until (Optional)
                   </label>
                   <input
                     type="date"
-                    required
                     value={priceValidUntil}
                     min={priceValidFrom || undefined}
                     onChange={(e) => setPriceValidUntil(e.target.value)}

@@ -2,15 +2,28 @@ type HotelPricing = {
   isContactPricing?: boolean;
   priceValidFrom?: string | null;
   priceValidUntil?: string | null;
+  startingPrice?: number | null;
+  rooms?: Array<{ pricePerNight?: number }>;
 };
 
 export function isHotelPriceAvailable(
   hotel: HotelPricing,
-  today = new Date().toISOString().slice(0, 10)
+  _today?: string
 ) {
+  // If the admin checked "Contact for pricing", pricing should not show
   if (hotel.isContactPricing) return false;
-  if (hotel.priceValidFrom && today < hotel.priceValidFrom) return false;
-  if (hotel.priceValidUntil && today > hotel.priceValidUntil) return false;
+
+  // If startingPrice is 0 and rooms are empty or all 0, no pricing is written
+  if (typeof hotel.startingPrice === "number" && hotel.startingPrice <= 0) {
+    if (Array.isArray(hotel.rooms) && hotel.rooms.length > 0) {
+      const hasRoomPrice = hotel.rooms.some((r) => Number(r.pricePerNight) > 0);
+      if (!hasRoomPrice) return false;
+    } else {
+      return false;
+    }
+  }
+
+  // Pricing is written and available
   return true;
 }
 

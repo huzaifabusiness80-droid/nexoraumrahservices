@@ -42,11 +42,23 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     } = body;
 
     const contactPricing = Boolean(isContactPricing);
-    if (!contactPricing && (!Number.isFinite(Number(startingPrice)) || Number(startingPrice) <= 0)) {
-      return NextResponse.json({ error: "Enter a valid starting price or choose contact for pricing" }, { status: 400 });
+    let finalStartingPrice = contactPricing ? 0 : Number(startingPrice || 0);
+
+    if (!contactPricing && finalStartingPrice <= 0 && Array.isArray(rooms) && rooms.length > 0) {
+      const roomPrices = rooms.map((r: any) => Number(r.pricePerNight)).filter((p: number) => p > 0);
+      if (roomPrices.length > 0) {
+        finalStartingPrice = Math.min(...roomPrices);
+      }
     }
-    if (!contactPricing && (!isValidHotelDate(priceValidFrom) || !isValidHotelDate(priceValidUntil) || priceValidUntil < priceValidFrom)) {
-      return NextResponse.json({ error: "Enter a valid pricing start date and end date" }, { status: 400 });
+
+    if (!contactPricing && finalStartingPrice <= 0) {
+      return NextResponse.json({ error: "Enter a valid starting price or room tariffs, or choose contact for pricing" }, { status: 400 });
+    }
+
+    const validFrom = !contactPricing && isValidHotelDate(priceValidFrom) ? priceValidFrom : null;
+    const validUntil = !contactPricing && isValidHotelDate(priceValidUntil) ? priceValidUntil : null;
+    if (validFrom && validUntil && validUntil < validFrom) {
+      return NextResponse.json({ error: "Price Valid Until date cannot be earlier than Price Valid From date" }, { status: 400 });
     }
 
     if (Array.isArray(rooms)) {
@@ -63,10 +75,10 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         stars: stars !== undefined ? Number(stars) : undefined,
         distance,
         address,
-        startingPrice: contactPricing ? 0 : Number(startingPrice),
+        startingPrice: finalStartingPrice,
         isContactPricing: contactPricing,
-        priceValidFrom: contactPricing ? null : priceValidFrom,
-        priceValidUntil: contactPricing ? null : priceValidUntil,
+        priceValidFrom: validFrom,
+        priceValidUntil: validUntil,
         image,
         gallery: Array.isArray(gallery) ? gallery.slice(0, 6) : undefined,
         description,
@@ -78,7 +90,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
               create: rooms.map((r: any) => ({
                 roomType: r.roomType,
                 capacity: Number(r.capacity || 2),
-                pricePerNight: Number(r.pricePerNight || 0),
+                pricePerNight: Number(r.pricePerNight || finalStartingPrice),
                 hasKaabaView: Boolean(r.hasKaabaView),
               })),
             }
