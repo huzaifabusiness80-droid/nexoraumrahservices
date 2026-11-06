@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
+import BookServiceModal from "@/components/BookServiceModal";
 import prisma from "@/lib/prisma";
 import { transportVehicles } from "@/lib/data/transportData";
 import { FaWhatsapp, FaSuitcase, FaUserFriends, FaCheck, FaShieldAlt } from "react-icons/fa";
@@ -208,15 +209,16 @@ export default async function TransportDetailPage({ params }: Props) {
 
             {/* Direct Booking Actions */}
             <div className="space-y-3 pt-4 border-t border-zinc-200">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookServiceModal
+                serviceType="UMRAH_TRANSPORT"
+                itemName={car.name}
+                route={"rateList" in car && car.rateList[0] ? car.rateList[0].route : car.category}
+                currency="SAR"
+                totalPrice={car.startingPriceSar || null}
+                buttonLabel="Book This Vehicle"
+                whatsappUrl={waLink}
                 className="w-full py-4 bg-[#25D366] hover:bg-[#20ba5a] text-white text-center font-bold tracking-wider uppercase text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md"
-              >
-                <FaWhatsapp className="text-xl" />
-                <span>Book This Vehicle On WhatsApp</span>
-              </a>
+              />
 
             </div>
           </div>

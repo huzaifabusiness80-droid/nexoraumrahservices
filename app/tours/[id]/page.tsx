@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
+import BookServiceModal from "@/components/BookServiceModal";
 import prisma from "@/lib/prisma";
 import { uaeTours, UaeTourItem } from "@/lib/data/tourData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
@@ -250,16 +251,16 @@ export default async function TourDetailPage({ params }: Props) {
 
             {/* Booking Actions */}
             <div className="space-y-3 pt-4 border-t border-zinc-200">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookServiceModal
+                serviceType={tour.category === "city-tour" ? "UAE_CITY_TOUR" : "DESERT_SAFARI"}
+                itemName={tour.title}
+                route={tour.duration}
+                currency="AED"
+                totalPrice={tour.priceAed || null}
+                buttonLabel="Book This Tour"
+                whatsappUrl={waLink}
                 className="w-full py-4 bg-[#c5a059] hover:bg-[#b08c47] text-white text-center font-bold tracking-wider uppercase text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md"
-              >
-                <FaWhatsapp className="text-xl" />
-                <span>Book This Tour On WhatsApp</span>
-              </a>
-
+              />
             </div>
           </div>
         </div>

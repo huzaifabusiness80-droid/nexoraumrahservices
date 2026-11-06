@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import Script from "next/script";
 import { LanguageProvider } from "@/context/LanguageContext";
+import AIChatbot from "@/components/AIChatbot";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -133,7 +134,10 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col font-sans bg-white text-zinc-900 selection:bg-black selection:text-white">
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          {children}
+          <AIChatbot />
+        </LanguageProvider>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-764F2YT93E"
           strategy="afterInteractive"

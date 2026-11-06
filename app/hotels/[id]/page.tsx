@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
+import BookServiceModal from "@/components/BookServiceModal";
 import prisma from "@/lib/prisma";
 import { allHotels } from "@/lib/data/hotelData";
 import { formatHotelPriceValidity, isHotelPriceAvailable } from "@/lib/hotelPricing";
@@ -389,15 +390,15 @@ export default async function HotelDetailPage({ params }: Props) {
 
             {/* Direct Booking Actions */}
             <div className="space-y-3 pt-4 border-t border-zinc-200">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookServiceModal
+                serviceType="UMRAH_HOTEL"
+                itemName={hotel.name}
+                route={`${cityName} - ${hotel.location}`}
+                currency="SAR"
+                buttonLabel={hasPrice ? `Book ${hotel.name}` : "Request Hotel Booking"}
+                whatsappUrl={waLink}
                 className="w-full py-4 bg-[#25D366] hover:bg-[#20ba5a] text-white text-center font-bold tracking-wider uppercase text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md"
-              >
-                <FaWhatsapp className="text-xl" />
-                <span>{hasPrice ? `Book ${hotel.name} On WhatsApp` : "Inquire Rates On WhatsApp"}</span>
-              </a>
+              />
             </div>
           </div>
         </div>

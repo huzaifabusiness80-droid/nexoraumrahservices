@@ -13,6 +13,8 @@ import {
 
 interface Booking {
   id: string;
+  clientId?: string | null;
+  client?: { id: string; name: string; email: string } | null;
   serviceType: string;
   customerName: string;
   customerPhone: string;
@@ -123,6 +125,9 @@ export default function AdminBookingsPage() {
             Real-time inquiries and verified bookings across all 6 services with status controls
           </p>
         </div>
+        <Link href="/admin/bookings/new" className="inline-flex items-center justify-center px-4 py-2.5 bg-[#18181b] text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#c5a059]">
+          New Booking
+        </Link>
       </div>
 
       {/* Filter and Search Bar */}
@@ -199,6 +204,11 @@ export default function AdminBookingsPage() {
                   <tr key={b.id} className="hover:bg-zinc-50/60 transition-colors">
                     <td className="py-3 px-4">
                       <p className="font-bold text-zinc-900 leading-tight">{b.customerName}</p>
+                      {b.clientId && (
+                        <span className="inline-block mt-1 text-[9px] font-bold uppercase tracking-wider text-[#9f7d3b]">
+                          Client portal linked
+                        </span>
+                      )}
                       <div className="flex items-center gap-3 text-[11px] text-zinc-500 mt-1">
                         <a
                           href={`https://wa.me/${b.customerPhone.replace(/[^0-9]/g, "")}`}

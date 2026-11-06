@@ -14,6 +14,11 @@ export async function GET(req: NextRequest) {
     const bookings = await prisma.booking.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      include: {
+        client: {
+          select: { id: true, name: true, email: true },
+        },
+      },
     });
 
     return NextResponse.json({ success: true, bookings });
@@ -42,15 +47,25 @@ export async function POST(req: NextRequest) {
       currency,
       status,
       paymentStatus,
+      paidAmount,
       adminNotes,
     } = body;
 
+    const normalizedEmail =
+      typeof customerEmail === "string" && customerEmail.trim()
+        ? customerEmail.trim().toLowerCase()
+        : null;
+    const linkedClient = normalizedEmail
+      ? await prisma.clientUser.findUnique({ where: { email: normalizedEmail } })
+      : null;
+
     const booking = await prisma.booking.create({
       data: {
+        clientId: linkedClient?.id || null,
         serviceType: serviceType || "UMRAH_TRANSPORT",
         customerName,
         customerPhone,
-        customerEmail,
+        customerEmail: normalizedEmail,
         customerCountry,
         pickupLocation,
         dropoffLocation,
@@ -63,6 +78,7 @@ export async function POST(req: NextRequest) {
         currency: currency || "SAR",
         status: status || "PENDING",
         paymentStatus: paymentStatus || "UNPAID",
+        paidAmount: paidAmount !== undefined ? Math.max(Number(paidAmount || 0), 0) : 0,
         adminNotes,
       },
     });

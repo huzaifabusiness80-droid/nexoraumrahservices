@@ -15,6 +15,23 @@ export default function ContactForm() {
   });
 
   const whatsappNumber = "447882749006";
+  const [submitting, setSubmitting] = useState(false);
+
+  React.useEffect(() => {
+    fetch("/api/portal/me")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.user) {
+          setFormData((prev) => ({
+            ...prev,
+            name: data.user.name || prev.name,
+            email: data.user.email || prev.email,
+            phone: data.user.phone || prev.phone,
+          }));
+        }
+      })
+      .catch(() => undefined);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -22,8 +39,26 @@ export default function ContactForm() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          service: formData.service,
+          subject: `Travel date: ${formData.travelDate || "Flexible"}`,
+          message: `Passengers: ${formData.passengers}\n${formData.message || "No specific requirements provided"}`,
+        }),
+      });
+    } catch {
+      // Keep WhatsApp fallback available even if database submission fails.
+    }
 
     const textMessage = `*Salam Nexora Journeys Inquiry:*
 ━━━━━━━━━━━━━━━━━━━━
@@ -38,6 +73,7 @@ ${formData.message || "No specific note provided"}`;
 
     const encoded = encodeURIComponent(textMessage);
     window.open(`https://wa.me/${whatsappNumber}?text=${encoded}`, "_blank");
+    setSubmitting(false);
   };
 
   return (
@@ -201,10 +237,11 @@ ${formData.message || "No specific note provided"}`;
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={submitting}
             className="w-full py-4 px-6 bg-[#b58e45] hover:bg-[#9f7932] text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer text-sm uppercase tracking-wider"
           >
             <FaWhatsapp className="text-lg text-white" />
-            <span>Submit Inquiry via WhatsApp</span>
+            <span>{submitting ? "Saving Inquiry..." : "Submit Inquiry via WhatsApp"}</span>
           </button>
         </form>
       </div>

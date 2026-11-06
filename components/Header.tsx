@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import HeaderSearch from "@/components/HeaderSearch";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [client, setClient] = useState<{ name: string } | null>(null);
+
+  useEffect(() => {
+    fetch("/api/portal/me")
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => setClient(data?.user || null))
+      .catch(() => setClient(null));
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200 animate-header-enter">
@@ -89,6 +97,22 @@ export default function Header() {
         </nav>
 
         <HeaderSearch className="hidden xl:block w-52 2xl:w-64 shrink-0" />
+        <div className="hidden xl:flex items-center gap-2 shrink-0">
+          {client ? (
+            <Link href="/portal" className="border border-[#c5a059] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-[#9f7d3b] hover:bg-[#fffdf7] whitespace-nowrap">
+              {client.name}
+            </Link>
+          ) : (
+            <>
+              <Link href="/portal/login" className="px-3 py-2.5 text-[11px] font-bold uppercase tracking-wider text-zinc-800 hover:text-[#c5a059] whitespace-nowrap">
+                Sign In
+              </Link>
+              <Link href="/portal/signup" className="bg-[#18181b] px-4 py-2.5 text-[11px] font-bold uppercase tracking-wider text-white hover:bg-[#c5a059] whitespace-nowrap">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -186,6 +210,24 @@ export default function Header() {
             >
               Travel Guides
             </Link>
+            {client ? (
+              <Link
+                href="/portal"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-sm font-bold tracking-wider text-[#9f7d3b] py-2 border-b border-zinc-100 uppercase"
+              >
+                My Portal
+              </Link>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <Link href="/portal/login" onClick={() => setMobileMenuOpen(false)} className="border border-zinc-300 py-3 text-center text-sm font-bold uppercase">
+                  Sign In
+                </Link>
+                <Link href="/portal/signup" onClick={() => setMobileMenuOpen(false)} className="bg-[#18181b] text-white py-3 text-center text-sm font-bold uppercase">
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </nav>
 
         </div>

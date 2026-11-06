@@ -11,6 +11,7 @@ import {
 
 interface Inquiry {
   id: string;
+  clientId?: string | null;
   name: string;
   email: string;
   phone: string;
@@ -154,6 +155,11 @@ export default function AdminInquiriesPage() {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div className="flex items-center gap-3">
                       <span className="font-bold text-sm text-zinc-900">{item.name}</span>
+                      {item.clientId && (
+                        <span className="px-2 py-0.5 rounded bg-[#faf6ed] text-[9px] font-bold uppercase tracking-wider text-[#9f7d3b]">
+                          Portal Linked
+                        </span>
+                      )}
                       {item.service && (
                         <span className="px-2 py-0.5 rounded bg-zinc-100 text-[10px] font-bold uppercase tracking-wider text-zinc-600">
                           {item.service}

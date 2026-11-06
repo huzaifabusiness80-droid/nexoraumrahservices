@@ -20,7 +20,13 @@ export async function GET(req: NextRequest) {
     }
 
     if (stars) {
-      where.stars = { in: stars.split(",").map(Number) };
+      const starValues = stars
+        .split(",")
+        .map(Number)
+        .filter((value) => Number.isInteger(value) && value > 0 && value <= 5);
+      if (starValues.length > 0) {
+        where.stars = { in: [...new Set(starValues)] };
+      }
     }
 
     if (search) {

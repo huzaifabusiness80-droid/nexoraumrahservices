@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
+import BookServiceModal from "@/components/BookServiceModal";
 import prisma from "@/lib/prisma";
 import { ziyaratTours, ZiyaratTourItem } from "@/lib/data/ziyaratData";
 import { FaWhatsapp, FaMapMarkerAlt, FaClock, FaCheck, FaCar, FaShieldAlt, FaArrowLeft } from "react-icons/fa";
@@ -237,15 +238,16 @@ export default async function ZiyaratDetailPage({ params }: Props) {
 
             {/* Booking Actions */}
             <div className="space-y-3 pt-4 border-t border-zinc-200">
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookServiceModal
+                serviceType="UMRAH_ZIYARAT"
+                itemName={tour.title}
+                route={tour.duration}
+                currency="SAR"
+                totalPrice={tour.startingPriceSar || null}
+                buttonLabel="Book Ziyarat"
+                whatsappUrl={waLink}
                 className="w-full py-4 bg-[#c5a059] hover:bg-[#b08c47] text-white text-center font-bold tracking-wider uppercase text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md"
-              >
-                <FaWhatsapp className="text-xl" />
-                <span>Book Ziyarat On WhatsApp</span>
-              </a>
+              />
 
             </div>
 

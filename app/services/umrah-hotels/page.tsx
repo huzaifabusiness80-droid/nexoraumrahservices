@@ -73,6 +73,7 @@ export default function UmrahHotelsPage() {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
   const [selectedStars, setSelectedStars] = useState<number[]>([]);
+  const [starFilterReady, setStarFilterReady] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("recommended");
 
@@ -81,6 +82,17 @@ export default function UmrahHotelsPage() {
     async function fetchHotels() {
       try {
         setLoading(true);
+        const starParam = new URL(window.location.href).searchParams.get("stars");
+        if (starParam) {
+          const initialStars = starParam
+            .split(",")
+            .map((value) => Number(value))
+            .filter((value) => Number.isInteger(value) && value > 0);
+          setSelectedStars((current) =>
+            current.length > 0 ? current : initialStars
+          );
+        }
+        setStarFilterReady(true);
         const res = await fetch("/api/services/hotels");
         const data = await res.json();
         if (data.success) {
@@ -97,6 +109,21 @@ export default function UmrahHotelsPage() {
     fetchHotels();
   }, []);
 
+  useEffect(() => {
+    if (!starFilterReady) return;
+    const url = new URL(window.location.href);
+    if (selectedStars.length > 0) {
+      url.searchParams.set("stars", selectedStars.join(","));
+    } else {
+      url.searchParams.delete("stars");
+    }
+    window.history.replaceState(
+      {},
+      "",
+      `${url.pathname}${url.search}${url.hash}`
+    );
+  }, [selectedStars, starFilterReady]);
+
   // Toggle Handlers
   const toggleLocation = (loc: string) => {
     setSelectedLocations((prev) =>
@@ -111,9 +138,11 @@ export default function UmrahHotelsPage() {
   };
 
   const toggleStar = (star: number) => {
-    setSelectedStars((prev) =>
-      prev.includes(star) ? prev.filter((item) => item !== star) : [...prev, star]
-    );
+    setSelectedStars((prev) => {
+      return prev.includes(star)
+        ? prev.filter((item) => item !== star)
+        : [...prev, star].sort((a, b) => a - b);
+    });
   };
 
   const toggleType = (type: string) => {
@@ -128,6 +157,9 @@ export default function UmrahHotelsPage() {
     setSelectedStars([]);
     setSelectedTypes([]);
     setSortBy("recommended");
+    const url = new URL(window.location.href);
+    url.searchParams.delete("stars");
+    window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
   };
 
   // Base Counts Calculation
@@ -139,7 +171,7 @@ export default function UmrahHotelsPage() {
       "250-500": 0,
       "above-500": 0,
     };
-    const starCounts: Record<number, number> = { 3: 0, 4: 0, 5: 0 };
+    const starCounts: Record<number, number> = {};
     const typeCounts: Record<string, number> = {
       Economy: 0,
       Standard: 0,
@@ -148,14 +180,17 @@ export default function UmrahHotelsPage() {
     };
 
     allHotels.forEach((h) => {
+      const s = h.stars || 0;
+      if (s > 0) {
+        starCounts[s] = (starCounts[s] || 0) + 1;
+      }
+
       // Location
       const cityKey = h.city.charAt(0).toUpperCase() + h.city.slice(1).toLowerCase();
       if (locCounts[cityKey] !== undefined) locCounts[cityKey]++;
 
       // Price
       if (!isHotelPriceAvailable(h)) {
-        const s = h.stars || 3;
-        if (starCounts[s] !== undefined) starCounts[s]++;
         const cat = getHotelCategory(h);
         if (typeCounts[cat] !== undefined) typeCounts[cat]++;
         return;
@@ -166,10 +201,6 @@ export default function UmrahHotelsPage() {
       else if (price <= 250) priceCounts["100-250"]++;
       else if (price <= 500) priceCounts["250-500"]++;
       else priceCounts["above-500"]++;
-
-      // Stars
-      const s = h.stars || 3;
-      if (starCounts[s] !== undefined) starCounts[s]++;
 
       // Type
       const cat = getHotelCategory(h);
@@ -351,7 +382,10 @@ export default function UmrahHotelsPage() {
                   Star Rating
                 </span>
                 <div className="space-y-2">
-                  {[3, 4, 5].map((star) => (
+                  {Object.keys(counts.starCounts)
+                    .map(Number)
+                    .sort((a, b) => b - a)
+                    .map((star) => (
                     <label key={star} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
                       <input
                         type="checkbox"

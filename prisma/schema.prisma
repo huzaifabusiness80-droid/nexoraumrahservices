@@ -17,7 +17,7 @@ datasource db {
 model AdminUser {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // Hashed password
+  password  String // Hashed password
   name      String
   role      String   @default("ADMIN") // SUPER_ADMIN, ADMIN, DISPATCHER
   avatar    String?
@@ -25,49 +25,67 @@ model AdminUser {
   updatedAt DateTime @updatedAt
 }
 
+model ClientUser {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  name      String
+  phone     String?
+  country   String?
+  avatar    String?
+  bookings  Booking[]
+  inquiries Inquiry[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
 // ============================================================================
 // 2. CENTRAL BOOKINGS & RESERVATIONS (For all 6 services)
 // ============================================================================
 model Booking {
-  id              String        @id @default(cuid())
-  bookingNumber   String        @unique @default(cuid())
-  serviceType     ServiceType   // UMRAH_TRANSPORT, UMRAH_HOTEL, UMRAH_ZIYARAT, UAE_CITY_TOUR, DESERT_SAFARI, CAR_RENTAL
-  
+  id            String      @id @default(cuid())
+  bookingNumber String      @unique @default(cuid())
+  serviceType   ServiceType // UMRAH_TRANSPORT, UMRAH_HOTEL, UMRAH_ZIYARAT, UAE_CITY_TOUR, DESERT_SAFARI, CAR_RENTAL
+  clientId      String?
+  client        ClientUser? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+
   // Customer Details
   customerName    String
   customerPhone   String
   customerEmail   String?
   customerCountry String?
-  
+
   // Service Booking Details
-  pickupLocation  String?       // Airport, Hotel, City address
+  pickupLocation  String? // Airport, Hotel, City address
   dropoffLocation String?
   pickupDate      DateTime?
   returnDate      DateTime?
-  passengers      Int           @default(1)
+  passengers      Int       @default(1)
   luggageCount    Int?
-  
+
   // Referenced Items (Flexible for any of the 6 services)
-  itemName        String?       // Vehicle name, Hotel name, Tour package name
-  itemCategory    String?
-  route           String?       // For transport: e.g. Jeddah Airport -> Makkah
-  
+  itemName     String? // Vehicle name, Hotel name, Tour package name
+  itemCategory String?
+  route        String? // For transport: e.g. Jeddah Airport -> Makkah
+
   // Pricing & Status
-  totalPrice      Float?
-  currency        String        @default("SAR") // SAR or AED
-  status          BookingStatus @default(PENDING)
-  paymentStatus   PaymentStatus @default(UNPAID)
-  
+  totalPrice    Float?
+  paidAmount    Float?        @default(0)
+  currency      String        @default("SAR") // SAR or AED
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+
   // Notes & Internal tracking
-  adminNotes      String?
-  customerNotes   String?
-  assignedDriver  String?
-  
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  adminNotes     String?
+  customerNotes  String?
+  assignedDriver String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([serviceType])
   @@index([status])
+  @@index([clientId])
 }
 
 enum ServiceType {
@@ -99,17 +117,17 @@ enum PaymentStatus {
 // ============================================================================
 model TransportVehicle {
   id               String               @id @default(cuid())
-  name             String               // e.g. "Toyota Camry", "GMC Yukon"
+  name             String // e.g. "Toyota Camry", "GMC Yukon"
   slug             String               @unique
-  category         String               // "Executive Sedan", "Luxury MPV", "VIP SUV", "Passenger Van", "Mini Bus", "Luxury Coach"
-  seats            String               // e.g. "4 Seater", "7 Seater"
-  luggage          String               // e.g. "02 to 03 Luggage"
-  image            String               // Cloudinary or local image URL
+  category         String // "Executive Sedan", "Luxury MPV", "VIP SUV", "Passenger Van", "Mini Bus", "Luxury Coach"
+  seats            String // e.g. "4 Seater", "7 Seater"
+  luggage          String // e.g. "02 to 03 Luggage"
+  image            String // Cloudinary or local image URL
   gallery          String[]             @default([])
   posterImage      String?
   startingPriceSar Float
   description      String
-  features         String[]             // AC, WiFi, Chauffeur, Luggage assist
+  features         String[] // AC, WiFi, Chauffeur, Luggage assist
   isActive         Boolean              @default(true)
   order            Int                  @default(0)
   routes           TransportRouteRate[]
@@ -118,15 +136,15 @@ model TransportVehicle {
 }
 
 model TransportRouteRate {
-  id         String           @id @default(cuid())
-  route      String           // e.g. "Jeddah Airport -> Makkah Hotel (Drop Off)"
-  fromCity   String           @default("Jeddah") // Jeddah, Makkah, Madinah
-  toCity     String           @default("Makkah") // Jeddah, Makkah, Madinah, Badar
-  priceSar   Float
-  vehicleId  String
-  vehicle    TransportVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
+  id        String           @id @default(cuid())
+  route     String // e.g. "Jeddah Airport -> Makkah Hotel (Drop Off)"
+  fromCity  String           @default("Jeddah") // Jeddah, Makkah, Madinah
+  toCity    String           @default("Makkah") // Jeddah, Makkah, Madinah, Badar
+  priceSar  Float
+  vehicleId String
+  vehicle   TransportVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
   @@index([vehicleId])
   @@index([fromCity, toCity])
@@ -136,41 +154,41 @@ model TransportRouteRate {
 // 4. SERVICE 2: UMRAH HOTELS (Makkah & Madinah)
 // ============================================================================
 model Hotel {
-  id             String      @id @default(cuid())
-  name           String      // e.g. "Swissotel Al Maqam", "Pullman Zamzam"
-  slug           String      @unique
-  city           String      // "Makkah", "Madinah"
-  stars          Int         @default(5)
-  distance       String      // "100m from Haram", "Facing Kaaba", "Clock Tower"
-  address        String?
-  startingPrice  Float       // Price in SAR per night
-  isContactPricing Boolean   @default(false)
-  priceValidFrom String?
-  priceValidUntil String?
-  image          String
-  gallery        String[]
-  description    String
-  amenities      String[]    // "Haram View", "Free WiFi", "Breakfast Included", "Shuttle Service"
-  isActive       Boolean     @default(true)
-  featured       Boolean     @default(false)
-  order          Int         @default(0)
-  rooms          HotelRoom[]
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id               String      @id @default(cuid())
+  name             String // e.g. "Swissotel Al Maqam", "Pullman Zamzam"
+  slug             String      @unique
+  city             String // "Makkah", "Madinah"
+  stars            Int         @default(5)
+  distance         String // "100m from Haram", "Facing Kaaba", "Clock Tower"
+  address          String?
+  startingPrice    Float // Price in SAR per night
+  isContactPricing Boolean     @default(false)
+  priceValidFrom   String?
+  priceValidUntil  String?
+  image            String
+  gallery          String[]
+  description      String
+  amenities        String[] // "Haram View", "Free WiFi", "Breakfast Included", "Shuttle Service"
+  isActive         Boolean     @default(true)
+  featured         Boolean     @default(false)
+  order            Int         @default(0)
+  rooms            HotelRoom[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   @@index([city])
 }
 
 model HotelRoom {
-  id          String   @id @default(cuid())
-  roomType    String   // "Sharing Bed", "Double Room", "Triple Room", "Quad Room", "Junior Suite", "Executive Kaaba View Suite"
-  capacity    Int      @default(2)
-  pricePerNight Float  // in SAR
-  hasKaabaView Boolean @default(false)
-  hotelId     String
-  hotel       Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  roomType      String // "Sharing Bed", "Double Room", "Triple Room", "Quad Room", "Junior Suite", "Executive Kaaba View Suite"
+  capacity      Int      @default(2)
+  pricePerNight Float // in SAR
+  hasKaabaView  Boolean  @default(false)
+  hotelId       String
+  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([hotelId])
 }
@@ -179,25 +197,25 @@ model HotelRoom {
 // 5. SERVICE 3: UMRAH ZIYARAT TOURS
 // ============================================================================
 model ZiyaratTour {
-  id          String   @id @default(cuid())
-  title       String   // e.g. "Makkah Sacred Ziyarat", "Madinah Historic Ziyarat", "Battle of Badar Tour"
-  slug        String   @unique
-  city        String   // "Makkah", "Madinah", "Badar"
-  duration    String   // "3 - 4 Hours", "Full Day"
-  description String
-  image       String
-  gallery     String[]
+  id            String   @id @default(cuid())
+  title         String // e.g. "Makkah Sacred Ziyarat", "Madinah Historic Ziyarat", "Battle of Badar Tour"
+  slug          String   @unique
+  city          String // "Makkah", "Madinah", "Badar"
+  duration      String // "3 - 4 Hours", "Full Day"
+  description   String
+  image         String
+  gallery       String[]
   placesCovered String[] // ["Cave Hira", "Jabal Thowr", "Mina", "Arafat", "Muzdalifah"]
-  priceSedan  Float    // Sedan price in SAR
-  priceVan    Float?   // Van/HiAce price in SAR
-  priceSuv    Float?   // GMC Yukon price in SAR
-  priceStaria Float?   // Hyundai Staria price in SAR
-  priceBus    Float?   // Bus price in SAR
-  includes    String[] // ["Multilingual Chauffeur", "Hotel Pickup & Dropoff", "Air-conditioned Ride"]
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  priceSedan    Float // Sedan price in SAR
+  priceVan      Float? // Van/HiAce price in SAR
+  priceSuv      Float? // GMC Yukon price in SAR
+  priceStaria   Float? // Hyundai Staria price in SAR
+  priceBus      Float? // Bus price in SAR
+  includes      String[] // ["Multilingual Chauffeur", "Hotel Pickup & Dropoff", "Air-conditioned Ride"]
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   @@index([city])
 }
@@ -206,64 +224,64 @@ model ZiyaratTour {
 // 6. SERVICE 4: UAE CITY TOURS
 // ============================================================================
 model UaeCityTour {
-  id          String   @id @default(cuid())
-  title       String   // e.g. "Dubai Full Day Sightseeing", "Abu Dhabi Grand Mosque & Palace Tour"
-  slug        String   @unique
-  city        String   // "Dubai", "Abu Dhabi", "Sharjah"
-  category    String   @default("City Sightseeing")
-  duration    String   // "4 Hours Half Day", "8 Hours Full Day"
-  description String
-  image       String
-  gallery     String[] @default([])
-  highlights  String[] // ["Burj Khalifa", "Dubai Marina", "Palm Jumeirah", "Old Gold Souk"]
-  priceAed    Float    // Price in AED / SAR
-  pricePerPerson Float?
-  privateCarPrice Float?
-  inclusions  String[]
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-// ============================================================================
-// 7. SERVICE 5: UAE DESERT SAFARI
-// ============================================================================
-model DesertSafariPackage {
   id              String   @id @default(cuid())
-  title           String   // e.g. "Evening Red Dune Desert Safari with BBQ Dinner & Shows"
+  title           String // e.g. "Dubai Full Day Sightseeing", "Abu Dhabi Grand Mosque & Palace Tour"
   slug            String   @unique
-  packageType     String   // "Evening Safari", "VIP Safari", "Morning Safari", "Overnight Camp"
-  timing          String   // "03:00 PM - 09:30 PM"
-  priceAed        Float    // Standard price
-  vipPriceAed     Float?   // VIP Quad Bike / Private Table
+  city            String // "Dubai", "Abu Dhabi", "Sharjah"
+  category        String   @default("City Sightseeing")
+  duration        String // "4 Hours Half Day", "8 Hours Full Day"
+  description     String
   image           String
   gallery         String[] @default([])
-  description     String
-  activities      String[] // ["4x4 Dune Bashing", "Sunset Camel Trek", "Sandboarding", "BBQ Buffet Dinner", "Tanoura & Fire Show"]
-  includes        String[]
+  highlights      String[] // ["Burj Khalifa", "Dubai Marina", "Palm Jumeirah", "Old Gold Souk"]
+  priceAed        Float // Price in AED / SAR
+  pricePerPerson  Float?
+  privateCarPrice Float?
+  inclusions      String[]
   isActive        Boolean  @default(true)
   order           Int      @default(0)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
 
+// ============================================================================
+// 7. SERVICE 5: UAE DESERT SAFARI
+// ============================================================================
+model DesertSafariPackage {
+  id          String   @id @default(cuid())
+  title       String // e.g. "Evening Red Dune Desert Safari with BBQ Dinner & Shows"
+  slug        String   @unique
+  packageType String // "Evening Safari", "VIP Safari", "Morning Safari", "Overnight Camp"
+  timing      String // "03:00 PM - 09:30 PM"
+  priceAed    Float // Standard price
+  vipPriceAed Float? // VIP Quad Bike / Private Table
+  image       String
+  gallery     String[] @default([])
+  description String
+  activities  String[] // ["4x4 Dune Bashing", "Sunset Camel Trek", "Sandboarding", "BBQ Buffet Dinner", "Tanoura & Fire Show"]
+  includes    String[]
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model BlogPost {
-  id              String    @id @default(cuid())
-  title           String
-  slug            String    @unique
-  excerpt         String
-  content         String    @db.Text
-  coverImage      String?
-  category        String    @default("Travel Guide")
-  author          String    @default("Nexora Journeys")
-  seoTitle        String?
-  seoDescription  String?
-  seoKeywords     String[]  @default([])
-  isPublished     Boolean   @default(false)
-  publishedAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  title          String
+  slug           String    @unique
+  excerpt        String
+  content        String    @db.Text
+  coverImage     String?
+  category       String    @default("Travel Guide")
+  author         String    @default("Nexora Journeys")
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String[]  @default([])
+  isPublished    Boolean   @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([isPublished, publishedAt])
 }
@@ -272,29 +290,29 @@ model BlogPost {
 // 8. SERVICE 6: UAE RENTAL CARS (Self-Drive & Chauffeur)
 // ============================================================================
 model RentalCar {
-  id               String   @id @default(cuid())
-  name             String   // e.g. "Nissan Patrol Titanium", "Range Rover Sport", "Hyundai Elantra"
-  slug             String   @unique
-  category         String   // "Luxury SUV", "Sports Exotic", "Business Sedan", "Economy", "7-Seater Van"
-  brand            String   // "Nissan", "Range Rover", "Toyota", "Mercedes", "Hyundai"
-  year             Int      @default(2024)
-  seats            Int      @default(5)
-  transmission     String   @default("Automatic") // "Automatic", "Manual"
-  fuelType         String   @default("Petrol")    // "Petrol", "Hybrid", "Electric"
-  image            String
-  gallery          String[] @default([])
-  dailyPriceAed    Float
-  weeklyPriceAed   Float?
-  monthlyPriceAed  Float?
-  securityDeposit  Float    @default(0)
-  freeMileagePerDay Int     @default(250) // km
-  features         String[] // ["Comprehensive Insurance", "Free Airport Delivery", "Bluetooth & GPS"]
-  isSelfDrive      Boolean  @default(true)
-  withDriverOption Boolean  @default(true)
-  isActive         Boolean  @default(true)
-  order            Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                String   @id @default(cuid())
+  name              String // e.g. "Nissan Patrol Titanium", "Range Rover Sport", "Hyundai Elantra"
+  slug              String   @unique
+  category          String // "Luxury SUV", "Sports Exotic", "Business Sedan", "Economy", "7-Seater Van"
+  brand             String // "Nissan", "Range Rover", "Toyota", "Mercedes", "Hyundai"
+  year              Int      @default(2024)
+  seats             Int      @default(5)
+  transmission      String   @default("Automatic") // "Automatic", "Manual"
+  fuelType          String   @default("Petrol") // "Petrol", "Hybrid", "Electric"
+  image             String
+  gallery           String[] @default([])
+  dailyPriceAed     Float
+  weeklyPriceAed    Float?
+  monthlyPriceAed   Float?
+  securityDeposit   Float    @default(0)
+  freeMileagePerDay Int      @default(250) // km
+  features          String[] // ["Comprehensive Insurance", "Free Airport Delivery", "Bluetooth & GPS"]
+  isSelfDrive       Boolean  @default(true)
+  withDriverOption  Boolean  @default(true)
+  isActive          Boolean  @default(true)
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([category])
 }
@@ -303,14 +321,18 @@ model RentalCar {
 // 9. GENERAL INQUIRIES & CONTACT LEADS
 // ============================================================================
 model Inquiry {
-  id        String   @id @default(cuid())
+  id        String      @id @default(cuid())
+  clientId  String?
+  client    ClientUser? @relation(fields: [clientId], references: [id], onDelete: SetNull)
   name      String
   email     String
   phone     String
-  service   String?  // Which service they are asking about
+  service   String? // Which service they are asking about
   subject   String?
   message   String
-  status    String   @default("NEW") // "NEW", "CONTACTED", "RESOLVED"
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  status    String      @default("NEW") // "NEW", "CONTACTED", "RESOLVED"
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([clientId])
 }

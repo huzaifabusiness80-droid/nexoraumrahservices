@@ -29,6 +29,7 @@ export default function AdminBookingDetailPage() {
   const [status, setStatus] = useState("PENDING");
   const [paymentStatus, setPaymentStatus] = useState("UNPAID");
   const [totalPrice, setTotalPrice] = useState<number | "">("");
+  const [paidAmount, setPaidAmount] = useState<number | "">("");
   const [adminNotes, setAdminNotes] = useState("");
   const [assignedDriver, setAssignedDriver] = useState("");
 
@@ -43,6 +44,7 @@ export default function AdminBookingDetailPage() {
         setStatus(b.status || "PENDING");
         setPaymentStatus(b.paymentStatus || "UNPAID");
         setTotalPrice(b.totalPrice !== undefined && b.totalPrice !== null ? b.totalPrice : "");
+        setPaidAmount(b.paidAmount !== undefined && b.paidAmount !== null ? b.paidAmount : 0);
         setAdminNotes(b.adminNotes || "");
         setAssignedDriver(b.assignedDriver || "");
       } catch (err: any) {
@@ -68,6 +70,7 @@ export default function AdminBookingDetailPage() {
           status,
           paymentStatus,
           totalPrice: totalPrice !== "" ? Number(totalPrice) : null,
+          paidAmount: paidAmount !== "" ? Number(paidAmount) : 0,
           adminNotes,
           assignedDriver,
         }),
@@ -305,6 +308,19 @@ export default function AdminBookingDetailPage() {
               value={totalPrice}
               onChange={(e) => setTotalPrice(e.target.value === "" ? "" : Number(e.target.value))}
               placeholder="e.g. 550"
+              className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+              Paid Amount ({booking.currency || "SAR/AED"})
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={paidAmount}
+              onChange={(e) => setPaidAmount(e.target.value === "" ? "" : Number(e.target.value))}
+              placeholder="e.g. 250"
               className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
             />
           </div>

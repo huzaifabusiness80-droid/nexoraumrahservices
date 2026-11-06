@@ -5,6 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServiceImageGallery from "@/components/ServiceImageGallery";
+import BookServiceModal from "@/components/BookServiceModal";
 import prisma from "@/lib/prisma";
 import {
   FaWhatsapp,
@@ -366,15 +367,16 @@ export default async function CarRentalDetailPage({ params }: Props) {
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <BookServiceModal
+                  serviceType="CAR_RENTAL"
+                  itemName={`${car.brand} ${car.name}`}
+                  route={car.category || "UAE Car Rental"}
+                  currency="AED"
+                  totalPrice={isContactPrice ? null : car.dailyPriceAed}
+                  buttonLabel={isContactPrice ? "Request Rental Booking" : "Book on Nexora"}
+                  whatsappUrl={waLink}
                   className="w-full py-3.5 px-4 bg-[#25D366] hover:bg-[#1fa951] text-white text-xs sm:text-sm font-semibold rounded-md shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <FaWhatsapp className="text-lg" />
-                  <span>{isContactPrice ? "Inquire on WhatsApp" : "Book on WhatsApp"}</span>
-                </a>
+                />
 
               </div>
             </div>
