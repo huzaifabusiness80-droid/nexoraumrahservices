@@ -94,7 +94,6 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Carousel Navigation Arrows & Indicators */}
       <div
         className={`absolute bottom-4 sm:bottom-8 z-30 flex items-center gap-2.5 sm:gap-4 ${
           isRtl ? "left-4 sm:left-12" : "right-4 sm:right-12"
