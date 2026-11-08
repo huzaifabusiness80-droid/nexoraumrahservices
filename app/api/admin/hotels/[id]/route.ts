@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const {
       name,
       city,
+      category,
       stars,
       distance,
       address,
@@ -76,6 +77,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data: {
         name,
         city,
+        category: category !== undefined ? (category === "Executive Economy" ? "Executive Economy" : "Economy") : undefined,
         stars: stars !== undefined ? Number(stars) : undefined,
         distance,
         address,

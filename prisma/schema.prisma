@@ -162,6 +162,7 @@ model Hotel {
   name             String // e.g. "Swissotel Al Maqam", "Pullman Zamzam"
   slug             String      @unique
   city             String // "Makkah", "Madinah"
+  category         String      @default("Economy") // "Economy", "Executive Economy"
   stars            Int         @default(5)
   distance         String // "100m from Haram", "Facing Kaaba", "Clock Tower"
   address          String?

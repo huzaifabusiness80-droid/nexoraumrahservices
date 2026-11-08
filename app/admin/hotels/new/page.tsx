@@ -15,6 +15,7 @@ export default function AdminNewHotelPage() {
   // Form Fields
   const [name, setName] = useState("");
   const [city, setCity] = useState("Makkah");
+  const [category, setCategory] = useState("Economy");
   const [stars, setStars] = useState<number>(5);
   const [distance, setDistance] = useState("Clock Tower, Direct Haram Access");
   const [address, setAddress] = useState("");
@@ -99,6 +100,7 @@ export default function AdminNewHotelPage() {
         body: JSON.stringify({
           name,
           city,
+          category,
           stars: Number(stars),
           distance,
           address,
@@ -206,9 +208,23 @@ export default function AdminNewHotelPage() {
                 onChange={(e) => setStars(Number(e.target.value))}
                 className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
               >
-                <option value={5}>5-Star Luxury</option>
-                <option value={4}>4-Star Premium</option>
-                <option value={3}>3-Star Economy</option>
+                <option value={2}>2 Star</option>
+                <option value={3}>3 Star</option>
+                <option value={5}>5 Star</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1.5">
+                Hotel Category
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3.5 py-2.5 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+              >
+                <option value="Economy">Economy</option>
+                <option value="Executive Economy">Executive Economy</option>
               </select>
             </div>
 

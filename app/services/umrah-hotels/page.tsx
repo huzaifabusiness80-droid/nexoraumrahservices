@@ -34,6 +34,7 @@ interface HotelItem {
   name: string;
   slug: string;
   city: string;
+  category?: string;
   stars: number;
   distance: string;
   address: string | null;
@@ -49,15 +50,13 @@ interface HotelItem {
   rooms: HotelRoom[];
 }
 
-function getHotelCategory(hotel: HotelItem): "Economy" | "Standard" | "Deluxe" | "Luxury" {
+function getHotelCategory(hotel: HotelItem): "Economy" | "Executive Economy" {
+  if (hotel.category === "Executive Economy") return "Executive Economy";
+  if (hotel.category === "Economy") return "Economy";
   if (!isHotelPriceAvailable(hotel)) {
-    if (hotel.stars >= 5) return "Luxury";
-    if (hotel.stars === 4) return "Deluxe";
     return "Economy";
   }
-  if (hotel.stars >= 5 || hotel.startingPrice >= 500) return "Luxury";
-  if (hotel.stars === 4 || hotel.startingPrice >= 250) return "Deluxe";
-  if (hotel.startingPrice >= 120) return "Standard";
+  if (hotel.stars >= 3 || hotel.startingPrice >= 250) return "Executive Economy";
   return "Economy";
 }
 
@@ -180,9 +179,7 @@ export default function UmrahHotelsPage() {
     const starCounts: Record<number, number> = {};
     const typeCounts: Record<string, number> = {
       Economy: 0,
-      Standard: 0,
-      Deluxe: 0,
-      Luxury: 0,
+      "Executive Economy": 0,
     };
 
     allHotels.forEach((h) => {
@@ -425,10 +422,7 @@ export default function UmrahHotelsPage() {
                   Star Rating
                 </span>
                 <div className="space-y-2">
-                  {Object.keys(counts.starCounts)
-                    .map(Number)
-                    .sort((a, b) => b - a)
-                    .map((star) => (
+                  {[5, 3, 2].map((star) => (
                     <label key={star} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
                       <input
                         type="checkbox"
@@ -450,7 +444,7 @@ export default function UmrahHotelsPage() {
                   Hotel Type
                 </span>
                 <div className="space-y-2">
-                  {["Economy", "Standard", "Deluxe", "Luxury"].map((type) => (
+                  {["Economy", "Executive Economy"].map((type) => (
                     <label key={type} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
                       <input
                         type="checkbox"
