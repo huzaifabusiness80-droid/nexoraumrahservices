@@ -129,14 +129,42 @@ export default function BookServiceModal({
               <form onSubmit={submit} className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
                 {error && <div className="md:col-span-2 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>}
                 <label className="text-xs font-bold uppercase text-zinc-600">Full Name<input name="customerName" required defaultValue={client?.name || ""} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Phone / WhatsApp<input name="customerPhone" required defaultValue={client?.phone || ""} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Email Address<input name="customerEmail" type="email" defaultValue={client?.email || ""} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /><span className="mt-1 block text-[10px] font-normal normal-case text-zinc-500">Use your portal email to show this booking automatically after login.</span></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Pickup / Travel Date<input name="pickupDate" type="datetime-local" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Return Date<input name="returnDate" type="datetime-local" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Pickup Location<input name="pickupLocation" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Drop-off Location<input name="dropoffLocation" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Passengers<input name="passengers" type="number" min="1" defaultValue="1" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
-                <label className="text-xs font-bold uppercase text-zinc-600">Luggage<input name="luggageCount" type="number" min="0" defaultValue="0" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                <label className="text-xs font-bold uppercase text-zinc-600">Passport Number<input name="passportNumber" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                <label className="text-xs font-bold uppercase text-zinc-600">Nationality<input name="nationality" required placeholder="e.g. Pakistani" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                <label className="text-xs font-bold uppercase text-zinc-600">Mobile Number<input name="customerPhone" required defaultValue={client?.phone || ""} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Email Address<input name="customerEmail" type="email" required defaultValue={client?.email || ""} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /><span className="mt-1 block text-[10px] font-normal normal-case text-zinc-500">Use your portal email to link this booking to your account automatically.</span></label>
+
+                {serviceType === "UMRAH_HOTEL" ? (
+                  <>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Check-in Date<input name="pickupDate" type="date" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Check-out Date<input name="returnDate" type="date" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Number of Guests<input name="passengers" type="number" min="1" required defaultValue="1" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Number of Beds Required<input name="bedsRequired" type="number" min="1" required defaultValue="1" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                  </>
+                ) : serviceType === "CAR_RENTAL" ? (
+                  <>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Rental Start Date<input name="pickupDate" type="date" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Rental End Date<input name="returnDate" type="date" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Number of Passengers<input name="passengers" type="number" min="1" required defaultValue="1" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                  </>
+                ) : (
+                  <>
+                    <label className="text-xs font-bold uppercase text-zinc-600">Travelling Date<input name="pickupDate" type="date" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    {(serviceType === "UMRAH_ZIYARAT" || serviceType === "UAE_CITY_TOUR" || serviceType === "DESERT_SAFARI") && (
+                      <label className="text-xs font-bold uppercase text-zinc-600">{serviceType === "DESERT_SAFARI" ? "Preferred Pickup Time" : "Preferred Travelling Time"}<input name="preferredTime" type="time" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    )}
+                    {(serviceType === "UMRAH_TRANSPORT" || serviceType === "UMRAH_ZIYARAT" || serviceType === "UAE_CITY_TOUR" || serviceType === "DESERT_SAFARI") && (
+                      <>
+                        <label className="text-xs font-bold uppercase text-zinc-600">Pickup Location<input name="pickupLocation" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                        <label className="text-xs font-bold uppercase text-zinc-600">Drop-off Location<input name="dropoffLocation" required className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                      </>
+                    )}
+                    <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Number of Passengers<input name="passengers" type="number" min="1" required defaultValue="1" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    {serviceType === "UMRAH_TRANSPORT" && (
+                      <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Number of Luggage Items<input name="luggageCount" type="number" min="0" required defaultValue="0" className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case" /></label>
+                    )}
+                  </>
+                )}
                 <label className="text-xs font-bold uppercase text-zinc-600 md:col-span-2">Special Requirements<textarea name="customerNotes" rows={3} className="mt-2 w-full border border-zinc-300 px-3 py-3 text-sm normal-case resize-none" /></label>
                 <button disabled={saving} className="md:col-span-2 flex items-center justify-center gap-2 bg-[#18181b] px-6 py-3 text-sm font-bold text-white hover:bg-[#c5a059] disabled:opacity-60 cursor-pointer"><FaCalendarAlt />{saving ? "Saving Booking..." : "Confirm Booking Request"}</button>
               </form>

@@ -194,6 +194,7 @@ export default function UmrahZiyaratPage() {
             src="/images/hero/slide-4.jpg"
             alt="Umrah Ziyarat Tours"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

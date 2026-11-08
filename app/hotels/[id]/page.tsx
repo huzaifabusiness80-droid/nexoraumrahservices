@@ -292,6 +292,7 @@ export default async function HotelDetailPage({ params }: Props) {
                 src={hotel.image}
                 alt={hotel.name}
                 fill
+                sizes="100vw"
                 priority
                 className="object-cover object-center"
               />

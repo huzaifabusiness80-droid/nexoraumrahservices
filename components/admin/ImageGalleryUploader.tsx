@@ -97,7 +97,7 @@ export default function ImageGalleryUploader({
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {value.map((image, index) => (
             <div key={`${image}-${index}`} className="relative aspect-[4/3] overflow-hidden border border-zinc-200 bg-zinc-50">
-              <Image src={image} alt={`Gallery photo ${index + 1}`} fill unoptimized className="object-cover" />
+              <Image src={image} alt={`Gallery photo ${index + 1}`} fill sizes="(max-width: 768px) 50vw, 25vw" unoptimized className="object-cover" />
               <button
                 type="button"
                 onClick={() => onChange(value.filter((_, imageIndex) => imageIndex !== index))}

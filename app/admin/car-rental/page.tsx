@@ -148,6 +148,7 @@ export default function AdminCarRentalPage() {
                               src={car.image}
                               alt={car.name}
                               fill
+                              sizes="56px"
                               className="object-cover"
                             />
                           ) : (

@@ -138,6 +138,7 @@ export default function AdminDesertSafariPage() {
                               src={safari.image}
                               alt={safari.title}
                               fill
+                              sizes="56px"
                               className="object-cover"
                             />
                           ) : (

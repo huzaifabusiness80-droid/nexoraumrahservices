@@ -27,6 +27,8 @@ export default function Header() {
             alt="Nexora Journeys"
             width={260}
             height={100}
+            sizes="260px"
+            loading="eager"
             className="h-16 sm:h-20 w-auto object-contain transition-transform duration-200 group-hover:scale-105"
             priority
           />

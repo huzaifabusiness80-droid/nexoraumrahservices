@@ -106,6 +106,7 @@ export default function AdminTransportListPage() {
                               src={car.image}
                               alt={car.name}
                               fill
+                              sizes="56px"
                               className="object-cover"
                             />
                           ) : (

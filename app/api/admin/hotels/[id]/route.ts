@@ -7,7 +7,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params;
     const hotel = await prisma.hotel.findUnique({
       where: { id },
-      include: { rooms: true },
+      include: { rooms: true, pricePeriods: { orderBy: { validFrom: "asc" } } },
     });
     if (!hotel) {
       return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
@@ -39,6 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       rooms,
       isActive,
       featured,
+      pricePeriods,
     } = body;
 
     const contactPricing = Boolean(isContactPricing);
@@ -65,6 +66,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       await prisma.hotelRoom.deleteMany({
         where: { hotelId: id },
       });
+    }
+    if (Array.isArray(pricePeriods)) {
+      await prisma.hotelPricePeriod.deleteMany({ where: { hotelId: id } });
     }
 
     const updated = await prisma.hotel.update({
@@ -93,6 +97,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
                 pricePerNight: Number(r.pricePerNight || finalStartingPrice),
                 hasKaabaView: Boolean(r.hasKaabaView),
               })),
+            }
+          : undefined,
+        pricePeriods: !contactPricing && Array.isArray(pricePeriods)
+          ? {
+              create: pricePeriods
+                .filter((period: any) => isValidHotelDate(period.validFrom) && isValidHotelDate(period.validUntil))
+                .filter((period: any) => Number(period.pricePerNight) > 0 && period.validUntil >= period.validFrom)
+                .map((period: any) => ({
+                  validFrom: period.validFrom,
+                  validUntil: period.validUntil,
+                  pricePerNight: Number(period.pricePerNight),
+                })),
             }
           : undefined,
       },

@@ -20,6 +20,7 @@ import {
   FaBars,
   FaTimes,
   FaUserCircle,
+  FaUsers,
 } from "react-icons/fa";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -81,6 +82,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     { type: "header", label: "CONTENT MANAGEMENT" },
     { label: "Blog Articles", href: "/admin/blogs", icon: FaNewspaper },
     { type: "header", label: "LEADS & INQUIRIES" },
+    { label: "Registered Clients", href: "/admin/clients", icon: FaUsers },
     { label: "Contact Inquiries", href: "/admin/inquiries", icon: FaEnvelope },
   ];
 

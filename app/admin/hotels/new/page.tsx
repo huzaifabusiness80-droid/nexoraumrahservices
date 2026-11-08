@@ -40,6 +40,9 @@ export default function AdminNewHotelPage() {
     { roomType: "Quad Room", capacity: 4, pricePerNight: 650, hasKaabaView: false },
     { roomType: "Kaaba View Executive Suite", capacity: 2, pricePerNight: 950, hasKaabaView: true },
   ]);
+  const [pricePeriods, setPricePeriods] = useState<
+    { validFrom: string; validUntil: string; pricePerNight: number | "" }[]
+  >([]);
 
   const handleAddRoom = () => {
     setRooms((prev) => [
@@ -50,6 +53,13 @@ export default function AdminNewHotelPage() {
 
   const handleRemoveRoom = (index: number) => {
     setRooms((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleAddPricePeriod = () => {
+    setPricePeriods((prev) => [
+      ...prev,
+      { validFrom: "", validUntil: "", pricePerNight: startingPrice || 450 },
+    ]);
   };
 
   const handleRoomChange = (index: number, field: string, val: any) => {
@@ -101,6 +111,7 @@ export default function AdminNewHotelPage() {
           description,
           amenities,
           rooms: isContactPricing ? [] : rooms,
+          pricePeriods: isContactPricing ? [] : pricePeriods,
           isActive,
           featured,
         }),
@@ -352,7 +363,79 @@ export default function AdminNewHotelPage() {
           <ImageGalleryUploader value={gallery} onChange={setGallery} folder="nexora/hotels" />
         </div>
 
-        {/* Section 3: Dynamic Room Tariffs */}
+        {/* Section 3: Date-Based Hotel Prices */}
+        {!isContactPricing && (
+          <div className="bg-white border border-zinc-200 rounded-xl p-6 sm:p-7 space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
+              <div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                  3. Date-Based Nightly Prices
+                </h2>
+                <p className="text-xs text-zinc-500 mt-1">
+                  Add special prices for selected travel dates. Without a matching period, the normal starting price is used.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAddPricePeriod}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-[#faf6ed] text-[#9f7d3b] rounded-lg text-xs font-bold border border-[#e8dcbf] hover:bg-[#f2e8ce]"
+              >
+                <FaPlus className="text-[10px]" /> Add Price Period
+              </button>
+            </div>
+
+            {pricePeriods.length === 0 ? (
+              <p className="text-xs text-zinc-400 py-2">No date-based prices configured.</p>
+            ) : (
+              <div className="space-y-3">
+                {pricePeriods.map((period, index) => (
+                  <div key={index} className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_1fr_auto] gap-3 items-end border border-zinc-100 rounded-lg p-3">
+                    <div>
+                      <label className="block text-[10px] font-bold text-zinc-500 uppercase mb-1">Valid From</label>
+                      <input
+                        type="date"
+                        value={period.validFrom}
+                        max={period.validUntil || undefined}
+                        onChange={(e) => setPricePeriods((prev) => prev.map((item, i) => i === index ? { ...item, validFrom: e.target.value } : item))}
+                        className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-zinc-500 uppercase mb-1">Valid Until</label>
+                      <input
+                        type="date"
+                        value={period.validUntil}
+                        min={period.validFrom || undefined}
+                        onChange={(e) => setPricePeriods((prev) => prev.map((item, i) => i === index ? { ...item, validUntil: e.target.value } : item))}
+                        className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-bold text-zinc-500 uppercase mb-1">Price / Night SAR</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={period.pricePerNight}
+                        onChange={(e) => setPricePeriods((prev) => prev.map((item, i) => i === index ? { ...item, pricePerNight: e.target.value === "" ? "" : Number(e.target.value) } : item))}
+                        className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPricePeriods((prev) => prev.filter((_, i) => i !== index))}
+                      className="h-10 w-10 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                      aria-label="Remove price period"
+                    >
+                      <FaTrash className="text-xs" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Section 4: Dynamic Room Tariffs */}
         {!isContactPricing && <div className="bg-white border border-zinc-200 rounded-xl p-6 sm:p-7 space-y-4">
           <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
             <div>

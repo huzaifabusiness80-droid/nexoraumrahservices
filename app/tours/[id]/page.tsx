@@ -161,6 +161,7 @@ export default async function TourDetailPage({ params }: Props) {
                 src={tour.image}
                 alt={tour.title}
                 fill
+                sizes="100vw"
                 priority
                 className="object-cover object-center"
               />

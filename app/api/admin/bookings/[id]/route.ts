@@ -27,6 +27,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       adminNotes,
       assignedDriver,
       pickupDate,
+      passportNumber,
+      nationality,
+      preferredTime,
+      luggageCount,
+      bedsRequired,
+      customerNotes,
+      returnDate,
     } = body;
 
     const normalizedEmail =
@@ -47,6 +54,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         adminNotes,
         assignedDriver,
         pickupDate: pickupDate ? new Date(pickupDate) : undefined,
+        returnDate: returnDate ? new Date(returnDate) : undefined,
+        passportNumber: passportNumber !== undefined ? String(passportNumber).trim() || null : undefined,
+        nationality: nationality !== undefined ? String(nationality).trim() || null : undefined,
+        customerCountry: nationality !== undefined ? String(nationality).trim() || null : undefined,
+        preferredTime: preferredTime !== undefined ? String(preferredTime).trim() || null : undefined,
+        luggageCount: luggageCount !== undefined ? Math.max(Number(luggageCount || 0), 0) : undefined,
+        bedsRequired: bedsRequired !== undefined ? Math.max(Number(bedsRequired || 0), 0) : undefined,
+        customerNotes: customerNotes !== undefined ? String(customerNotes) : undefined,
       },
     });
 

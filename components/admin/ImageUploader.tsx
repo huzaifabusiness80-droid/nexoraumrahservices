@@ -81,6 +81,7 @@ export default function ImageUploader({
             src={value}
             alt="Uploaded preview"
             fill
+            sizes="(max-width: 768px) 100vw, 400px"
             unoptimized
             className="object-contain p-2"
           />

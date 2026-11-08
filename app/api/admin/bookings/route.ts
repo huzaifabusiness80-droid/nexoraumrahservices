@@ -49,6 +49,12 @@ export async function POST(req: NextRequest) {
       paymentStatus,
       paidAmount,
       adminNotes,
+      passportNumber,
+      nationality,
+      preferredTime,
+      luggageCount,
+      bedsRequired,
+      customerNotes,
     } = body;
 
     const normalizedEmail =
@@ -67,6 +73,8 @@ export async function POST(req: NextRequest) {
         customerPhone,
         customerEmail: normalizedEmail,
         customerCountry,
+        passportNumber: passportNumber ? String(passportNumber).trim() : null,
+        nationality: nationality ? String(nationality).trim() : null,
         pickupLocation,
         dropoffLocation,
         pickupDate: pickupDate ? new Date(pickupDate) : null,
@@ -80,6 +88,10 @@ export async function POST(req: NextRequest) {
         paymentStatus: paymentStatus || "UNPAID",
         paidAmount: paidAmount !== undefined ? Math.max(Number(paidAmount || 0), 0) : 0,
         adminNotes,
+        preferredTime: preferredTime ? String(preferredTime) : null,
+        luggageCount: luggageCount !== undefined ? Math.max(Number(luggageCount || 0), 0) : null,
+        bedsRequired: bedsRequired !== undefined ? Math.max(Number(bedsRequired || 0), 0) : null,
+        customerNotes: customerNotes ? String(customerNotes) : null,
       },
     });
 

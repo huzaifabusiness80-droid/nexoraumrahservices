@@ -104,6 +104,7 @@ export default function AdminHotelsListPage() {
                               src={hotel.image}
                               alt={hotel.name}
                               fill
+                              sizes="56px"
                               className="object-cover"
                             />
                           ) : (

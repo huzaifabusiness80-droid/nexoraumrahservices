@@ -42,6 +42,7 @@ export default function AboutUsPage() {
             src="/images/hero/slide-2.jpg"
             alt="About Nexora Journeys"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

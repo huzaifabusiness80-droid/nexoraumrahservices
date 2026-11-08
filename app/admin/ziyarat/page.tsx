@@ -103,6 +103,7 @@ export default function AdminZiyaratListPage() {
                               src={tour.image}
                               alt={tour.title}
                               fill
+                              sizes="56px"
                               className="object-cover"
                             />
                           ) : (

@@ -57,6 +57,7 @@ export default function UaeDesertSafariPage() {
             src="/images/services/desertsafariimage.png"
             alt="UAE Desert Safari"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />
@@ -120,6 +121,7 @@ export default function UaeDesertSafariPage() {
                         src={pkg.image}
                         alt={pkg.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover object-center"
                       />
                       <div className="absolute top-4 left-4">

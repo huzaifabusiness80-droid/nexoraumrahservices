@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
       rooms,
       isActive,
       featured,
+      pricePeriods,
     } = body;
 
     if (!name || !city || !image) {
@@ -91,6 +92,18 @@ export async function POST(req: NextRequest) {
                 pricePerNight: Number(r.pricePerNight || startingPrice),
                 hasKaabaView: Boolean(r.hasKaabaView),
               }))
+            : [],
+        },
+        pricePeriods: {
+          create: Array.isArray(pricePeriods)
+            ? pricePeriods
+                .filter((period: any) => isValidHotelDate(period.validFrom) && isValidHotelDate(period.validUntil))
+                .filter((period: any) => Number(period.pricePerNight) > 0 && period.validUntil >= period.validFrom)
+                .map((period: any) => ({
+                  validFrom: period.validFrom,
+                  validUntil: period.validUntil,
+                  pricePerNight: Number(period.pricePerNight),
+                }))
             : [],
         },
       },

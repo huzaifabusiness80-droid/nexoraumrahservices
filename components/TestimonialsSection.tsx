@@ -48,6 +48,7 @@ export default function TestimonialsSection() {
                     src={avatarList[idx] || avatarList[0]}
                     alt={item.name}
                     fill
+                    sizes="48px"
                     className="object-cover"
                   />
                 </div>

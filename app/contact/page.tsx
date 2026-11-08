@@ -40,6 +40,7 @@ export default function ContactPage() {
             src="/images/hero/slide-1.jpg"
             alt="Contact Nexora Journeys"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

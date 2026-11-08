@@ -12,6 +12,8 @@ export async function GET(req: NextRequest) {
     const sort = searchParams.get("sort") || "";
     const search = searchParams.get("search") || "";
     const featured = searchParams.get("featured") || "";
+    const checkIn = searchParams.get("checkIn") || "";
+    const validCheckIn = /^\d{4}-\d{2}-\d{2}$/.test(checkIn) ? checkIn : "";
 
     const where: any = { isActive: true };
 
@@ -49,17 +51,34 @@ export async function GET(req: NextRequest) {
 
     const hotels = await prisma.hotel.findMany({
       where,
-      include: { rooms: true },
+      include: { rooms: true, pricePeriods: true },
       orderBy,
     });
 
     const customerHotels = hotels.map((hotel) => {
       const hasPrice = isHotelPriceAvailable(hotel);
+      const datePrice = validCheckIn
+        ? hotel.pricePeriods.find((period) =>
+            validCheckIn >= period.validFrom && validCheckIn <= period.validUntil
+          )
+        : null;
+      const effectiveStartingPrice = datePrice
+        ? Number(datePrice.pricePerNight)
+        : Number(hotel.startingPrice || 0);
+      const effectiveRooms = datePrice
+        ? hotel.rooms.map((room) => ({
+            ...room,
+            pricePerNight: Number(datePrice.pricePerNight),
+          }))
+        : hotel.rooms;
       return {
         ...hotel,
         isContactPricing: !hasPrice,
-        startingPrice: hasPrice ? hotel.startingPrice : 0,
-        rooms: hasPrice ? hotel.rooms : [],
+        startingPrice: hasPrice ? effectiveStartingPrice : 0,
+        rooms: hasPrice ? effectiveRooms : [],
+        appliedPricePeriod: datePrice
+          ? { validFrom: datePrice.validFrom, validUntil: datePrice.validUntil }
+          : null,
       };
     });
 

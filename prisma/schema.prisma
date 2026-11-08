@@ -54,6 +54,8 @@ model Booking {
   customerPhone   String
   customerEmail   String?
   customerCountry String?
+  passportNumber  String?
+  nationality     String?
 
   // Service Booking Details
   pickupLocation  String? // Airport, Hotel, City address
@@ -62,6 +64,8 @@ model Booking {
   returnDate      DateTime?
   passengers      Int       @default(1)
   luggageCount    Int?
+  bedsRequired    Int?
+  preferredTime   String?
 
   // Referenced Items (Flexible for any of the 6 services)
   itemName     String? // Vehicle name, Hotel name, Tour package name
@@ -173,6 +177,7 @@ model Hotel {
   featured         Boolean     @default(false)
   order            Int         @default(0)
   rooms            HotelRoom[]
+  pricePeriods     HotelPricePeriod[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
@@ -191,6 +196,19 @@ model HotelRoom {
   updatedAt     DateTime @updatedAt
 
   @@index([hotelId])
+}
+
+model HotelPricePeriod {
+  id            String   @id @default(cuid())
+  hotelId       String
+  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  validFrom     String
+  validUntil    String
+  pricePerNight Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([hotelId, validFrom, validUntil])
 }
 
 // ============================================================================

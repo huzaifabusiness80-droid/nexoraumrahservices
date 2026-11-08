@@ -76,6 +76,8 @@ export default function UmrahHotelsPage() {
   const [starFilterReady, setStarFilterReady] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("recommended");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
 
   // Fetch hotels from backend
   useEffect(() => {
@@ -93,7 +95,9 @@ export default function UmrahHotelsPage() {
           );
         }
         setStarFilterReady(true);
-        const res = await fetch("/api/services/hotels");
+        const params = new URLSearchParams();
+        if (checkIn) params.set("checkIn", checkIn);
+        const res = await fetch(`/api/services/hotels${params.size ? `?${params.toString()}` : ""}`);
         const data = await res.json();
         if (data.success) {
           setAllHotels(data.hotels);
@@ -107,7 +111,7 @@ export default function UmrahHotelsPage() {
       }
     }
     fetchHotels();
-  }, []);
+  }, [checkIn]);
 
   useEffect(() => {
     if (!starFilterReady) return;
@@ -157,6 +161,8 @@ export default function UmrahHotelsPage() {
     setSelectedStars([]);
     setSelectedTypes([]);
     setSortBy("recommended");
+    setCheckIn("");
+    setCheckOut("");
     const url = new URL(window.location.href);
     url.searchParams.delete("stars");
     window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
@@ -286,6 +292,7 @@ export default function UmrahHotelsPage() {
             src="/images/hero/slide-1.jpg"
             alt="Makkah & Madinah Hotels"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />
@@ -323,6 +330,42 @@ export default function UmrahHotelsPage() {
       ) : (
         /* 2. Main Content: Sticky Filter Sidebar on Left + Hotel Cards on Right */
         <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 flex-1">
+          <div className="mb-6 bg-white border border-gray-200 rounded-lg p-4 flex flex-col sm:flex-row items-end gap-3">
+            <div className="flex-1 w-full">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">
+                Check-in Date
+              </label>
+              <input
+                type="date"
+                value={checkIn}
+                max={checkOut || undefined}
+                onChange={(e) => setCheckIn(e.target.value)}
+                className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:border-[#b58e45]"
+              />
+            </div>
+            <div className="flex-1 w-full">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1.5">
+                Check-out Date
+              </label>
+              <input
+                type="date"
+                value={checkOut}
+                min={checkIn || undefined}
+                onChange={(e) => setCheckOut(e.target.value)}
+                className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:border-[#b58e45]"
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (checkOut && checkIn && checkOut <= checkIn) return;
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="w-full sm:w-auto px-5 py-2.5 bg-zinc-900 text-white text-xs font-bold uppercase tracking-wider rounded-md hover:bg-[#c5a059]"
+            >
+              Check Rates
+            </button>
+          </div>
           <div className="flex flex-col lg:flex-row gap-8 items-start relative">
             
             {/* LEFT SIDEBAR: Sticky Filter Box */}

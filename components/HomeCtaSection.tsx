@@ -14,6 +14,7 @@ export default function HomeCtaSection() {
           src="/images/hero/slide-1.jpg"
           alt="Umrah and Travel Services"
           fill
+          sizes="100vw"
           className="object-cover object-center"
           priority
         />

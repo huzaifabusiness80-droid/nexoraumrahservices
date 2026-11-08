@@ -137,6 +137,7 @@ export default async function TransportDetailPage({ params }: Props) {
                 src={car.image}
                 alt={car.name}
                 fill
+                sizes="100vw"
                 priority
                 className="object-cover object-center"
               />

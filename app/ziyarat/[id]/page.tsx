@@ -131,6 +131,7 @@ export default async function ZiyaratDetailPage({ params }: Props) {
                 src={tour.image}
                 alt={tour.title}
                 fill
+                sizes="100vw"
                 priority
                 className="object-cover object-center"
               />

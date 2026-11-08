@@ -147,6 +147,7 @@ export default function UaeCityToursPage() {
             src="/images/hero/slide-2.jpg"
             alt="UAE City Tours"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

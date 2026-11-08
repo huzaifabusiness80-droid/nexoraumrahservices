@@ -161,6 +161,7 @@ export default function UaeCarRentalPage() {
             src="/images/hero/slide-1.jpg"
             alt="Car Rental"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />

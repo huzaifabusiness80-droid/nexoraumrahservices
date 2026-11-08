@@ -96,7 +96,7 @@ export default function AdminCityToursListPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-14 h-10 rounded border border-zinc-200 overflow-hidden relative bg-zinc-100 shrink-0">
                           {tour.image ? (
-                            <Image src={tour.image} alt={tour.title} fill className="object-cover" />
+                            <Image src={tour.image} alt={tour.title} fill sizes="56px" className="object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400">No Pic</div>
                           )}

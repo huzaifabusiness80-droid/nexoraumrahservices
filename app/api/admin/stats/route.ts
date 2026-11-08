@@ -13,6 +13,7 @@ export async function GET() {
       rentalCarsCount,
       bookingsCount,
       inquiriesCount,
+      clientsCount,
       recentBookings,
     ] = await Promise.all([
       prisma.transportVehicle.count(),
@@ -24,6 +25,7 @@ export async function GET() {
       prisma.rentalCar.count(),
       prisma.booking.count(),
       prisma.inquiry.count(),
+      prisma.clientUser.count(),
       prisma.booking.findMany({
         take: 5,
         orderBy: { createdAt: "desc" },
@@ -42,6 +44,7 @@ export async function GET() {
         rentalCars: rentalCarsCount,
         bookings: bookingsCount,
         inquiries: inquiriesCount,
+        clients: clientsCount,
         totalServices: vehiclesCount + hotelsCount + ziyaratCount + cityToursCount + safariCount + rentalCarsCount,
       },
       recentBookings,

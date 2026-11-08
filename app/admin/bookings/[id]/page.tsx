@@ -211,6 +211,20 @@ export default function AdminBookingDetailPage() {
                 <p className="font-medium text-zinc-800">{booking.customerCountry}</p>
               </div>
             )}
+
+            {booking.passportNumber && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Passport Number</span>
+                <p className="font-mono font-medium text-zinc-800">{booking.passportNumber}</p>
+              </div>
+            )}
+
+            {booking.nationality && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Nationality</span>
+                <p className="font-medium text-zinc-800">{booking.nationality}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -232,6 +246,7 @@ export default function AdminBookingDetailPage() {
               <p className="text-sm font-bold text-zinc-900">{booking.itemName || booking.route || "General Request"}</p>
             </div>
 
+            {booking.serviceType !== "UMRAH_HOTEL" && booking.serviceType !== "CAR_RENTAL" && (
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <span className="text-zinc-400 block text-[10px] uppercase font-bold">Pickup Location</span>
@@ -242,19 +257,48 @@ export default function AdminBookingDetailPage() {
                 <p className="font-medium text-zinc-800">{booking.dropoffLocation || "Not specified"}</p>
               </div>
             </div>
+            )}
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Date</span>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">{booking.serviceType === "UMRAH_HOTEL" ? "Check-in Date" : booking.serviceType === "CAR_RENTAL" ? "Rental Start" : "Travelling Date"}</span>
                 <p className="font-mono font-medium text-zinc-800">
                   {booking.pickupDate ? new Date(booking.pickupDate).toLocaleDateString() : "Flexible"}
                 </p>
               </div>
               <div>
-                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Passengers / Guests</span>
-                <p className="font-mono font-medium text-zinc-800">{booking.passengers} Pax</p>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">{booking.serviceType === "UMRAH_HOTEL" ? "Guests" : "Passengers"}</span>
+                <p className="font-mono font-medium text-zinc-800">{booking.passengers}</p>
               </div>
             </div>
+
+            {booking.returnDate && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">{booking.serviceType === "UMRAH_HOTEL" ? "Check-out Date" : "Rental End Date"}</span>
+                <p className="font-mono font-medium text-zinc-800">{new Date(booking.returnDate).toLocaleDateString()}</p>
+              </div>
+            )}
+
+            {booking.preferredTime && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">{booking.serviceType === "DESERT_SAFARI" ? "Preferred Pickup Time" : "Preferred Travelling Time"}</span>
+                <p className="font-medium text-zinc-800">{booking.preferredTime}</p>
+              </div>
+            )}
+
+            {booking.serviceType === "UMRAH_HOTEL" && booking.bedsRequired && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Beds Required</span>
+                <p className="font-medium text-zinc-800">{booking.bedsRequired}</p>
+              </div>
+            )}
+
+            {booking.serviceType === "UMRAH_TRANSPORT" && booking.luggageCount !== null && booking.luggageCount !== undefined && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Luggage Items</span>
+                <p className="font-medium text-zinc-800">{booking.luggageCount}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

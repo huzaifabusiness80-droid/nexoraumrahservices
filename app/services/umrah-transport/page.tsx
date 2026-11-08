@@ -30,6 +30,7 @@ export default function UmrahTransportPage() {
             src="/images/hero/slide-1.jpg"
             alt="Umrah Transport Fleet"
             fill
+            sizes="100vw"
             className="object-cover object-center"
             priority
           />
