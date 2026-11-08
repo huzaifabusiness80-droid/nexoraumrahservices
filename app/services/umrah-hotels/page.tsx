@@ -34,7 +34,7 @@ interface HotelItem {
   name: string;
   slug: string;
   city: string;
-  category?: string;
+  hotelType?: string;
   stars: number;
   distance: string;
   address: string | null;
@@ -50,13 +50,14 @@ interface HotelItem {
   rooms: HotelRoom[];
 }
 
-function getHotelCategory(hotel: HotelItem): "Economy" | "Executive Economy" {
-  if (hotel.category === "Executive Economy") return "Executive Economy";
-  if (hotel.category === "Economy") return "Economy";
-  if (!isHotelPriceAvailable(hotel)) {
-    return "Economy";
+function getHotelType(hotel: HotelItem): "Economy" | "Standard" | "Deluxe" | "Luxury" {
+  if (hotel.hotelType && ["Economy", "Standard", "Deluxe", "Luxury"].includes(hotel.hotelType)) {
+    return hotel.hotelType as "Economy" | "Standard" | "Deluxe" | "Luxury";
   }
-  if (hotel.stars >= 3 || hotel.startingPrice >= 250) return "Executive Economy";
+  if (!isHotelPriceAvailable(hotel)) return "Economy";
+  if (hotel.stars >= 5 || hotel.startingPrice >= 500) return "Luxury";
+  if (hotel.stars === 4 || hotel.startingPrice >= 250) return "Deluxe";
+  if (hotel.startingPrice >= 120) return "Standard";
   return "Economy";
 }
 
@@ -71,7 +72,7 @@ export default function UmrahHotelsPage() {
   // Filter States
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedPriceRanges, setSelectedPriceRanges] = useState<string[]>([]);
-  const [selectedStars, setSelectedStars] = useState<number[]>([]);
+  const [selectedStars, setSelectedStars] = useState<string[]>([]);
   const [starFilterReady, setStarFilterReady] = useState(false);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>("recommended");
@@ -87,8 +88,8 @@ export default function UmrahHotelsPage() {
         if (starParam) {
           const initialStars = starParam
             .split(",")
-            .map((value) => Number(value))
-            .filter((value) => Number.isInteger(value) && value > 0);
+            .map((value) => value.trim())
+            .filter((value) => ["Economy", "Executive Economy", "2", "3", "5"].includes(value));
           setSelectedStars((current) =>
             current.length > 0 ? current : initialStars
           );
@@ -140,11 +141,11 @@ export default function UmrahHotelsPage() {
     );
   };
 
-  const toggleStar = (star: number) => {
+  const toggleStar = (star: string) => {
     setSelectedStars((prev) => {
       return prev.includes(star)
         ? prev.filter((item) => item !== star)
-        : [...prev, star].sort((a, b) => a - b);
+        : [...prev, star];
     });
   };
 
@@ -179,14 +180,20 @@ export default function UmrahHotelsPage() {
     const starCounts: Record<number, number> = {};
     const typeCounts: Record<string, number> = {
       Economy: 0,
-      "Executive Economy": 0,
+      Standard: 0,
+      Deluxe: 0,
+      Luxury: 0,
     };
 
     allHotels.forEach((h) => {
       const s = h.stars || 0;
       if (s > 0) {
-        starCounts[s] = (starCounts[s] || 0) + 1;
+        if ([2, 3, 5].includes(s)) {
+          starCounts[s] = (starCounts[s] || 0) + 1;
+        }
       }
+      const hotelType = getHotelType(h);
+      if (typeCounts[hotelType] !== undefined) typeCounts[hotelType]++;
 
       // Location
       const cityKey = h.city.charAt(0).toUpperCase() + h.city.slice(1).toLowerCase();
@@ -194,8 +201,6 @@ export default function UmrahHotelsPage() {
 
       // Price
       if (!isHotelPriceAvailable(h)) {
-        const cat = getHotelCategory(h);
-        if (typeCounts[cat] !== undefined) typeCounts[cat]++;
         return;
       }
 
@@ -205,9 +210,6 @@ export default function UmrahHotelsPage() {
       else if (price <= 500) priceCounts["250-500"]++;
       else priceCounts["above-500"]++;
 
-      // Type
-      const cat = getHotelCategory(h);
-      if (typeCounts[cat] !== undefined) typeCounts[cat]++;
     });
 
     return { locCounts, priceCounts, starCounts, typeCounts };
@@ -242,12 +244,18 @@ export default function UmrahHotelsPage() {
 
     // Filter by Star Rating
     if (selectedStars.length > 0) {
-      list = list.filter((h) => selectedStars.includes(h.stars || 3));
+      list = list.filter((h) =>
+        selectedStars.some((filter) => {
+          if (filter === "Economy") return (h.stars || 0) === 2;
+          if (filter === "Executive Economy") return (h.stars || 0) === 3;
+          return String(h.stars || 0) === filter;
+        })
+      );
     }
 
     // Filter by Hotel Type
     if (selectedTypes.length > 0) {
-      list = list.filter((h) => selectedTypes.includes(getHotelCategory(h)));
+      list = list.filter((h) => selectedTypes.includes(getHotelType(h)));
     }
 
     // Sorting
@@ -422,17 +430,25 @@ export default function UmrahHotelsPage() {
                   Star Rating
                 </span>
                 <div className="space-y-2">
-                  {[5, 3, 2].map((star) => (
-                    <label key={star} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
+                  {[
+                    { value: "Economy", label: "Economy" },
+                    { value: "Executive Economy", label: "Executive Economy" },
+                    { value: "2", label: "2 Star" },
+                    { value: "3", label: "3 Star" },
+                    { value: "5", label: "5 Star" },
+                  ].map((option) => (
+                    <label key={option.value} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={selectedStars.includes(star)}
-                        onChange={() => toggleStar(star)}
+                        checked={selectedStars.includes(option.value)}
+                        onChange={() => toggleStar(option.value)}
                         className="w-4 h-4 rounded border-gray-300 text-[#b58e45] focus:ring-[#b58e45] accent-[#b58e45] cursor-pointer"
                       />
-                      <span className="flex items-center gap-1">
-                        <span className="text-amber-400">{"★".repeat(star)}</span> {star} Star ({counts.starCounts[star] || 0})
-                      </span>
+                      {option.value === "2" || option.value === "3" || option.value === "5" ? (
+                        <span>{option.label} ({counts.starCounts[Number(option.value)] || 0})</span>
+                      ) : (
+                        <span>{option.label}</span>
+                      )}
                     </label>
                   ))}
                 </div>
@@ -441,10 +457,10 @@ export default function UmrahHotelsPage() {
               {/* Filter Section: Hotel Type */}
               <div className="py-3 border-t border-gray-100">
                 <span className="text-xs font-bold text-gray-800 uppercase tracking-wider block mb-2.5">
-                  Hotel Type
+                  Type
                 </span>
                 <div className="space-y-2">
-                  {["Economy", "Executive Economy"].map((type) => (
+                  {["Economy", "Standard", "Deluxe", "Luxury"].map((type) => (
                     <label key={type} className="flex items-center gap-2.5 text-xs sm:text-sm text-gray-600 hover:text-gray-900 cursor-pointer">
                       <input
                         type="checkbox"
@@ -452,7 +468,7 @@ export default function UmrahHotelsPage() {
                         onChange={() => toggleType(type)}
                         className="w-4 h-4 rounded border-gray-300 text-[#b58e45] focus:ring-[#b58e45] accent-[#b58e45] cursor-pointer"
                       />
-                      <span>{type} ({counts.typeCounts[type]})</span>
+                      <span>{type} ({counts.typeCounts[type] || 0})</span>
                     </label>
                   ))}
                 </div>

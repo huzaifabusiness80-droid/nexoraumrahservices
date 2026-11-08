@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const {
       name,
       city,
+      hotelType,
       category,
       stars,
       distance,
@@ -77,7 +78,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       data: {
         name,
         city,
-        category: category !== undefined ? (category === "Executive Economy" ? "Executive Economy" : "Economy") : undefined,
+        hotelType: hotelType !== undefined
+          ? (["Economy", "Standard", "Deluxe", "Luxury"].includes(hotelType) ? hotelType : "Economy")
+          : undefined,
+        category: category !== undefined
+          ? (["Economy", "Executive Economy"].includes(category) ? category : "")
+          : undefined,
         stars: stars !== undefined ? Number(stars) : undefined,
         distance,
         address,

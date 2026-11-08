@@ -1,0 +1,1 @@
+ALTER TABLE "Hotel" ADD COLUMN "hotelType" TEXT NOT NULL DEFAULT 'Economy';
