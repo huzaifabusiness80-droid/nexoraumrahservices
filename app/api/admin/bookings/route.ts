@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       serviceType,
+      voucherNumber,
       customerName,
       customerPhone,
       customerEmail,
@@ -84,6 +85,7 @@ export async function POST(req: NextRequest) {
       data: {
         clientId: linkedClient?.id || null,
         serviceType: serviceType || "UMRAH_TRANSPORT",
+        voucherNumber: voucherNumber ? String(voucherNumber).trim() : null,
         customerName: customerName ? String(customerName).trim() : "Guest Client",
         customerPhone: customerPhone ? String(customerPhone).trim() : "",
         customerEmail: normalizedEmail,

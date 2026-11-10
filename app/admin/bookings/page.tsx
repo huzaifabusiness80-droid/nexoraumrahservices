@@ -20,6 +20,7 @@ import {
   FaPlus,
   FaBed,
 } from "react-icons/fa";
+import InvoiceDownloadModal from "@/components/admin/InvoiceDownloadModal";
 
 interface HotelRoom {
   id: string;
@@ -111,6 +112,12 @@ export default function AdminBookingsPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [invoiceModalBooking, setInvoiceModalBooking] = useState<{
+    id: string;
+    bookingNumber: string;
+    customerName?: string;
+    serviceType?: string;
+  } | null>(null);
 
   const fetchBookings = async () => {
     try {
@@ -493,15 +500,22 @@ export default function AdminBookingsPage() {
                       {/* 7. Actions: Invoice, View, Edit, Delete */}
                       <td className="py-3 px-4 text-right">
                         <div className="inline-flex items-center gap-1.5">
-                          <a
-                            href={`/api/admin/bookings/${b.id}/invoice`}
-                            download
-                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#9f7d3b] hover:text-white bg-amber-50 hover:bg-[#b38b45] rounded transition-colors"
-                            title="Download Service Invoice"
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setInvoiceModalBooking({
+                                id: b.id,
+                                bookingNumber: b.bookingNumber || b.id,
+                                customerName: b.customerName,
+                                serviceType: b.serviceType,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#9f7d3b] hover:text-white bg-amber-50 hover:bg-[#b38b45] rounded transition-colors cursor-pointer"
+                            title="Download Service Invoice / Voucher"
                           >
                             <FaFileInvoiceDollar className="text-xs" />
                             <span>Invoice</span>
-                          </a>
+                          </button>
 
                           <Link
                             href={`/admin/bookings/${b.id}`}
@@ -544,6 +558,18 @@ export default function AdminBookingsPage() {
           </div>
         )}
       </div>
+
+      {/* Invoice With/Without Payment Choice Modal */}
+      {invoiceModalBooking && (
+        <InvoiceDownloadModal
+          isOpen={Boolean(invoiceModalBooking)}
+          onClose={() => setInvoiceModalBooking(null)}
+          bookingId={invoiceModalBooking.id}
+          bookingNumber={invoiceModalBooking.bookingNumber}
+          customerName={invoiceModalBooking.customerName}
+          serviceType={invoiceModalBooking.serviceType}
+        />
+      )}
     </div>
   );
 }

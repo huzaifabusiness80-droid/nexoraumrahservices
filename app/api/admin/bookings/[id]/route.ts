@@ -24,6 +24,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const body = await req.json();
     const {
       serviceType,
+      voucherNumber,
       customerName,
       customerPhone,
       customerCountry,
@@ -86,6 +87,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       where: { id },
       data: {
         ...(serviceType !== undefined ? { serviceType } : {}),
+        ...(voucherNumber !== undefined ? { voucherNumber: voucherNumber ? String(voucherNumber).trim() : null } : {}),
         ...(customerName !== undefined ? { customerName: String(customerName).trim() } : {}),
         ...(customerPhone !== undefined ? { customerPhone: String(customerPhone).trim() } : {}),
         ...(normalizedEmail !== undefined

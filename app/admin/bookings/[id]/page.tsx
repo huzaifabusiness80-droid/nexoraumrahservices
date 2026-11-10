@@ -22,6 +22,7 @@ import {
   FaUser,
   FaCalendarAlt,
 } from "react-icons/fa";
+import InvoiceDownloadModal from "@/components/admin/InvoiceDownloadModal";
 
 const SERVICE_META: Record<
   string,
@@ -83,6 +84,7 @@ export default function AdminBookingDetailPage() {
   const [paidAmount, setPaidAmount] = useState<number | "">("");
   const [adminNotes, setAdminNotes] = useState("");
   const [assignedDriver, setAssignedDriver] = useState("");
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
   useEffect(() => {
     async function loadBooking() {
@@ -214,16 +216,16 @@ export default function AdminBookingDetailPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          {/* Service Invoice */}
-          <a
-            href={`/api/admin/bookings/${id}/invoice`}
-            download
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-[#9f7d3b] hover:text-white bg-amber-50 hover:bg-[#b38b45] rounded-lg transition-colors shadow-xs"
+          {/* Service Invoice with Payment or without Payment choice */}
+          <button
+            type="button"
+            onClick={() => setIsInvoiceModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold uppercase tracking-wider text-[#9f7d3b] hover:text-white bg-amber-50 hover:bg-[#b38b45] rounded-lg transition-colors shadow-xs cursor-pointer"
             title="Download Service Invoice / Voucher"
           >
             <FaFileInvoiceDollar className="text-sm" />
             <span>Download Invoice</span>
-          </a>
+          </button>
 
           {/* EDIT BUTTON (DEDICATED FULL EDIT PAGE) */}
           <Link
@@ -322,6 +324,15 @@ export default function AdminBookingDetailPage() {
               <div>
                 <span className="text-zinc-400 block text-[10px] uppercase font-bold">Nationality</span>
                 <p className="font-medium text-zinc-800">{booking.nationality}</p>
+              </div>
+            )}
+
+            {booking.voucherNumber && (
+              <div>
+                <span className="text-zinc-400 block text-[10px] uppercase font-bold">Voucher Number</span>
+                <p className="font-mono font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded border border-amber-200 inline-block text-xs">
+                  {booking.voucherNumber}
+                </p>
               </div>
             )}
           </div>
@@ -739,6 +750,16 @@ export default function AdminBookingDetailPage() {
           </button>
         </div>
       </form>
+
+      {/* Invoice With/Without Payment Choice Modal */}
+      <InvoiceDownloadModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        bookingId={id}
+        bookingNumber={booking.bookingNumber || id}
+        customerName={booking.customerName}
+        serviceType={booking.serviceType}
+      />
     </div>
   );
 }

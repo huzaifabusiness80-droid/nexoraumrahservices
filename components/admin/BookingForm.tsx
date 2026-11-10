@@ -135,6 +135,7 @@ export default function BookingForm({
   const [nationality, setNationality] = useState(
     initialData?.nationality || initialData?.customerCountry || ""
   );
+  const [voucherNumber, setVoucherNumber] = useState(initialData?.voucherNumber || "");
 
   // Common service fields
   const [itemName, setItemName] = useState(initialData?.itemName || "");
@@ -236,6 +237,7 @@ export default function BookingForm({
 
     const payload: any = {
       serviceType,
+      voucherNumber: voucherNumber.trim() || null,
       customerName: customerName.trim(),
       customerPhone: customerPhone.trim(),
       customerEmail: customerEmail.trim() || null,
@@ -455,6 +457,19 @@ export default function BookingForm({
                 value={nationality}
                 onChange={(e) => setNationality(e.target.value)}
                 placeholder="e.g. Pakistani, British"
+                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-zinc-600 uppercase tracking-wider mb-1">
+                Voucher Number (Optional)
+              </label>
+              <input
+                type="text"
+                value={voucherNumber}
+                onChange={(e) => setVoucherNumber(e.target.value)}
+                placeholder="e.g. VCH-10928 or Hotel Voucher #"
                 className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059]"
               />
             </div>

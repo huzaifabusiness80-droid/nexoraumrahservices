@@ -36,7 +36,15 @@ type BookingWithRooms = Booking & {
   hotelRooms?: BookingHotelRoom[];
 };
 
-export function createBookingInvoicePdf(booking: BookingWithRooms): Promise<Buffer> {
+export interface InvoicePdfOptions {
+  includePayment?: boolean;
+}
+
+export function createBookingInvoicePdf(
+  booking: BookingWithRooms,
+  options?: InvoicePdfOptions
+): Promise<Buffer> {
+  const includePayment = options?.includePayment !== false;
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({
       size: "A4",
@@ -94,6 +102,10 @@ export function createBookingInvoicePdf(booking: BookingWithRooms): Promise<Buff
         break;
     }
 
+    if (!includePayment) {
+      invoiceTitle = invoiceTitle.replace(" & INVOICE", "").replace("INVOICE", "BOOKING VOUCHER");
+    }
+
     doc
       .font("Helvetica-Bold")
       .fontSize(16)
@@ -117,7 +129,10 @@ export function createBookingInvoicePdf(booking: BookingWithRooms): Promise<Buff
     doc.text(COMPANY_ADDRESS, left, y + 12);
     doc.text(`Invoice date: ${formatDate(new Date())}`, left, y + 24);
     doc.text(`Booking Reference: ${booking.bookingNumber}`, left, y + 36);
-    y += 54;
+    if (booking.voucherNumber) {
+      doc.text(`Voucher Number: ${booking.voucherNumber}`, left, y + 48);
+    }
+    y += booking.voucherNumber ? 62 : 54;
 
     const section = (title: string) => {
       if (y > 720) {
@@ -283,21 +298,26 @@ export function createBookingInvoicePdf(booking: BookingWithRooms): Promise<Buff
     }
 
     // 3. Status & Payment Summary
-    section("Payment & Billing Summary");
-    row("Booking status", booking.status.replaceAll("_", " "));
-    row("Payment status", booking.paymentStatus.replaceAll("_", " "));
+    if (includePayment) {
+      section("Payment & Billing Summary");
+      row("Booking status", booking.status.replaceAll("_", " "));
+      row("Payment status", booking.paymentStatus.replaceAll("_", " "));
 
-    const total = booking.totalPrice || 0;
-    const paid = booking.paidAmount || 0;
-    const balance = Math.max(total - paid, 0);
-    const amount = (value: number) =>
-      `${booking.currency || "SAR"} ${value.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}`;
-    row("Total amount", amount(total));
-    row("Amount paid", amount(paid));
-    row("Remaining balance", amount(balance));
+      const total = booking.totalPrice || 0;
+      const paid = booking.paidAmount || 0;
+      const balance = Math.max(total - paid, 0);
+      const amount = (value: number) =>
+        `${booking.currency || "SAR"} ${value.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+      row("Total amount", amount(total));
+      row("Amount paid", amount(paid));
+      row("Remaining balance", amount(balance));
+    } else {
+      section("Booking Status");
+      row("Reservation status", booking.status.replaceAll("_", " "));
+    }
 
     if (y > 715) {
       doc.addPage();

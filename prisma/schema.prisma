@@ -46,6 +46,7 @@ model ClientUser {
 model Booking {
   id            String      @id @default(cuid())
   bookingNumber String      @unique @default(cuid())
+  voucherNumber String?     // Voucher Number / Partner confirmation number
   serviceType   ServiceType // UMRAH_TRANSPORT, UMRAH_HOTEL, UMRAH_ZIYARAT, UAE_CITY_TOUR, DESERT_SAFARI, CAR_RENTAL
   clientId      String?
   client        ClientUser? @relation(fields: [clientId], references: [id], onDelete: SetNull)
@@ -118,6 +119,7 @@ model ClientPayment {
   currency      String      @default("SAR")
   paymentMethod String      @default("Cash") // Cash, Bank Transfer, Card, Online, Cheque
   reference     String?     // Transaction reference / receipt #
+  receiptImage  String?     // Screenshot / Receipt Image URL
   notes         String?
   date          DateTime    @default(now())
   createdAt     DateTime    @default(now())

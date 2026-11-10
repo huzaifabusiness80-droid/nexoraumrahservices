@@ -21,11 +21,20 @@ export async function GET(
     });
     if (!booking) return new NextResponse("Booking not found", { status: 404 });
 
-    const pdf = await createBookingInvoicePdf(booking as any);
+    const { searchParams } = new URL(_request.url);
+    const paymentParam = searchParams.get("payment");
+    const includePaymentParam = searchParams.get("includePayment");
+    const includePayment =
+      paymentParam === "without" || includePaymentParam === "false" || paymentParam === "false"
+        ? false
+        : true;
+
+    const pdf = await createBookingInvoicePdf(booking as any, { includePayment });
+    const filenameSuffix = includePayment ? "invoice" : "voucher";
     return new NextResponse(new Uint8Array(pdf), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${booking.bookingNumber}-invoice.pdf"`,
+        "Content-Disposition": `attachment; filename="${booking.bookingNumber}-${filenameSuffix}.pdf"`,
         "Cache-Control": "private, no-store",
       },
     });
