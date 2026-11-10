@@ -35,6 +35,7 @@ model ClientUser {
   avatar    String?
   bookings  Booking[]
   inquiries Inquiry[]
+  payments  ClientPayment[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -85,6 +86,7 @@ model Booking {
   assignedDriver String?
 
   hotelRooms     BookingHotelRoom[]
+  payments       ClientPayment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,6 +106,26 @@ model BookingHotelRoom {
   updatedAt  DateTime @updatedAt
 
   @@index([bookingId])
+}
+
+model ClientPayment {
+  id            String      @id @default(cuid())
+  clientId      String
+  client        ClientUser  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  bookingId     String?
+  booking       Booking?    @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+  amount        Float
+  currency      String      @default("SAR")
+  paymentMethod String      @default("Cash") // Cash, Bank Transfer, Card, Online, Cheque
+  reference     String?     // Transaction reference / receipt #
+  notes         String?
+  date          DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([clientId])
+  @@index([bookingId])
+  @@index([date])
 }
 
 enum ServiceType {

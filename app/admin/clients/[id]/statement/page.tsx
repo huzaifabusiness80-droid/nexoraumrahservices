@@ -9,6 +9,12 @@ import {
   FaPhone,
   FaPrint,
   FaSpinner,
+  FaPlus,
+  FaTimes,
+  FaCheckCircle,
+  FaTrash,
+  FaMoneyBillWave,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
 
 interface StatementEntry {
@@ -23,9 +29,25 @@ interface StatementEntry {
   currency: string;
   paymentStatus: string;
   bookingStatus: string;
+  isPayment?: boolean;
+  paymentMethod?: string;
+  reference?: string | null;
+  notes?: string | null;
+}
+
+interface ClientBooking {
+  id: string;
+  bookingNumber: string;
+  itemName?: string;
+  serviceType: string;
+  totalPrice?: number;
+  paidAmount?: number;
+  currency: string;
+  remainingBalance: number;
 }
 
 interface Client {
+  id: string;
   name: string;
   email: string;
   phone: string | null;
@@ -38,6 +60,7 @@ export default function ClientStatementPage() {
   const id = params?.id as string;
   const [client, setClient] = useState<Client | null>(null);
   const [entries, setEntries] = useState<StatementEntry[]>([]);
+  const [clientBookings, setClientBookings] = useState<ClientBooking[]>([]);
   const [summary, setSummary] = useState({
     totalDebit: 0,
     totalCredit: 0,
@@ -46,57 +69,147 @@ export default function ClientStatementPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Add Payment Modal State
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState<number | "">("");
+  const [paymentCurrency, setPaymentCurrency] = useState("SAR");
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
+  const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().split("T")[0]);
+  const [paymentBookingId, setPaymentBookingId] = useState("GENERAL");
+  const [paymentReference, setPaymentReference] = useState("");
+  const [paymentNotes, setPaymentNotes] = useState("");
+  const [submittingPayment, setSubmittingPayment] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
+  const [paymentSuccess, setPaymentSuccess] = useState("");
+  const [deletingPaymentId, setDeletingPaymentId] = useState<string | null>(null);
+
+  const fetchStatement = async () => {
+    try {
+      const response = await fetch(`/api/admin/clients/${id}/statement`);
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Failed to load statement");
+      }
+      setClient(data.client);
+      setEntries(data.entries || []);
+      setClientBookings(data.bookings || []);
+      setSummary(data.summary);
+    } catch (err: any) {
+      setError(err.message || "Failed to load statement");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (!id) return;
-    fetch(`/api/admin/clients/${id}/statement`)
-      .then(async (response) => {
-        const data = await response.json();
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || "Failed to load statement");
-        }
-        setClient(data.client);
-        setEntries(data.entries || []);
-        setSummary(data.summary);
-      })
-      .catch((err) => setError(err.message || "Failed to load statement"))
-      .finally(() => setLoading(false));
+    if (id) fetchStatement();
   }, [id]);
 
-  const formatAmount = (amount: number, currency = "SAR") =>
-    `${currency} ${Math.abs(amount).toLocaleString(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    })}`;
+      const handleAddPayment = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!paymentAmount || Number(paymentAmount) <= 0) {
+          setPaymentError("Please enter a valid payment amount greater than zero.");
+          return;
+        }
 
-  if (loading) {
-    return (
-      <div className="py-20 flex flex-col items-center justify-center gap-3">
-        <FaSpinner className="animate-spin text-2xl text-[#c5a059]" />
-        <span className="text-xs uppercase tracking-widest text-zinc-400 font-semibold">
-          Loading account statement...
-        </span>
-      </div>
-    );
-  }
+        setSubmittingPayment(true);
+        setPaymentError("");
+        setPaymentSuccess("");
 
-  if (error || !client) {
-    return (
-      <div className="space-y-4">
-        <Link href="/admin/clients" className="text-xs text-[#9f7d3b] flex items-center gap-1">
-          <FaArrowLeft /> Back to clients
-        </Link>
-        <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">
-          {error || "Client not found"}
+        try {
+          const res = await fetch(`/api/admin/clients/${id}/statement`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount: Number(paymentAmount),
+              currency: paymentCurrency,
+              paymentMethod,
+              date: paymentDate,
+              bookingId: paymentBookingId !== "GENERAL" ? paymentBookingId : null,
+              reference: paymentReference,
+              notes: paymentNotes,
+            }),
+          });
+
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.error || "Failed to record payment");
+          }
+
+          setPaymentSuccess("Payment successfully added to client statement!");
+          setPaymentAmount("");
+          setPaymentReference("");
+          setPaymentNotes("");
+
+          // Refresh statement data
+          await fetchStatement();
+
+          setTimeout(() => {
+            setIsPaymentModalOpen(false);
+            setPaymentSuccess("");
+          }, 700);
+        } catch (err: any) {
+          setPaymentError(err.message || "An error occurred");
+        } finally {
+          setSubmittingPayment(false);
+        }
+      };
+
+      const handleDeletePayment = async (paymentId: string) => {
+        if (!confirm("Are you sure you want to remove this payment entry? This will reverse the credit balance.")) return;
+        setDeletingPaymentId(paymentId);
+        try {
+          const res = await fetch(`/api/admin/clients/${id}/statement?paymentId=${paymentId}`, {
+            method: "DELETE",
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            alert(data.error || "Failed to delete payment");
+            return;
+          }
+          await fetchStatement();
+        } catch {
+          alert("Error deleting payment entry");
+        } finally {
+          setDeletingPaymentId(null);
+        }
+      };
+
+      const formatAmount = (amount: number, curr = "SAR") =>
+        `${curr} ${Math.abs(amount).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}`;
+
+      if(loading) {
+        return (
+          <div className="py-20 flex flex-col items-center justify-center gap-3">
+            <FaSpinner className="animate-spin text-2xl text-[#c5a059]" />
+            <span className="text-xs uppercase tracking-widest text-zinc-400 font-semibold">
+              Loading client statement & ledger...
+            </span>
+          </div>
+        );
+      }
+
+  if(error || !client) {
+      return (
+        <div className="space-y-4">
+          <Link href="/admin/clients" className="text-xs text-[#9f7d3b] flex items-center gap-1">
+            <FaArrowLeft /> Back to clients
+          </Link>
+          <div className="p-4 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg">
+            {error || "Client not found"}
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+}
 
-  const currency = entries[0]?.currency || "SAR";
+const defaultCurr = entries[0]?.currency || "SAR";
 
-  return (
-    <div className="space-y-6">
-      <style jsx global>{`
+return (
+  <div className="space-y-6">
+    <style jsx global>{`
         @media print {
           aside, nav, header, .no-print { display: none !important; }
           main { padding: 0 !important; }
@@ -104,122 +217,359 @@ export default function ClientStatementPage() {
         }
       `}</style>
 
-      <div className="no-print flex items-center justify-between pb-6 border-b border-zinc-200">
+      {/* Action Header */}
+      <div className="no-print flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-zinc-200">
         <Link href="/admin/clients" className="text-xs text-zinc-500 hover:text-zinc-900 flex items-center gap-2">
           <FaArrowLeft className="text-[10px]" />
           Back to Registered Clients
         </Link>
-        <button
-          onClick={() => window.print()}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-zinc-900 text-white rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-[#c5a059]"
-        >
-          <FaPrint />
-          Print / Save PDF
-        </button>
+        <div className="flex items-center gap-2">
+          {/* ADD PAYMENT BUTTON (AS REQUESTED) */}
+          <button
+            type="button"
+            onClick={() => {
+              setPaymentError("");
+              setPaymentSuccess("");
+              setIsPaymentModalOpen(true);
+            }}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#c5a059] hover:bg-[#b08d4b] text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-xs cursor-pointer"
+          >
+            <FaPlus className="text-[10px]" />
+            <span>Add Payment</span>
+          </button>
+
+          <button
+            onClick={() => window.print()}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg text-xs font-bold uppercase tracking-wider transition-colors shadow-xs cursor-pointer"
+          >
+            <FaPrint />
+            <span>Print Statement</span>
+          </button>
+        </div>
       </div>
 
-      <div className="bg-white border border-zinc-300 rounded-lg max-w-6xl mx-auto print:border-0">
-        <div className="p-6 sm:p-8 border-b-2 border-zinc-900 flex flex-col sm:flex-row justify-between gap-6">
-          <div>
-            <p className="text-[#c5a059] text-xs font-bold uppercase tracking-[0.25em]">Nexora Journeys</p>
-            <h1 className="text-2xl font-black text-zinc-900 mt-2 uppercase">Account Statement</h1>
-            <p className="text-xs text-zinc-500 mt-1">Customer ledger / payment statement</p>
-          </div>
-          <div className="sm:text-right text-xs text-zinc-600">
-            <p className="font-bold text-zinc-900">Period</p>
-            <p>01-01-2020 To {new Date().toLocaleDateString("en-GB")}</p>
-            <p className="mt-2 font-bold text-zinc-900">Exch Rate</p>
-            <p>1.000</p>
-          </div>
-        </div>
-
-        <div className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-b border-zinc-200">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Account Code</p>
-            <p className="text-sm font-bold text-zinc-900 mt-1">{id.slice(-8).toUpperCase()}</p>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mt-4">Account Name</p>
-            <p className="text-sm font-bold text-zinc-900 mt-1">{client.name}</p>
-          </div>
-          <div className="sm:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Current Balance</p>
-            <p className={`text-2xl font-black mt-1 ${summary.balance > 0 ? "text-red-600" : "text-emerald-700"}`}>
-              {formatAmount(summary.balance, currency)}
-            </p>
-            <div className="mt-3 flex sm:justify-end gap-4 text-xs">
-              <a href={`mailto:${client.email}`} className="inline-flex items-center gap-1.5 text-zinc-600">
-                <FaEnvelope className="text-[#c5a059]" /> {client.email}
-              </a>
-              {client.phone && (
-                <span className="inline-flex items-center gap-1.5 text-zinc-600">
-                  <FaPhone className="text-[#c5a059]" /> {client.phone}
-                </span>
-              )}
+          {/* Main Statement Container */}
+          <div className="bg-white border border-zinc-300 rounded-xl max-w-6xl mx-auto print:border-0 shadow-2xs overflow-hidden">
+            {/* Header Strip */}
+            <div className="p-6 sm:p-8 border-b-2 border-zinc-900 flex flex-col sm:flex-row justify-between gap-6 bg-zinc-50/40">
+              <div>
+                <p className="text-[#c5a059] text-xs font-black uppercase tracking-[0.25em]">Nexora Journeys</p>
+                <h1 className="text-2xl font-black text-zinc-900 mt-2 uppercase tracking-wide">Account Statement</h1>
+                <p className="text-xs text-zinc-500 mt-1">Official Client Ledger & Payment Statement</p>
+              </div>
+              <div className="sm:text-right text-xs text-zinc-600">
+                <p className="font-bold text-zinc-900 uppercase">Statement Period</p>
+                <p>01-01-2020 To {new Date().toLocaleDateString("en-GB")}</p>
+                <p className="mt-2 font-bold text-zinc-900 uppercase">Currency</p>
+                <p className="font-bold text-[#9f7d3b]">{defaultCurr}</p>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[800px] text-xs border-collapse">
-            <thead>
-              <tr className="bg-zinc-900 text-white">
-                <th className="py-3 px-3 text-left">Date</th>
-                <th className="py-3 px-3 text-left">Type</th>
-                <th className="py-3 px-3 text-left">Booking / Particulars</th>
-                <th className="py-3 px-3 text-right">Debit</th>
-                <th className="py-3 px-3 text-right">Credit</th>
-                <th className="py-3 px-3 text-right">Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {entries.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-12 text-center text-zinc-400">
-                    No booking transactions found for this client.
-                  </td>
-                </tr>
-              ) : (
-                entries.map((entry) => (
-                  <tr key={entry.id} className="border-b border-zinc-200">
-                    <td className="py-3 px-3 whitespace-nowrap text-zinc-600">
-                      {new Date(entry.date).toLocaleDateString("en-GB")}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="px-2 py-1 rounded bg-zinc-100 font-bold uppercase text-[10px]">
-                        {entry.type}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3">
-                      <p className="font-bold text-zinc-900">
-                        {entry.bookingNumber.slice(-8)} — {entry.particulars}
-                      </p>
-                      <p className="text-[10px] text-zinc-400 mt-1">
-                        {entry.paymentStatus} · {entry.bookingStatus}
-                      </p>
-                    </td>
-                    <td className="py-3 px-3 text-right font-semibold">
-                      {entry.debit > 0 ? formatAmount(entry.debit, entry.currency) : "—"}
-                    </td>
-                    <td className="py-3 px-3 text-right font-semibold text-emerald-700">
-                      {entry.credit > 0 ? formatAmount(entry.credit, entry.currency) : "—"}
-                    </td>
-                    <td className={`py-3 px-3 text-right font-black ${entry.balance > 0 ? "text-red-600" : entry.balance < 0 ? "text-emerald-700" : "text-zinc-800"}`}>
-                      {formatAmount(entry.balance, entry.currency)}
-                    </td>
-                  </tr>
-                ))
+            {/* Client & Balance Summary */}
+            <div className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 gap-6 border-b border-zinc-200">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Account Code</p>
+                <p className="text-sm font-bold text-zinc-900 mt-0.5 font-mono">{id.slice(-8).toUpperCase()}</p>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mt-3">Account Name</p>
+                <p className="text-base font-extrabold text-zinc-900 mt-0.5">{client.name}</p>
+              </div>
+              <div className="sm:text-right">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Current Outstanding Balance</p>
+                  <p className={`text-2xl font-black mt-1 ${summary.balance > 0 ? "text-red-600" : summary.balance < 0 ? "text-emerald-700" : "text-zinc-800"}`}>
+                    {formatAmount(summary.balance, defaultCurr)}
+                  </p>
+                      <div className="mt-2 flex sm:justify-end gap-3 text-xs">
+                        <a href={`mailto:${client.email}`} className="inline-flex items-center gap-1.5 text-zinc-600 hover:text-zinc-900">
+                          <FaEnvelope className="text-[#c5a059]" /> {client.email}
+                        </a>
+                        {client.phone && (
+                          <span className="inline-flex items-center gap-1.5 text-zinc-600">
+                            <FaPhone className="text-[#c5a059]" /> {client.phone}
+                          </span>
+                        )}
+                      </div>
+                  </div>
+              </div>
+
+              {/* Statement Transactions Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[800px] text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-zinc-900 text-white">
+                      <th className="py-3 px-3.5 text-left font-bold uppercase text-[10px] tracking-wider">Date</th>
+                      <th className="py-3 px-3.5 text-left font-bold uppercase text-[10px] tracking-wider">Type</th>
+                      <th className="py-3 px-3.5 text-left font-bold uppercase text-[10px] tracking-wider">Particulars / Ref</th>
+                      <th className="py-3 px-3.5 text-right font-bold uppercase text-[10px] tracking-wider">Debit (Billed)</th>
+                      <th className="py-3 px-3.5 text-right font-bold uppercase text-[10px] tracking-wider">Credit (Paid)</th>
+                      <th className="py-3 px-3.5 text-right font-bold uppercase text-[10px] tracking-wider">Balance</th>
+                      <th className="py-3 px-3.5 text-center font-bold uppercase text-[10px] tracking-wider no-print">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {entries.length === 0 ? (
+                      <tr>
+                          <td colSpan={7} className="py-12 text-center text-zinc-400">
+                            No transactions or payments found for this client.
+                          </td>
+                      </tr>
+                    ) : (
+                      entries.map((entry) => (
+                            <tr
+                              key={entry.id}
+                              className={`border-b border-zinc-200 transition-colors ${entry.isPayment ? "bg-emerald-50/30 hover:bg-emerald-50/50" : "hover:bg-zinc-50"
+                                }`}
+                            >
+                              <td className="py-3 px-3.5 whitespace-nowrap text-zinc-600 font-mono text-[11px]">
+                                {new Date(entry.date).toLocaleDateString("en-GB")}
+                              </td>
+                                  <td className="py-3 px-3.5">
+                                    <span
+                                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${entry.isPayment
+                                          ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                          : "bg-zinc-100 text-zinc-700"
+                                        }`}
+                                    >
+                                      {entry.type}
+                                    </span>
+                                  </td>
+                                      <td className="py-3 px-3.5">
+                                        <p className={`font-bold ${entry.isPayment ? "text-emerald-900" : "text-zinc-900"}`}>
+                                          {entry.particulars}
+                                        </p>
+                                        {entry.paymentStatus && !entry.isPayment && (
+                                          <p className="text-[10px] text-zinc-400 mt-0.5">
+                                            Status: {entry.paymentStatus} · {entry.bookingStatus}
+                                          </p>
+                                        )}
+                                      </td>
+                                        <td className="py-3 px-3.5 text-right font-semibold text-zinc-900">
+                                          {entry.debit > 0 ? formatAmount(entry.debit, entry.currency) : "—"}
+                                        </td>
+                                          <td className="py-3 px-3.5 text-right font-bold text-emerald-700">
+                                            {entry.credit > 0 ? formatAmount(entry.credit, entry.currency) : "—"}
+                                          </td>
+                                            <td
+                                              className={`py-3 px-3.5 text-right font-black ${entry.balance > 0 ? "text-red-600" : entry.balance < 0 ? "text-emerald-700" : "text-zinc-800"
+                                                }`}
+                                            >
+                                              {formatAmount(entry.balance, entry.currency)}
+                                            </td>
+                                            <td className="py-3 px-3.5 text-center no-print">
+                                              {entry.isPayment ? (
+                                                <button
+                                                  type="button"
+                                                  onClick={() => handleDeletePayment(entry.id)}
+                                                  disabled={deletingPaymentId === entry.id}
+                                                  className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors cursor-pointer"
+                                                  title="Delete Payment Entry"
+                                                >
+                                                  {deletingPaymentId === entry.id ? (
+                                                    <FaSpinner className="animate-spin text-xs" />
+                                                  ) : (
+                                                    <FaTrash className="text-xs" />
+                                                  )}
+                                                </button>
+                                              ) : (
+                                                <span className="text-zinc-300 text-[10px]">—</span>
+                                              )}
+                                            </td>
+                                          </tr>
+                                          ))
               )}
-            </tbody>
-            <tfoot>
-              <tr className="bg-zinc-50 border-t-2 border-zinc-900">
-                <td colSpan={3} className="py-4 px-3 font-black uppercase text-zinc-900">Total</td>
-                <td className="py-4 px-3 text-right font-black">{formatAmount(summary.totalDebit, currency)}</td>
-                <td className="py-4 px-3 text-right font-black text-emerald-700">{formatAmount(summary.totalCredit, currency)}</td>
-                <td className="py-4 px-3 text-right font-black text-red-600">{formatAmount(summary.balance, currency)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-  );
+                                        </tbody>
+                                        <tfoot>
+                                            <tr className="bg-zinc-100 border-t-2 border-zinc-900">
+                                              <td colSpan={3} className="py-4 px-3.5 font-black uppercase text-zinc-900">Total Summary</td>
+                                              <td className="py-4 px-3.5 text-right font-black text-zinc-900">{formatAmount(summary.totalDebit, defaultCurr)}</td>
+                                              <td className="py-4 px-3.5 text-right font-black text-emerald-700">{formatAmount(summary.totalCredit, defaultCurr)}</td>
+                                              <td
+                                                className={`py-4 px-3.5 text-right font-black ${summary.balance > 0 ? "text-red-600" : "text-emerald-700"
+                                                  }`}
+                                              >
+                                                {formatAmount(summary.balance, defaultCurr)}
+                                              </td>
+                                              <td className="no-print"></td>
+                                            </tr>
+                                        </tfoot>
+                                      </table>
+                                    </div>
+                                  </div>
+
+                                  {/* ADD PAYMENT MODAL (POPUP) */}
+                                  {isPaymentModalOpen && (
+                                    <div
+                                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+                                      role="dialog"
+                                      aria-modal="true"
+                                    >
+                                      <div className="bg-white rounded-xl border border-zinc-200 shadow-xl max-w-lg w-full overflow-hidden">
+                                        <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4 bg-zinc-50">
+                                          <div className="flex items-center gap-2">
+                                            <FaMoneyBillWave className="text-[#c5a059] text-base" />
+                                            <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900">
+                                              Record Client Payment
+                                            </h3>
+                                          </div>
+                                          <button
+                                            type="button"
+                                            onClick={() => setIsPaymentModalOpen(false)}
+                                            className="text-zinc-400 hover:text-zinc-700 p-1 rounded cursor-pointer"
+                                          >
+                                            <FaTimes />
+                                          </button>
+                                        </div>
+
+                                        <form onSubmit={handleAddPayment} className="p-6 space-y-4">
+                                          {paymentError && (
+                                            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg font-medium">
+                                              {paymentError}
+                                            </div>
+                                          )}
+                                          {paymentSuccess && (
+                                            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs rounded-lg font-medium flex items-center gap-2">
+                                              <FaCheckCircle className="text-emerald-600" />
+                                              <span>{paymentSuccess}</span>
+                                            </div>
+                                          )}
+
+                                          <div className="grid grid-cols-2 gap-3.5">
+                                            <div>
+                                              <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                                Amount <span className="text-red-500">*</span>
+                                              </label>
+                                              <input
+                                                type="number"
+                                                min="0.01"
+                                                step="0.01"
+                                                required
+                                                value={paymentAmount}
+                                                onChange={(e) => setPaymentAmount(e.target.value === "" ? "" : Number(e.target.value))}
+                                                placeholder="e.g. 1500"
+                                                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                                              />
+                                            </div>
+
+                                            <div>
+                                              <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                                Currency
+                                              </label>
+                                              <select
+                                                value={paymentCurrency}
+                                                onChange={(e) => setPaymentCurrency(e.target.value)}
+                                                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+                                              >
+                                                <option value="SAR">SAR (Saudi Riyal)</option>
+                                                <option value="AED">AED (Emirati Dirham)</option>
+                                                <option value="USD">USD (US Dollar)</option>
+                                                <option value="PKR">PKR (Pakistani Rupee)</option>
+                                              </select>
+                                            </div>
+                                          </div>
+
+                                          <div className="grid grid-cols-2 gap-3.5">
+                                            <div>
+                                              <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                                Payment Method <span className="text-red-500">*</span>
+                                              </label>
+                                              <select
+                                                value={paymentMethod}
+                                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs font-semibold text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+                                              >
+                                                <option value="Cash">Cash Payment</option>
+                                                <option value="Bank Transfer">Bank Transfer (Al Rajhi / SNB)</option>
+                                                <option value="Credit / Debit Card">Credit / Debit Card</option>
+                                                <option value="Online Gateway">Online Payment Gateway</option>
+                                                <option value="Cheque">Bank Cheque</option>
+                                              </select>
+                                            </div>
+
+                                            <div>
+                                              <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                                Payment Date <span className="text-red-500">*</span>
+                                              </label>
+                                              <input
+                                                type="date"
+                                                required
+                                                value={paymentDate}
+                                                onChange={(e) => setPaymentDate(e.target.value)}
+                                                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                                              />
+                                            </div>
+                                          </div>
+
+                                          <div>
+                                            <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                              Apply Payment To Booking (Optional)
+                                            </label>
+                                            <select
+                                              value={paymentBookingId}
+                                              onChange={(e) => setPaymentBookingId(e.target.value)}
+                                              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059] cursor-pointer"
+                                            >
+                                              <option value="GENERAL">General Account Credit (Direct Payment)</option>
+                                              {clientBookings.map((b) => (
+                                                <option key={b.id} value={b.id}>
+                                                  #{b.bookingNumber.slice(-8)} — {b.itemName || b.serviceType} (Due: {b.remainingBalance} {b.currency})
+                                                </option>
+                                              ))}
+                                            </select>
+                                            <span className="block text-[10px] text-zinc-400 mt-1">
+                                              Selecting a booking will automatically update its paid amount and payment status (Paid / Partial).
+                                            </span>
+                                          </div>
+
+                                          <div>
+                                            <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                              Transaction / Receipt Reference
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={paymentReference}
+                                              onChange={(e) => setPaymentReference(e.target.value)}
+                                              placeholder="e.g. TXN-109823 or Al Rajhi Ref 4982"
+                                              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059]"
+                                            />
+                                          </div>
+
+                                          <div>
+                                            <label className="block text-[11px] font-bold text-zinc-700 uppercase tracking-wider mb-1">
+                                              Notes / Particulars
+                                            </label>
+                                            <textarea
+                                              rows={2}
+                                              value={paymentNotes}
+                                              onChange={(e) => setPaymentNotes(e.target.value)}
+                                              placeholder="e.g. Advance received for hotel reservation..."
+                                              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-[#c5a059] resize-none"
+                                            />
+                                          </div>
+
+                                          <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-100">
+                                            <button
+                                              type="button"
+                                              onClick={() => setIsPaymentModalOpen(false)}
+                                              className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-zinc-600 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer"
+                                            >
+                                              Cancel
+                                            </button>
+                                            <button
+                                              type="submit"
+                                              disabled={submittingPayment}
+                                              className="inline-flex items-center gap-2 px-6 py-2 bg-[#c5a059] hover:bg-[#b08d4b] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+                                            >
+                                              {submittingPayment ? (
+                                                <FaSpinner className="animate-spin text-xs" />
+                                              ) : (
+                                                <FaCheckCircle className="text-xs" />
+                                              )}
+                                              <span>Record Payment</span>
+                                            </button>
+                                          </div>
+                                        </form>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                );
 }
