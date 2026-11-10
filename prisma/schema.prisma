@@ -84,12 +84,26 @@ model Booking {
   customerNotes  String?
   assignedDriver String?
 
+  hotelRooms     BookingHotelRoom[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([serviceType])
   @@index([status])
   @@index([clientId])
+}
+
+model BookingHotelRoom {
+  id         String   @id @default(cuid())
+  bookingId  String
+  booking    Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  roomNumber Int      @default(1)
+  bedType    String   // "Sharing", "Double", "Triple", "Quad", "Quint"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([bookingId])
 }
 
 enum ServiceType {

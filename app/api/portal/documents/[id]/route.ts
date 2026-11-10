@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCurrentClient } from "@/lib/clientAuth";
+import { createBookingInvoicePdf } from "@/lib/bookingInvoice";
 import PDFDocument from "pdfkit";
 import fs from "node:fs";
 import path from "node:path";
@@ -25,17 +26,24 @@ export async function GET(
   if (!booking) return new NextResponse("Document not found", { status: 404 });
 
   const isInvoice = req.nextUrl.searchParams.get("type") === "invoice";
-  const type = isInvoice ? "INVOICE" : "BOOKING CONFIRMATION";
-  const total = booking.totalPrice || 0;
-  const paid = booking.paidAmount || 0;
-  const balance = Math.max(total - paid, 0);
+  if (isInvoice) {
+    const pdfBuffer = await createBookingInvoicePdf(booking);
+    return new NextResponse(new Uint8Array(pdfBuffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${booking.bookingNumber}-invoice.pdf"`,
+        "Cache-Control": "private, no-store",
+      },
+    });
+  }
+
+  const type = "BOOKING CONFIRMATION";
   const travelDate = booking.pickupDate
     ? new Date(booking.pickupDate).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })
     : "To be confirmed";
   const issuedDate = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
   const serviceName = booking.serviceType.replaceAll("_", " ");
   const itemName = booking.itemName || booking.route || "-";
-  const amount = (value: number) => `${booking.currency} ${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
     const doc = new PDFDocument({ size: "A4", margin: 50, info: { Title: `${type} ${booking.bookingNumber}`, Author: "Nexora Journeys" } });
@@ -79,24 +87,6 @@ export async function GET(
       doc.fillColor("#18181b").font("Helvetica-Bold").fontSize(10).text(value || "-", 225, rowY + 9, { width: 305, lineBreak: false });
     });
 
-    if (isInvoice) {
-      y += 170;
-      doc.fillColor("#18181b").font("Helvetica-Bold").fontSize(12).text("PAYMENT SUMMARY", 50, y);
-      y += 20;
-      const summary = [
-        ["Total Amount", amount(total)],
-        ["Amount Paid", amount(paid)],
-        ["Remaining Balance", amount(balance)],
-      ];
-      summary.forEach(([label, value], index) => {
-        const rowY = y + index * 34;
-        const highlight = index === 2;
-        doc.rect(50, rowY, 495, 34).fill(highlight ? "#18181b" : index === 1 ? "#f1f5f9" : "#fafafa");
-        doc.fillColor(highlight ? "#ffffff" : "#71717a").font("Helvetica-Bold").fontSize(10).text(label.toUpperCase(), 62, rowY + 11, { width: 220 });
-        doc.fillColor(highlight ? "#d7bd86" : "#18181b").font("Helvetica-Bold").fontSize(12).text(value, 330, rowY + 10, { width: 200, align: "right" });
-      });
-    }
-
     doc.moveTo(50, 748).lineTo(545, 748).strokeColor("#e4e4e7").lineWidth(1).stroke();
     doc.font("Helvetica-Bold").fontSize(9).fillColor("#18181b").text("NEXORA JOURNEYS", 50, 760);
     doc.font("Helvetica").fontSize(8).fillColor("#71717a").text(
@@ -110,7 +100,7 @@ export async function GET(
     doc.end();
   });
 
-  const filename = `${booking.bookingNumber}-${isInvoice ? "invoice" : "confirmation"}.pdf`;
+  const filename = `${booking.bookingNumber}-confirmation.pdf`;
   return new NextResponse(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",

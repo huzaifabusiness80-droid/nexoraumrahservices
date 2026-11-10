@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
     const status = searchParams.get("status");
 
     const where: any = {};
-    if (serviceType) where.serviceType = serviceType;
-    if (status) where.status = status;
+    if (serviceType && serviceType !== "ALL") where.serviceType = serviceType;
+    if (status && status !== "ALL") where.status = status;
 
     const bookings = await prisma.booking.findMany({
       where,
@@ -17,6 +17,9 @@ export async function GET(req: NextRequest) {
       include: {
         client: {
           select: { id: true, name: true, email: true },
+        },
+        hotelRooms: {
+          orderBy: { roomNumber: "asc" },
         },
       },
     });
@@ -42,6 +45,7 @@ export async function POST(req: NextRequest) {
       returnDate,
       passengers,
       itemName,
+      itemCategory,
       route,
       totalPrice,
       currency,
@@ -49,12 +53,14 @@ export async function POST(req: NextRequest) {
       paymentStatus,
       paidAmount,
       adminNotes,
+      assignedDriver,
       passportNumber,
       nationality,
       preferredTime,
       luggageCount,
       bedsRequired,
       customerNotes,
+      hotelRooms,
     } = body;
 
     const normalizedEmail =
@@ -65,33 +71,59 @@ export async function POST(req: NextRequest) {
       ? await prisma.clientUser.findUnique({ where: { email: normalizedEmail } })
       : null;
 
+    const parsedRooms = Array.isArray(hotelRooms)
+      ? hotelRooms
+          .filter((r: any) => r && r.bedType)
+          .map((r: any, idx: number) => ({
+            roomNumber: Number(r.roomNumber || idx + 1),
+            bedType: String(r.bedType).trim(),
+          }))
+      : [];
+
     const booking = await prisma.booking.create({
       data: {
         clientId: linkedClient?.id || null,
         serviceType: serviceType || "UMRAH_TRANSPORT",
-        customerName,
-        customerPhone,
+        customerName: customerName ? String(customerName).trim() : "Guest Client",
+        customerPhone: customerPhone ? String(customerPhone).trim() : "",
         customerEmail: normalizedEmail,
-        customerCountry,
+        customerCountry: customerCountry ? String(customerCountry).trim() : null,
         passportNumber: passportNumber ? String(passportNumber).trim() : null,
         nationality: nationality ? String(nationality).trim() : null,
-        pickupLocation,
-        dropoffLocation,
+        pickupLocation: pickupLocation ? String(pickupLocation).trim() : null,
+        dropoffLocation: dropoffLocation ? String(dropoffLocation).trim() : null,
         pickupDate: pickupDate ? new Date(pickupDate) : null,
         returnDate: returnDate ? new Date(returnDate) : null,
         passengers: Number(passengers || 1),
-        itemName,
-        route,
-        totalPrice: totalPrice !== undefined ? Number(totalPrice) : null,
+        itemName: itemName ? String(itemName).trim() : null,
+        itemCategory: itemCategory ? String(itemCategory).trim() : null,
+        route: route ? String(route).trim() : null,
+        totalPrice: totalPrice !== undefined && totalPrice !== "" && totalPrice !== null ? Number(totalPrice) : null,
         currency: currency || "SAR",
         status: status || "PENDING",
         paymentStatus: paymentStatus || "UNPAID",
-        paidAmount: paidAmount !== undefined ? Math.max(Number(paidAmount || 0), 0) : 0,
-        adminNotes,
-        preferredTime: preferredTime ? String(preferredTime) : null,
-        luggageCount: luggageCount !== undefined ? Math.max(Number(luggageCount || 0), 0) : null,
-        bedsRequired: bedsRequired !== undefined ? Math.max(Number(bedsRequired || 0), 0) : null,
-        customerNotes: customerNotes ? String(customerNotes) : null,
+        paidAmount: paidAmount !== undefined && paidAmount !== "" ? Math.max(Number(paidAmount || 0), 0) : 0,
+        adminNotes: adminNotes ? String(adminNotes).trim() : null,
+        assignedDriver: assignedDriver ? String(assignedDriver).trim() : null,
+        preferredTime: preferredTime ? String(preferredTime).trim() : null,
+        luggageCount: luggageCount !== undefined && luggageCount !== "" ? Math.max(Number(luggageCount || 0), 0) : null,
+        bedsRequired: bedsRequired !== undefined && bedsRequired !== "" ? Math.max(Number(bedsRequired || 0), 0) : (parsedRooms.length > 0 ? parsedRooms.length : null),
+        customerNotes: customerNotes ? String(customerNotes).trim() : null,
+        ...(parsedRooms.length > 0
+          ? {
+              hotelRooms: {
+                create: parsedRooms,
+              },
+            }
+          : {}),
+      },
+      include: {
+        hotelRooms: {
+          orderBy: { roomNumber: "asc" },
+        },
+        client: {
+          select: { id: true, name: true, email: true },
+        },
       },
     });
 
